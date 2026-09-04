@@ -46,3 +46,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local tools & logs
+cloudflared.exe
+*.log
+lt-url.txt
+scratch_test_*.mjs

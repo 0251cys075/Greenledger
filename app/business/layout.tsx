@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 export default function BusinessLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-[#F3F0E8] flex">
+    <div className="min-h-screen bg-[#F7F5F0] flex">
       <BusinessSidebar />
       <main className="flex-1 min-w-0 pt-[72px]">
         {children}

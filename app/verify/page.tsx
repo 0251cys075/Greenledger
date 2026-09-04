@@ -209,17 +209,17 @@ function VerifyFormContent() {
 
 
   return (
-    <div className="min-h-screen bg-[#F3F0E8] pt-24 pb-20">
+    <div className="min-h-screen bg-[#F7F5F0] pt-24 pb-20">
       {/* Editorial Header Banner - Dark Forest */}
-      <div className="bg-[#0B241A] text-[#F3F0E8] py-16 px-6 border-b border-[#12382A]">
+      <div className="bg-[#1B3A2B] text-[#F7F5F0] py-16 px-6 border-b border-[#315C45]">
         <div className="max-w-4xl mx-auto text-center">
-          <span className="text-xs font-mono font-semibold text-[#63D6A2] uppercase tracking-widest px-3 py-1 rounded bg-[#12382A] border border-[#63D6A2]/25 mb-4 inline-block">
+          <span className="text-xs font-mono font-semibold text-[#A9BBA0] uppercase tracking-widest px-3 py-1 rounded bg-[#315C45] border border-[#A9BBA0]/25 mb-4 inline-block">
             Verification Terminal
           </span>
-          <h1 className="font-serif text-3xl sm:text-5xl text-[#F3F0E8] mb-3">
+          <h1 className="font-serif text-3xl sm:text-5xl text-[#F7F5F0] mb-3">
             {t('verify.pageTitle')}
           </h1>
-          <p className="text-base sm:text-lg text-[#F3F0E8]/75 font-light">
+          <p className="text-base sm:text-lg text-[#F7F5F0]/75 font-light">
             {t('verify.pageSubtitle')}
           </p>
         </div>
@@ -227,9 +227,9 @@ function VerifyFormContent() {
 
       <div className="max-w-3xl mx-auto px-6 -mt-6">
         {/* Sample claims pills */}
-        <div className="mb-6 p-4 rounded-xl bg-[#FAF8F3] border border-[#C8CEC5] shadow-sm">
-          <p className="text-xs font-mono font-semibold text-[#12382A] uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-            <Sparkles size={14} className="text-[#63D6A2]" />
+        <div className="mb-6 p-4 rounded-xl bg-[#FCFAF5] border border-[#D6D3C8] shadow-sm">
+          <p className="text-xs font-mono font-semibold text-[#315C45] uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+            <Sparkles size={14} className="text-[#A9BBA0]" />
             {t('verify.sampleClaimsTitle')}
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
@@ -242,8 +242,8 @@ function VerifyFormContent() {
                   className={cn(
                     'text-left p-3 rounded-lg border transition-all text-xs flex flex-col justify-between cursor-pointer',
                     isActive
-                      ? 'border-[#0B241A] bg-[#0B241A] text-[#F3F0E8] shadow-md ring-1 ring-[#63D6A2]'
-                      : 'border-[#C8CEC5] bg-[#F3F0E8] hover:border-[#0B241A] text-[#102019]'
+                      ? 'border-[#1B3A2B] bg-[#1B3A2B] text-[#F7F5F0] shadow-md ring-1 ring-[#A9BBA0]'
+                      : 'border-[#D6D3C8] bg-[#F7F5F0] hover:border-[#1B3A2B] text-[#1C1C1C]'
                   )}
                   aria-pressed={isActive}
                 >
@@ -258,8 +258,8 @@ function VerifyFormContent() {
         </div>
 
         {/* Main Verification Card */}
-        <div className="bg-[#FAF8F3] border-2 border-[#12382A]/20 rounded-2xl shadow-xl overflow-hidden p-6 sm:p-8">
-          <label htmlFor="claim-input" className="block text-xs font-mono font-semibold text-[#12382A] uppercase tracking-wider mb-3">
+        <div className="bg-[#FCFAF5] border-2 border-[#315C45]/20 rounded-2xl shadow-xl overflow-hidden p-6 sm:p-8">
+          <label htmlFor="claim-input" className="block text-xs font-mono font-semibold text-[#315C45] uppercase tracking-wider mb-3">
             {t('verify.inputLabel')}
           </label>
 
@@ -288,7 +288,7 @@ function VerifyFormContent() {
                   setOcrProgress(0);
                   if (fileRef.current) fileRef.current.value = '';
                 }}
-                className="absolute top-3.5 right-3.5 p-1.5 rounded-lg bg-[#E9E6DC] text-[#718078] hover:text-[#102019] hover:bg-[#C8CEC5] transition-colors"
+                className="absolute top-3.5 right-3.5 p-1.5 rounded-lg bg-[#EFECE4] text-[#718875] hover:text-[#1C1C1C] hover:bg-[#D6D3C8] transition-colors"
                 aria-label="Clear claim"
                 title="Clear input"
               >
@@ -299,26 +299,26 @@ function VerifyFormContent() {
 
           {/* Non-environmental claim rejection banner */}
           {validationError && (
-            <div className="mb-6 p-4 rounded-xl bg-[#C95C5C]/10 border-2 border-[#C95C5C]/40 text-[#102019] animate-fade-in">
+            <div className="mb-6 p-4 rounded-xl bg-[#C1443E]/10 border-2 border-[#C1443E]/40 text-[#1C1C1C] animate-fade-in">
               <div className="flex items-start gap-3 mb-2">
-                <AlertCircle size={20} className="text-[#C95C5C] flex-shrink-0 mt-0.5" />
+                <AlertCircle size={20} className="text-[#C1443E] flex-shrink-0 mt-0.5" />
                 <div>
-                  <h3 className="font-semibold text-sm text-[#962A2A]">
+                  <h3 className="font-semibold text-sm text-[#9E3B33]">
                     ⚠️ This doesn&apos;t appear to be an environmental claim.
                   </h3>
-                  <p className="text-xs text-[#102019]/90 mt-1 leading-relaxed">
+                  <p className="text-xs text-[#1C1C1C]/90 mt-1 leading-relaxed">
                     GreenLedger verifies sustainability and environmental claims such as recycled content, recyclability, carbon emissions, renewable materials, certifications, and sustainable packaging.
                   </p>
                   {validationError.reason && (
-                    <p className="text-[11px] font-mono text-[#718078] mt-1.5">
+                    <p className="text-[11px] font-mono text-[#718875] mt-1.5">
                       Notice: {validationError.reason}
                     </p>
                   )}
                 </div>
               </div>
 
-              <div className="mt-3 pt-3 border-t border-[#C95C5C]/20 flex items-center justify-between flex-wrap gap-2">
-                <p className="text-[11px] text-[#718078] italic">
+              <div className="mt-3 pt-3 border-t border-[#C1443E]/20 flex items-center justify-between flex-wrap gap-2">
+                <p className="text-[11px] text-[#718875] italic">
                   Tip: {validationError.suggestion || 'Provide a statement regarding materials, recyclability, or emissions.'}
                 </p>
                 <button
@@ -329,7 +329,7 @@ function VerifyFormContent() {
                     const textarea = document.getElementById('claim-input');
                     textarea?.focus();
                   }}
-                  className="px-3 py-1.5 rounded-lg bg-[#12382A] text-[#F3F0E8] text-xs font-mono font-semibold hover:bg-[#1B4D3A] transition-colors cursor-pointer"
+                  className="px-3 py-1.5 rounded-lg bg-[#315C45] text-[#F7F5F0] text-xs font-mono font-semibold hover:bg-[#2A533F] transition-colors cursor-pointer"
                 >
                   Try Another Claim
                 </button>
@@ -339,17 +339,17 @@ function VerifyFormContent() {
 
           {/* OCR Error banner */}
           {ocrError && (
-            <div className="mb-6 p-4 rounded-xl bg-[#C95C5C]/10 border-2 border-[#C95C5C]/40 text-[#102019] animate-fade-in">
+            <div className="mb-6 p-4 rounded-xl bg-[#C1443E]/10 border-2 border-[#C1443E]/40 text-[#1C1C1C] animate-fade-in">
               <div className="flex items-start gap-3">
-                <AlertCircle size={20} className="text-[#C95C5C] flex-shrink-0 mt-0.5" />
+                <AlertCircle size={20} className="text-[#C1443E] flex-shrink-0 mt-0.5" />
                 <div className="flex-1">
-                  <h3 className="font-semibold text-sm text-[#962A2A]">OCR Processing Error</h3>
-                  <p className="text-xs text-[#102019]/90 mt-1 leading-relaxed">{ocrError}</p>
+                  <h3 className="font-semibold text-sm text-[#9E3B33]">OCR Processing Error</h3>
+                  <p className="text-xs text-[#1C1C1C]/90 mt-1 leading-relaxed">{ocrError}</p>
                 </div>
                 <button
                   type="button"
                   onClick={removeFile}
-                  className="px-3 py-1.5 rounded-lg bg-[#12382A] text-[#F3F0E8] text-xs font-mono font-semibold hover:bg-[#1B4D3A] transition-colors cursor-pointer flex-shrink-0"
+                  className="px-3 py-1.5 rounded-lg bg-[#315C45] text-[#F7F5F0] text-xs font-mono font-semibold hover:bg-[#2A533F] transition-colors cursor-pointer flex-shrink-0"
                 >
                   Remove Image
                 </button>
@@ -359,9 +359,9 @@ function VerifyFormContent() {
 
           {/* Divider */}
           <div className="flex items-center gap-4 mb-6">
-            <div className="flex-1 h-px bg-[#C8CEC5]" />
-            <span className="text-[11px] font-mono font-semibold text-[#718078] tracking-widest">OR ATTACH EVIDENCE</span>
-            <div className="flex-1 h-px bg-[#C8CEC5]" />
+            <div className="flex-1 h-px bg-[#D6D3C8]" />
+            <span className="text-[11px] font-mono font-semibold text-[#718875] tracking-widest">OR ATTACH EVIDENCE</span>
+            <div className="flex-1 h-px bg-[#D6D3C8]" />
           </div>
 
           {/* Image upload zone */}
@@ -369,8 +369,8 @@ function VerifyFormContent() {
             className={cn(
               'border-2 border-dashed rounded-xl p-6 text-center transition-all cursor-pointer mb-6',
               dragOver
-                ? 'border-[#63D6A2] bg-[#63D6A2]/10'
-                : 'border-[#C8CEC5] bg-[#F3F0E8] hover:border-[#12382A] hover:bg-[#E9E6DC]',
+                ? 'border-[#A9BBA0] bg-[#A9BBA0]/10'
+                : 'border-[#D6D3C8] bg-[#F7F5F0] hover:border-[#315C45] hover:bg-[#EFECE4]',
               fileName && 'cursor-default'
             )}
             onDragOver={(e) => {
@@ -395,9 +395,9 @@ function VerifyFormContent() {
             />
             {isScanningOCR ? (
               <div className="flex flex-col items-center justify-center py-2">
-                <Loader2 size={24} className="text-[#12382A] animate-spin mb-2" />
-                <p className="text-sm font-semibold text-[#102019]">{t('verify.ocrScanning') || 'Extracting text via OCR scan...'}</p>
-                <p className="text-xs font-mono text-[#718078]">Progress: {ocrProgress}%</p>
+                <Loader2 size={24} className="text-[#315C45] animate-spin mb-2" />
+                <p className="text-sm font-semibold text-[#1C1C1C]">{t('verify.ocrScanning') || 'Extracting text via OCR scan...'}</p>
+                <p className="text-xs font-mono text-[#718875]">Progress: {ocrProgress}%</p>
               </div>
             ) : filePreview ? (
               <div className="space-y-4">
@@ -405,7 +405,7 @@ function VerifyFormContent() {
                   <img
                     src={filePreview}
                     alt="Uploaded packaging"
-                    className="w-full h-auto max-h-48 rounded-lg border border-[#C8CEC5] object-contain"
+                    className="w-full h-auto max-h-48 rounded-lg border border-[#D6D3C8] object-contain"
                   />
                   <button
                     onClick={(e) => { e.stopPropagation(); removeFile(); }}
@@ -416,27 +416,27 @@ function VerifyFormContent() {
                   </button>
                 </div>
                 <div className="text-left">
-                  <p className="text-sm font-semibold text-[#102019]">{fileName}</p>
+                  <p className="text-sm font-semibold text-[#1C1C1C]">{fileName}</p>
                   {claim && (
-                    <p className="text-xs font-mono text-[#4FAF78] font-semibold mt-1">
+                    <p className="text-xs font-mono text-[#3E7D4F] font-semibold mt-1">
                       ✓ OCR extracted: &ldquo;{claim.length > 80 ? claim.substring(0, 80) + '…' : claim}&rdquo;
                     </p>
                   )}
                 </div>
                 <button
                   onClick={removeFile}
-                  className="px-4 py-2 text-xs font-mono text-[#12382A] border border-[#C8CEC5] rounded-lg hover:bg-[#E9E6DC] hover:border-[#12382A] transition-colors cursor-pointer w-full"
+                  className="px-4 py-2 text-xs font-mono text-[#315C45] border border-[#D6D3C8] rounded-lg hover:bg-[#EFECE4] hover:border-[#315C45] transition-colors cursor-pointer w-full"
                 >
                   <X size={12} className="inline mr-1" /> Remove & Replace Image
                 </button>
               </div>
             ) : (
               <div>
-                <Upload size={24} className="text-[#12382A] mx-auto mb-2 opacity-70" />
-                <p className="text-sm font-medium text-[#102019] mb-1">
+                <Upload size={24} className="text-[#315C45] mx-auto mb-2 opacity-70" />
+                <p className="text-sm font-medium text-[#1C1C1C] mb-1">
                   {t('verify.dragDropTitle')}
                 </p>
-                <p className="text-xs font-mono text-[#718078]">
+                <p className="text-xs font-mono text-[#718875]">
                   {t('verify.dragDropSubtitle')}
                 </p>
               </div>
@@ -446,7 +446,7 @@ function VerifyFormContent() {
           {/* Unified Scanner Trigger */}
           <button
             type="button"
-            className="w-full flex items-center justify-center gap-2 py-3 text-xs font-mono font-semibold text-[#12382A] border border-[#C8CEC5] rounded-xl hover:bg-[#E9E6DC] hover:border-[#12382A] transition-all mb-8 cursor-pointer"
+            className="w-full flex items-center justify-center gap-2 py-3 text-xs font-mono font-semibold text-[#315C45] border border-[#D6D3C8] rounded-xl hover:bg-[#EFECE4] hover:border-[#315C45] transition-all mb-8 cursor-pointer"
             onClick={() => setQrModalOpen(true)}
           >
             <Camera size={15} />
@@ -462,7 +462,7 @@ function VerifyFormContent() {
               'w-full py-4 rounded-xl font-semibold text-base flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer uppercase tracking-wider',
               claim.trim()
                 ? 'btn-mint py-4'
-                : 'bg-[#C8CEC5] text-[#718078] cursor-not-allowed border-none shadow-none'
+                : 'bg-[#D6D3C8] text-[#718875] cursor-not-allowed border-none shadow-none'
             )}
             aria-disabled={!claim.trim()}
           >
@@ -472,8 +472,8 @@ function VerifyFormContent() {
         </div>
 
         {/* Trust disclaimer */}
-        <div className="mt-8 flex items-start gap-3 p-4 rounded-xl bg-[#E9E6DC] border border-[#C8CEC5] text-xs text-[#718078] leading-relaxed">
-          <ShieldCheck size={18} className="text-[#12382A] flex-shrink-0 mt-0.5" />
+        <div className="mt-8 flex items-start gap-3 p-4 rounded-xl bg-[#EFECE4] border border-[#D6D3C8] text-xs text-[#718875] leading-relaxed">
+          <ShieldCheck size={18} className="text-[#315C45] flex-shrink-0 mt-0.5" />
           <p>
             <strong>Auditable Rules Engine:</strong> GreenLedger checks public third-party sustainability databases,
             independent certification registries, and life-cycle disclosures. Results express verified evidence
@@ -502,8 +502,8 @@ export default function VerifyPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-[#F3F0E8] flex items-center justify-center">
-          <Loader2 size={32} className="text-[#12382A] animate-spin" />
+        <div className="min-h-screen bg-[#F7F5F0] flex items-center justify-center">
+          <Loader2 size={32} className="text-[#315C45] animate-spin" />
         </div>
       }
     >

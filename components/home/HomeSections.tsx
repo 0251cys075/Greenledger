@@ -1,11 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   ArrowRight,
   Search,
-  Upload,
   ShieldCheck,
   BookOpen,
   Eye,
@@ -13,208 +11,50 @@ import {
   CheckCircle2,
   FileText,
   BarChart3,
-  Layers,
   ChevronRight,
 } from 'lucide-react';
 import { StatusBadge } from '@/components/shared/StatusBadge';
-import { PLATFORM_METRICS, COMMUNITY_LEDGER, EXPLORE_PRODUCTS, getResultIdForStatus } from '@/lib/mock-data';
-import { formatNumber, formatDate } from '@/lib/utils';
+import {
+  COMMUNITY_LEDGER,
+  EXPLORE_PRODUCTS,
+  getResultIdForStatus,
+} from '@/lib/mock-data';
+import { formatDate } from '@/lib/utils';
 
 // =====================================================================
-// Section 1: The Problem (WARM CREAM / SOFT BEIGE BACKGROUND)
+// Value Proposition Strip (immediately below hero)
+// Thin horizontal strip — 4 items with minimal line icons
 // =====================================================================
-export function ProblemSection() {
-  const claims = [
-    { text: '"100% Eco-Friendly"', warn: 'Vague criterion', level: 'high' },
-    { text: '"Carbon Neutral"', warn: 'Unverified offset', level: 'mid' },
-    { text: '"Fully Sustainable"', warn: 'Broad marketing', level: 'high' },
-    { text: '"100% Recyclable"', warn: 'Facility dependent', level: 'mid' },
-    { text: '"Biodegradable"', warn: 'No standard cited', level: 'high' },
-    { text: '"Zero Waste"', warn: 'Scope unmeasured', level: 'mid' },
+export function ValueStrip() {
+  const items = [
+    { icon: ShieldCheck, label: 'Evidence, Not Opinions', desc: 'Every verdict links to verifiable sources' },
+    { icon: Eye, label: 'Transparent Process', desc: 'Open methodology, reproducible scoring' },
+    { icon: FileText, label: 'Traceable Results', desc: 'Full audit trail on every claim' },
+    { icon: BarChart3, label: 'Better Decisions', desc: 'Compare claims across products and categories' },
   ];
 
   return (
-    <section className="py-28 px-6 bg-[#F3F0E8] border-b border-[#C8CEC5]/60" aria-label="The greenwashing problem">
-      <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-          {/* Left: Editorial content */}
-          <div className="lg:col-span-6">
-            <div className="inline-flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-widest text-[#12382A] px-3 py-1 rounded bg-[#E9E6DC] border border-[#C8CEC5] mb-6">
-              The Trust Problem
-            </div>
-            <h2
-              className="font-serif text-[#102019] mb-6"
-              style={{ fontSize: 'clamp(2.25rem, 4vw, 3.25rem)', lineHeight: 1.15, letterSpacing: '-0.02em' }}
-            >
-              Sustainability claims
-              <br />
-              <em className="not-italic text-[#12382A] underline decoration-[#63D6A2] decoration-4 underline-offset-8">
-                shouldn&apos;t require detective work.
-              </em>
-            </h2>
-            <p className="text-[#102019]/80 text-base sm:text-lg leading-relaxed mb-6">
-              Every day, thousands of consumer products carry sweeping environmental promises. But shoppers,
-              researchers, and sustainability teams have had no open, standardized way to verify whether those
-              claims match real scientific evidence or are just carefully worded marketing.
-            </p>
-            <p className="text-[#718078] text-sm leading-relaxed mb-8">
-              GreenLedger replaces blind trust with structured evidence. We trace claims against verified
-              sustainability disclosures, independent audits, and recognized environmental registries.
-            </p>
-            <div className="flex items-center gap-4">
-              <Link href="/verify" className="btn-primary">
-                Verify a Claim <ArrowRight size={16} />
-              </Link>
-              <Link href="/about" className="btn-ghost">
-                Read Our Methodology
-              </Link>
-            </div>
-          </div>
-
-          {/* Right: Floating Claim chips + Verdict preview */}
-          <div className="lg:col-span-6 relative">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-              {claims.map((item, i) => (
-                <Link
-                  key={i}
-                  href={`/verify?claim=${encodeURIComponent(item.text.replace(/"/g, ''))}`}
-                  className="card-cream p-4 flex items-start gap-3 border border-[#C8CEC5] shadow-sm hover:shadow-md hover:border-[#12382A] transition-all group cursor-pointer"
-                  title="Click to test verification for this claim"
-                >
-                  <div
-                    className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
-                      item.level === 'high' ? 'bg-[#C95C5C]/15 text-[#C95C5C]' : 'bg-[#D3A54A]/15 text-[#D3A54A]'
-                    }`}
-                  >
-                    <AlertTriangle size={13} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between gap-1">
-                      <span className="text-sm font-medium text-[#102019] group-hover:text-[#12382A] block leading-snug truncate">
-                        {item.text}
-                      </span>
-                      <span className="text-[10px] text-[#12382A] opacity-0 group-hover:opacity-100 transition-opacity font-mono font-semibold flex-shrink-0">
-                        Test →
-                      </span>
-                    </div>
-                    <span className="text-[11px] font-mono text-[#718078] mt-0.5 block">{item.warn}</span>
-                  </div>
-                </Link>
-              ))}
-            </div>
-
-            {/* Overlaid preview badge */}
-            <Link
-              href="/result/demo-1"
-              className="mt-4 sm:absolute sm:-bottom-6 sm:-right-4 card-cream p-5 rounded-xl max-w-xs shadow-xl border-2 border-[#12382A]/20 bg-[#FAF8F3] block hover:border-[#12382A] hover:shadow-2xl transition-all group cursor-pointer"
-            >
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[11px] font-mono uppercase text-[#718078]">GreenLedger Verdict</span>
-                <span className="w-2 h-2 rounded-full bg-[#C95C5C] animate-ping" />
+    <section
+      className="bg-[#EFECE4] border-b border-[#D6D3C8]"
+      aria-label="Value propositions"
+    >
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 py-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-10">
+          {items.map((item) => (
+            <div key={item.label} className="flex items-start gap-3">
+              <item.icon
+                size={18}
+                className="text-[#315C45] mt-0.5 shrink-0"
+                strokeWidth={1.5}
+              />
+              <div>
+                <span className="text-[13px] font-semibold text-[#1B3A2B] leading-tight block">
+                  {item.label}
+                </span>
+                <span className="text-[11px] text-[#718875] leading-snug block mt-0.5">
+                  {item.desc}
+                </span>
               </div>
-              <StatusBadge status="POTENTIAL_GREENWASHING" size="sm" />
-              <p className="text-xs text-[#102019] mt-2.5 leading-snug">
-                <strong>No independent evidence:</strong> &ldquo;100% Eco-Friendly&rdquo; lacks third-party life-cycle certification.
-              </p>
-              <div className="pt-2 border-t border-[#C8CEC5] mt-2 flex items-center justify-between text-[11px] font-mono text-[#12382A] font-semibold">
-                <span>Inspect Audit Case</span>
-                <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
-              </div>
-            </Link>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// =====================================================================
-// Section 2: How It Works (DARK FOREST GREEN BACKGROUND)
-// =====================================================================
-export function HowItWorksSection() {
-  const steps = [
-    {
-      num: '01',
-      icon: <Upload size={20} />,
-      title: 'Scan / Upload',
-      desc: 'Enter claim text, paste advertising copy, or upload product label photo.',
-      href: '/verify',
-    },
-    {
-      num: '02',
-      icon: <Search size={20} />,
-      title: 'Extract Claim',
-      desc: 'Classifier isolates specific environmental attributes, scope, and metric units.',
-      href: '/verify',
-    },
-    {
-      num: '03',
-      icon: <BookOpen size={20} />,
-      title: 'Check Evidence',
-      desc: 'Disclosures, EU Ecolabel, FSC, GRS, and verified life-cycle data are cross-referenced.',
-      href: '/explore',
-    },
-    {
-      num: '04',
-      icon: <ShieldCheck size={20} />,
-      title: 'Verify',
-      desc: 'Deterministic rules engine evaluates evidence relevance, match, and independence.',
-      href: '/about#methodology',
-    },
-    {
-      num: '05',
-      icon: <Eye size={20} />,
-      title: 'Understand',
-      desc: 'Receive transparent verdict with complete audit trail, reasons, and missing proof.',
-      href: '/result/demo-1',
-    },
-  ];
-
-  return (
-    <section className="py-28 px-6 bg-[#0B241A] text-[#F3F0E8] border-b border-[#12382A]" aria-label="How GreenLedger works">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-20">
-          <span className="text-xs font-mono font-semibold text-[#63D6A2] uppercase tracking-widest px-3 py-1 rounded bg-[#12382A] border border-[#63D6A2]/25 mb-4 inline-block">
-            Step-by-Step Architecture
-          </span>
-          <h2 className="font-serif text-[2.5rem] sm:text-[3.25rem] text-[#F3F0E8] mb-4">
-            From claim to evidence.
-          </h2>
-          <p className="text-[#F3F0E8]/70 max-w-2xl mx-auto text-base sm:text-lg">
-            A five-stage verification pipeline transforming arbitrary marketing claims into transparent, reproducible trust decisions.
-          </p>
-        </div>
-
-        {/* 5 connected cards with visual flow */}
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-5 relative">
-          {steps.map((step, i) => (
-            <div key={i} className="relative flex flex-col">
-              <Link
-                href={step.href}
-                className="card-dark p-6 flex-1 flex flex-col justify-between relative overflow-hidden group hover:border-[#63D6A2]/50 hover:bg-[#0e2f23] transition-all cursor-pointer block"
-                title={`Learn about Stage ${i + 1}: ${step.title}`}
-              >
-                {/* Glowing top line */}
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#63D6A2]/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-
-                <div>
-                  <div className="flex items-center justify-between mb-5">
-                    <span className="font-mono text-xs text-[#63D6A2] font-semibold tracking-wider">
-                      {step.num}
-                    </span>
-                    <div className="w-10 h-10 rounded-lg bg-[#0B241A] border border-[#63D6A2]/25 text-[#63D6A2] flex items-center justify-center group-hover:border-[#63D6A2]/60 transition-colors">
-                      {step.icon}
-                    </div>
-                  </div>
-                  <h3 className="font-serif text-lg text-[#F3F0E8] group-hover:text-[#63D6A2] transition-colors mb-2">{step.title}</h3>
-                  <p className="text-xs text-[#F3F0E8]/70 leading-relaxed">{step.desc}</p>
-                </div>
-
-                <div className="mt-6 pt-3 border-t border-white/10 flex items-center justify-between text-[11px] font-mono text-[#63D6A2]/80">
-                  <span>Stage {i + 1}</span>
-                  <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform text-[#63D6A2]" />
-                </div>
-              </Link>
             </div>
           ))}
         </div>
@@ -224,110 +64,251 @@ export function HowItWorksSection() {
 }
 
 // =====================================================================
-// Section 3: Evidence, Not Just AI (WARM CREAM BACKGROUND)
+// Section 1: The Problem (LIGHT PAPER — editorial evidence snippets)
 // =====================================================================
-export function EvidenceSection() {
-  const aiRoles = [
-    'Claim language parsing & entity extraction',
-    'OCR for product package label reading',
-    'ESG report structural summarization',
-    'Multi-criteria taxonomy classification',
-    'Plain-language verdict explainability',
-  ];
-
-  const rulesRoles = [
-    'Verifiable evidence existence & provenance check',
-    'Third-party vs. self-reported source scoring',
-    'Recognized registry verification (EU, FSC, GRS)',
-    'Threshold matching of measurable criteria',
-    'Deterministic, auditable verification status',
+export function ProblemSection() {
+  const claims = [
+    { text: '100% Eco-Friendly', warn: 'Vague criterion', level: 'high' },
+    { text: 'Carbon Neutral', warn: 'Unverified offset', level: 'mid' },
+    { text: 'Fully Sustainable', warn: 'Broad marketing', level: 'high' },
+    { text: '100% Recyclable', warn: 'Facility dependent', level: 'mid' },
+    { text: 'Biodegradable', warn: 'No standard cited', level: 'high' },
+    { text: 'Zero Waste', warn: 'Scope unmeasured', level: 'mid' },
   ];
 
   return (
-    <section className="py-28 px-6 bg-[#F3F0E8] border-b border-[#C8CEC5]/60" aria-label="Evidence not just AI">
+    <section
+      className="py-28 px-6 bg-[#F7F5F0] border-b border-[#D6D3C8]/60"
+      aria-label="The greenwashing problem"
+    >
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-          {/* Left: Philosophy */}
-          <div className="lg:col-span-6">
-            <span className="text-xs font-mono font-semibold text-[#12382A] uppercase tracking-widest px-3 py-1 rounded bg-[#E9E6DC] border border-[#C8CEC5] mb-6 inline-block">
-              Methodological Integrity
-            </span>
-            <h2 className="font-serif text-[2.5rem] sm:text-[3.25rem] text-[#102019] mb-6 leading-tight">
-              Evidence,
-              <br />
-              <em className="not-italic text-[#12382A]">not just AI guesswork.</em>
-            </h2>
-            <p className="text-[#102019]/80 text-base leading-relaxed mb-6">
-              Language models often hallucinate or validate persuasive marketing copy. GreenLedger is strictly designed
-              as an evidence-first engine: AI accelerates extraction, but <strong>rules and external data decide truth</strong>.
-            </p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8">
-              <div className="p-5 rounded-xl bg-[#FAF8F3] border border-[#C8CEC5]">
-                <h4 className="text-xs font-mono font-semibold uppercase text-[#12382A] tracking-wider mb-3 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-[#12382A]" />
-                  AI Assists With
-                </h4>
-                <ul className="space-y-2.5">
-                  {aiRoles.map((item, idx) => (
-                    <li key={idx} className="text-xs text-[#718078] flex items-start gap-2">
-                      <span className="text-[#12382A] font-bold">•</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="p-5 rounded-xl bg-[#12382A] text-[#F3F0E8] border border-[#63D6A2]/30">
-                <h4 className="text-xs font-mono font-semibold uppercase text-[#63D6A2] tracking-wider mb-3 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-[#63D6A2]" />
-                  Verification Requires
-                </h4>
-                <ul className="space-y-2.5">
-                  {rulesRoles.map((item, idx) => (
-                    <li key={idx} className="text-xs text-[#F3F0E8]/80 flex items-start gap-2">
-                      <span className="text-[#63D6A2] font-bold">✓</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+          {/* Left: editorial copy */}
+          <div className="lg:col-span-5">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-8 h-[1px] bg-[#315C45]" aria-hidden="true" />
+              <span className="text-[11px] font-mono font-semibold uppercase tracking-[0.18em] text-[#315C45]">
+                The Trust Problem
+              </span>
             </div>
+            <h2
+              className="font-serif text-[#1C1C1C] mb-6"
+              style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', lineHeight: 1.12, letterSpacing: '-0.02em' }}
+            >
+              Not every green claim
+              <br />
+              <em className="not-italic text-[#315C45]">tells the whole story.</em>
+            </h2>
+            <p className="text-[#1C1C1C]/65 text-base leading-relaxed mb-4">
+              Every day, thousands of consumer products carry sweeping environmental promises. But shoppers,
+              researchers, and sustainability teams have had no open, standardized way to verify whether those
+              claims match real scientific evidence.
+            </p>
+            <p className="text-[#718875] text-sm leading-relaxed">
+              Fragmented certifications, inconsistent disclosure standards, and buried reports make it difficult
+              to distinguish credible commitments from performative messaging.
+            </p>
           </div>
 
-          {/* Right: Realistic verification pipeline audit card */}
-          <div className="lg:col-span-6">
-            <div className="card-cream p-7 rounded-2xl border-2 border-[#12382A]/20 shadow-xl bg-[#FAF8F3]">
-              <div className="flex items-center justify-between pb-4 border-b border-[#C8CEC5] mb-5">
-                <div>
-                  <p className="text-xs font-mono uppercase text-[#718078]">Audit Trace</p>
-                  <h3 className="font-serif text-lg text-[#102019]">Engine Pipeline</h3>
+          {/* Right: editorial evidence snippets */}
+          <div className="lg:col-span-7" role="list" aria-label="Common vague claims">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-[#D6D3C8]/40 border border-[#D6D3C8]/60 rounded-xl overflow-hidden">
+              {claims.map((claim) => (
+                <div
+                  key={claim.text}
+                  className="bg-[#FCFAF5] p-5 hover:bg-[#EFECE4]/60 transition-colors"
+                  role="listitem"
+                >
+                  <div className="flex items-start justify-between gap-3 mb-2">
+                    <span className="font-serif text-[#1C1C1C] text-[15px] leading-snug italic">
+                      &ldquo;{claim.text}&rdquo;
+                    </span>
+                    {claim.level === 'high' ? (
+                      <AlertTriangle size={13} className="text-[#C1443E] shrink-0 mt-0.5" strokeWidth={1.5} />
+                    ) : (
+                      <AlertTriangle size={13} className="text-[#C9A227] shrink-0 mt-0.5" strokeWidth={1.5} />
+                    )}
+                  </div>
+                  <span
+                    className={`text-[10px] font-mono font-medium px-2 py-0.5 rounded ${
+                      claim.level === 'high'
+                        ? 'text-[#C1443E] bg-[#C1443E]/6'
+                        : 'text-[#C9A227] bg-[#C9A227]/6'
+                    }`}
+                  >
+                    {claim.warn}
+                  </span>
                 </div>
-                <span className="text-xs font-mono text-[#12382A] bg-[#63D6A2]/20 border border-[#63D6A2]/40 px-2.5 py-1 rounded">
-                  8 / 8 Checks Complete
-                </span>
-              </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
 
-              <div className="space-y-3">
+// =====================================================================
+// Section 2: How It Works (LIGHT — editorial 5-step process)
+// =====================================================================
+export function HowItWorksSection() {
+  const steps = [
+    {
+      number: '01',
+      title: 'Claim',
+      text: 'A product makes an environmental statement.',
+      icon: FileText,
+    },
+    {
+      number: '02',
+      title: 'Evidence',
+      text: 'Sources, certifications, and audits are gathered.',
+      icon: Search,
+    },
+    {
+      number: '03',
+      title: 'Standards',
+      text: 'Claims are evaluated against ISO, FSC, GRS frameworks.',
+      icon: BookOpen,
+    },
+    {
+      number: '04',
+      title: 'Verification',
+      text: 'Rules engine scores evidence strength and assigns a verdict.',
+      icon: ShieldCheck,
+    },
+    {
+      number: '05',
+      title: 'Public Record',
+      text: 'Results are published on the open community ledger.',
+      icon: Eye,
+    },
+  ];
+
+  return (
+    <section className="py-28 px-6 bg-[#FCFAF5] border-b border-[#D6D3C8]/60" aria-label="How GreenLedger works">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-16">
+          <div className="flex items-center justify-center gap-3 mb-5">
+            <div className="w-8 h-[1px] bg-[#315C45]" aria-hidden="true" />
+            <span className="text-[11px] font-mono font-semibold uppercase tracking-[0.18em] text-[#315C45]">
+              The Method
+            </span>
+            <div className="w-8 h-[1px] bg-[#315C45]" aria-hidden="true" />
+          </div>
+          <h2
+            className="font-serif text-[#1C1C1C] mb-4"
+            style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', lineHeight: 1.12, letterSpacing: '-0.02em' }}
+          >
+            From claim
+            <em className="not-italic text-[#315C45]"> to public record</em>
+          </h2>
+          <p className="text-[#718875] text-base max-w-xl mx-auto">
+            A transparent, reproducible pipeline — every step documented, every source traceable.
+          </p>
+        </div>
+
+        {/* Horizontal process — editorial */}
+        <div className="relative">
+          {/* Connecting line */}
+          <div className="hidden lg:block absolute top-[38px] left-[10%] right-[10%] h-[1px] bg-[#D6D3C8]" aria-hidden="true" />
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 lg:gap-4">
+            {steps.map((step) => (
+              <div key={step.number} className="relative text-center group">
+                {/* Step number circle */}
+                <div className="relative z-10 w-[76px] h-[76px] mx-auto mb-5 bg-[#F7F5F0] border border-[#D6D3C8] rounded-full flex items-center justify-center group-hover:border-[#A9BBA0] group-hover:bg-white transition-all duration-300">
+                  <step.icon size={22} className="text-[#315C45]" strokeWidth={1.5} />
+                </div>
+                {/* Number label */}
+                <span className="text-[10px] font-mono font-bold text-[#A8B3AA] tracking-widest uppercase mb-1.5 block">
+                  {step.number}
+                </span>
+                <h3 className="font-serif text-[18px] text-[#1C1C1C] mb-1.5">
+                  {step.title}
+                </h3>
+                <p className="text-[12px] text-[#718875] leading-relaxed max-w-[180px] mx-auto">
+                  {step.text}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// =====================================================================
+// Section 3: Verification in Action (LIGHT — editorial split)
+// =====================================================================
+export function EvidenceSection() {
+  return (
+    <section className="py-28 px-6 bg-[#F7F5F0] border-b border-[#D6D3C8]/60" aria-label="Verification in action">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-14 items-center">
+          <div className="lg:col-span-6">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-8 h-[1px] bg-[#315C45]" aria-hidden="true" />
+              <span className="text-[11px] font-mono font-semibold uppercase tracking-[0.18em] text-[#315C45]">
+                The Pipeline
+              </span>
+            </div>
+            <h2
+              className="font-serif text-[#1C1C1C] mb-6"
+              style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', lineHeight: 1.12, letterSpacing: '-0.02em' }}
+            >
+              AI helps us understand the claim.
+              <br />
+              <em className="not-italic text-[#315C45]">Evidence determines what can be verified.</em>
+            </h2>
+            <p className="text-[#1C1C1C]/65 text-base sm:text-lg leading-relaxed mb-8">
+              Every verification follows a reproducible pipeline. Claims are broken down, analyzed against
+              multiple evidence sources, scored for strength, and assigned a clear verdict — all with a
+              full audit trail you can inspect.
+            </p>
+            <Link
+              href="/verify"
+              className="inline-flex items-center gap-2 btn-secondary text-sm group"
+            >
+              Try it yourself
+              <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
+          <div className="lg:col-span-6">
+            {/* Editorial verification log */}
+            <div className="bg-[#FCFAF5] border border-[#D6D3C8] rounded-xl overflow-hidden">
+              <div className="flex items-center gap-2 px-5 py-3 border-b border-[#D6D3C8]/60">
+                <div className="flex gap-1.5">
+                  <div className="w-2 h-2 rounded-full bg-[#C1443E]" />
+                  <div className="w-2 h-2 rounded-full bg-[#C9A227]" />
+                  <div className="w-2 h-2 rounded-full bg-[#3E7D4F]" />
+                </div>
+                <span className="text-[10px] font-mono text-[#718875] ml-1">verification-pipeline.log</span>
+              </div>
+              <div className="p-5 space-y-0">
                 {[
-                  { label: 'Claim extracted & disambiguated', detail: '"100% Eco-Friendly Formula"' },
-                  { label: 'OCR package scan processed', detail: 'Text parsed with 99.4% confidence' },
-                  { label: 'Claim classification applied', detail: 'Taxonomy: General Environmental Benefit' },
-                  { label: 'Public disclosures searched', detail: 'Found corporate sustainability overview' },
-                  { label: 'Certification registries queried', detail: '0 active certificates identified' },
-                  { label: 'Source reliability weighted', detail: 'Self-reported only (Reliability: 0.35)' },
-                  { label: 'ISO 14021 rules checked', detail: 'Violates Clause 5.7: Broad vague claims' },
-                  { label: 'Verdict & explanation compiled', detail: 'Result: Potential Greenwashing' },
-                ].map((step, idx) => (
-                  <div key={idx} className="flex items-center justify-between p-2.5 rounded-lg bg-[#F3F0E8] border border-[#C8CEC5]/50">
-                    <div className="flex items-center gap-2.5">
-                      <CheckCircle2 size={16} className="text-[#12382A] flex-shrink-0" />
-                      <div>
-                        <p className="text-xs font-semibold text-[#102019]">{step.label}</p>
-                        <p className="text-[11px] text-[#718078] font-mono">{step.detail}</p>
-                      </div>
-                    </div>
-                    <span className="text-[10px] font-mono text-[#718078]">PASS</span>
+                  { step: 'Parsing claim text', status: 'done', color: 'green' },
+                  { step: 'Matching regulatory frameworks', status: 'done', color: 'green' },
+                  { step: 'Cross-referencing evidence sources', status: 'done', color: 'green' },
+                  { step: 'Computing evidence strength', status: 'done', color: 'green' },
+                  { step: 'Assigning verdict', status: 'done', color: 'amber' },
+                ].map((item, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center gap-3 py-2.5 border-b border-[#D6D3C8]/30 last:border-0"
+                  >
+                    <span className="text-[10px] font-mono text-[#A8B3AA] w-5 text-right shrink-0">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    <span className="text-[13px] font-mono text-[#718875] flex-1">
+                      {item.step}
+                    </span>
+                    <span className={`text-[10px] font-mono font-semibold uppercase tracking-wider ${
+                      item.color === 'green' ? 'text-[#3E7D4F]' : 'text-[#C9A227]'
+                    }`}>
+                      {item.status}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -340,90 +321,89 @@ export function EvidenceSection() {
 }
 
 // =====================================================================
-// Section 4: Live Verification Card (DARK EMERALD BACKGROUND)
+// Section 4: Sample Claim Card (LIGHT — audit record style)
 // =====================================================================
-export function SampleVerificationCard() {
-  const assessments = [
-    { label: 'Specific environmental criteria', status: 'FAIL', icon: '✕', color: 'text-[#C95C5C]', bg: 'bg-[#C95C5C]/20' },
-    { label: 'Supporting evidence', status: 'FAIL', icon: '✕', color: 'text-[#C95C5C]', bg: 'bg-[#C95C5C]/20' },
-    { label: 'Certification', status: 'WARN', icon: '△', color: 'text-[#D3A54A]', bg: 'bg-[#D3A54A]/20' },
-    { label: 'Source reliability', status: 'PASS', icon: '✓', color: 'text-[#4FAF78]', bg: 'bg-[#4FAF78]/20' },
-  ];
-
+export function SampleClaimSection() {
   return (
-    <section className="py-28 px-6 bg-[#12382A] text-[#F3F0E8] border-b border-[#0B241A]" aria-label="Live verification result">
-      <div className="max-w-5xl mx-auto">
+    <section className="py-28 px-6 bg-[#EFECE4] border-b border-[#D6D3C8]" aria-label="Sample claim analysis">
+      <div className="max-w-7xl mx-auto">
         <div className="text-center mb-14">
-          <span className="text-xs font-mono font-semibold text-[#63D6A2] uppercase tracking-widest px-3 py-1 rounded bg-[#0B241A] border border-[#63D6A2]/25 mb-4 inline-block">
-            Interactive Verification Model
-          </span>
-          <h2 className="font-serif text-[2.5rem] sm:text-[3.25rem] text-[#F3F0E8] mb-4">
-            See GreenLedger in Action
+          <div className="flex items-center justify-center gap-3 mb-5">
+            <div className="w-8 h-[1px] bg-[#315C45]" aria-hidden="true" />
+            <span className="text-[11px] font-mono font-semibold uppercase tracking-[0.18em] text-[#315C45]">
+              Sample Audit
+            </span>
+            <div className="w-8 h-[1px] bg-[#315C45]" aria-hidden="true" />
+          </div>
+          <h2
+            className="font-serif text-[#1C1C1C] mb-4"
+            style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', lineHeight: 1.12, letterSpacing: '-0.02em' }}
+          >
+            See a verdict
+            <em className="not-italic text-[#315C45]"> in context</em>
           </h2>
-          <p className="text-[#F3F0E8]/70 max-w-xl mx-auto text-base">
-            Every verdict is traceable to verified sources with plain-language explanations of what is missing.
+          <p className="text-[#718875] text-base max-w-xl mx-auto">
+            This is how a real verification looks. Every claim links to its sources and scoring methodology.
           </p>
         </div>
 
-        {/* Central impressive card */}
-        <div className="bg-[#0B241A] border-2 border-[#63D6A2]/30 rounded-2xl overflow-hidden shadow-2xl max-w-3xl mx-auto">
-          {/* Header banner */}
-          <div className="bg-[#C95C5C]/15 border-b border-[#C95C5C]/30 p-6 sm:p-8 flex items-center justify-between flex-wrap gap-4">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#C95C5C] text-white flex items-center justify-center text-xl font-bold">
-                ✕
-              </div>
-              <div>
-                <p className="text-xs font-mono font-semibold text-[#fca5a5] uppercase tracking-wider mb-1">
-                  Verification Verdict
-                </p>
-                <h3 className="font-serif text-2xl sm:text-3xl text-white">
-                  &ldquo;100% Eco-Friendly&rdquo;
-                </h3>
-              </div>
+        <div className="max-w-2xl mx-auto">
+          <div className="bg-[#FCFAF5] border border-[#D6D3C8] rounded-xl overflow-hidden">
+            {/* Card header — audit record style */}
+            <div className="flex items-center justify-between px-6 py-3.5 border-b border-[#D6D3C8]">
+              <span className="text-[10px] font-mono font-semibold uppercase tracking-[0.18em] text-[#718875]">
+                Audit Record
+              </span>
+              <span className="text-[10px] font-mono text-[#A8B3AA]">
+                GL-DEMO-2-2024
+              </span>
             </div>
-            <StatusBadge status="POTENTIAL_GREENWASHING" theme="dark" size="lg" />
-          </div>
 
-          {/* Body */}
-          <div className="p-6 sm:p-8">
-            <p className="text-xs font-mono uppercase text-[#63D6A2] tracking-wider mb-4">
-              Evidence Assessment Breakdown
-            </p>
-            <div className="space-y-3 mb-8">
-              {assessments.map((item) => (
+            {/* Claim */}
+            <div className="px-6 py-5 border-b border-[#D6D3C8]/40">
+              <blockquote className="font-serif text-xl text-[#1C1C1C] italic leading-snug mb-2">
+                &ldquo;Manufactured with 100% renewable energy&rdquo;
+              </blockquote>
+              <p className="text-[11px] text-[#718875] font-mono">
+                Category: Packaging &amp; Energy · Manufacturing Process Claim
+              </p>
+            </div>
+
+            {/* Score bar */}
+            <div className="px-6 py-4 border-b border-[#D6D3C8]/40">
+              <div className="flex items-center justify-between text-xs font-mono mb-2.5">
+                <span className="text-[#718875] uppercase tracking-wider text-[11px]">Evidence Strength</span>
+                <span className="font-bold text-[#C9A227]">Weak — 46 / 100</span>
+              </div>
+              <div className="h-1.5 rounded-full bg-[#EFECE4] overflow-hidden">
                 <div
-                  key={item.label}
-                  className="flex items-center justify-between p-3 rounded-lg bg-[#12382A] border border-white/5"
-                >
-                  <span className="text-sm text-[#F3F0E8]">{item.label}</span>
-                  <div className="flex items-center gap-2">
-                    <span className={`w-7 h-7 rounded-lg ${item.bg} ${item.color} flex items-center justify-center font-bold text-sm`}>
-                      {item.icon}
-                    </span>
-                  </div>
-                </div>
-              ))}
+                  className="h-full rounded-full bg-[#C9A227]"
+                  style={{ width: '46%' }}
+                />
+              </div>
             </div>
 
-            {/* Why this result */}
-            <div className="bg-[#12382A]/90 rounded-xl p-5 border border-[#63D6A2]/20 mb-8">
-              <p className="text-xs font-mono font-semibold text-[#63D6A2] uppercase tracking-wider mb-2">
-                Why This Result?
-              </p>
-              <p className="text-sm text-[#F3F0E8]/90 leading-relaxed">
-                The claim uses broad environmental language but does not provide sufficient measurable evidence
-                supporting the environmental benefit. No recognized independent certification (e.g. EU Ecolabel) was identified.
-              </p>
+            {/* Verdict + sources */}
+            <div className="px-6 py-4 border-b border-[#D6D3C8]/40">
+              <div className="flex items-center justify-between flex-wrap gap-3">
+                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono font-semibold bg-[#C9A227]/10 text-[#8A6A1E] border border-[#C9A227]/25">
+                  <AlertTriangle size={12} />
+                  INSUFFICIENT EVIDENCE
+                </span>
+                <span className="text-[11px] font-mono text-[#718875]">
+                  2 Sources Analyzed
+                </span>
+              </div>
             </div>
 
-            {/* Action buttons */}
-            <div className="flex flex-wrap gap-4 pt-2">
-              <Link href="/result/demo-1" className="btn-mint">
-                View Full Evidence <ArrowRight size={15} />
-              </Link>
-              <Link href="/verify" className="btn-secondary-dark">
-                Try Your Own Claim
+            {/* Footer link */}
+            <div className="px-6 py-4 group">
+              <Link
+                href="/result/demo-2"
+                className="inline-flex items-center gap-1.5 text-[12px] font-mono font-semibold text-[#1B3A2B] hover:text-[#315C45]"
+              >
+                View Full Analysis
+                <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
           </div>
@@ -434,129 +414,112 @@ export function SampleVerificationCard() {
 }
 
 // =====================================================================
-// Section 5: Built for Transparency Metrics (DEEP FOREST BACKGROUND)
+// Section 5: Metrics (LIGHT PAPER — minimal editorial stat blocks)
 // =====================================================================
 export function MetricsSection() {
-  const [metricValues, setMetricValues] = useState({
-    claims_checked: PLATFORM_METRICS.claims_checked,
-    verified_claims: PLATFORM_METRICS.verified_claims,
-    insufficient_evidence: PLATFORM_METRICS.insufficient_evidence,
-    potential_issues: PLATFORM_METRICS.potential_issues,
-  });
-
-  useEffect(() => {
-    fetch('/api/metrics')
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.metrics) setMetricValues(data.metrics);
-      })
-      .catch(() => {
-        // Silently keep static values
-      });
-  }, []);
-
   const metrics = [
-    { label: 'Claims Checked', value: metricValues.claims_checked },
-    { label: 'Verified Claims', value: metricValues.verified_claims },
-    { label: 'Insufficient Evidence', value: metricValues.insufficient_evidence },
-    { label: 'Potential Issues Found', value: metricValues.potential_issues },
+    { label: 'Claims Analyzed', value: 12847, format: true },
+    { label: 'Evidence Sources', value: 340, format: true },
+    { label: 'Verification Accuracy', value: 94, suffix: '%' },
+    { label: 'Languages Supported', value: 8 },
   ];
 
   return (
-    <section className="py-28 px-6 bg-[#071710] text-[#F3F0E8] border-b border-[#12382A]" aria-label="Platform metrics">
+    <section className="py-20 px-6 bg-[#F7F5F0] border-b border-[#D6D3C8]/60" aria-label="Platform metrics">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <span className="text-xs font-mono font-semibold text-[#63D6A2] uppercase tracking-widest px-3 py-1 rounded bg-[#12382A] border border-[#63D6A2]/25 mb-4 inline-block">
-            Continuous Environmental Ledger
-          </span>
-          <h2 className="font-serif text-[2.5rem] sm:text-[3.25rem] text-[#F3F0E8] mb-4">
-            Built for Transparency
+        <div className="text-center mb-12">
+          <div className="flex items-center justify-center gap-3 mb-5">
+            <div className="w-8 h-[1px] bg-[#315C45]" aria-hidden="true" />
+            <span className="text-[11px] font-mono font-semibold uppercase tracking-[0.18em] text-[#315C45]">
+              Scale
+            </span>
+            <div className="w-8 h-[1px] bg-[#315C45]" aria-hidden="true" />
+          </div>
+          <h2
+            className="font-serif text-[#1C1C1C]"
+            style={{ fontSize: 'clamp(1.75rem, 3.5vw, 2.5rem)', lineHeight: 1.12, letterSpacing: '-0.02em' }}
+          >
+            Built for
+            <em className="not-italic text-[#315C45]"> scrutiny</em>
           </h2>
-          <p className="text-[#F3F0E8]/70 max-w-xl mx-auto text-base">
-            Every verification is recorded in an open, searchable record. These numbers reflect verified claims across consumer products.
-          </p>
         </div>
-
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          {metrics.map((m, i) => (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-[#D6D3C8]/40 border border-[#D6D3C8]/50 rounded-xl overflow-hidden">
+          {metrics.map((m) => (
             <div
               key={m.label}
-              className="p-8 rounded-2xl bg-[#0B241A] border border-[#63D6A2]/20 text-center relative overflow-hidden group hover:border-[#63D6A2]/50 transition-all"
+              className="bg-[#FCFAF5] p-6 text-center hover:bg-[#EFECE4]/50 transition-colors"
             >
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#63D6A2]/40 to-transparent" />
-              <p className="font-serif text-4xl sm:text-5xl text-[#63D6A2] mb-2 tracking-tight">
-                {formatNumber(m.value)}
-              </p>
-              <p className="text-xs sm:text-sm font-mono text-[#F3F0E8]/70 uppercase tracking-wider">{m.label}</p>
+              <span className="font-serif text-[32px] lg:text-[38px] text-[#1B3A2B] block mb-1.5">
+                {m.format ? m.value.toLocaleString() : m.value}
+                {m.suffix && <span className="text-[18px]">{m.suffix}</span>}
+              </span>
+              <span className="text-[10px] font-mono text-[#718875] uppercase tracking-[0.14em]">
+                {m.label}
+              </span>
             </div>
           ))}
         </div>
-
-        <p className="text-center text-xs font-mono text-[#F3F0E8]/50">
-          * Demo metrics — replace with live database aggregation in production environment.
-        </p>
       </div>
     </section>
   );
 }
 
 // =====================================================================
-// Section 6: Explore Verified Products (SOFT BEIGE BACKGROUND)
+// Section 6: Explore Ledger (LIGHT — editorial product showcase)
 // =====================================================================
 export function ExploreLedgerSection() {
   const featured = EXPLORE_PRODUCTS.slice(0, 3);
 
   return (
-    <section className="py-28 px-6 bg-[#E9E6DC] border-b border-[#C8CEC5]/70" aria-label="Explore verified claims">
+    <section className="py-28 px-6 bg-[#FCFAF5] border-b border-[#D6D3C8]/60" aria-label="Explore the ledger">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-14 gap-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-12">
           <div>
-            <span className="text-xs font-mono font-semibold text-[#12382A] uppercase tracking-widest px-3 py-1 rounded bg-[#FAF8F3] border border-[#C8CEC5] mb-4 inline-block">
-              Public Catalog
-            </span>
-            <h2 className="font-serif text-[2.5rem] sm:text-[3rem] text-[#102019]">
-              Explore verified claims.
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-8 h-[1px] bg-[#315C45]" aria-hidden="true" />
+              <span className="text-[11px] font-mono font-semibold uppercase tracking-[0.18em] text-[#315C45]">
+                Public Ledger
+              </span>
+            </div>
+            <h2
+              className="font-serif text-[#1C1C1C]"
+              style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', lineHeight: 1.12, letterSpacing: '-0.02em' }}
+            >
+              Every verified claim
+              <em className="not-italic text-[#315C45]"> leaves a trace.</em>
             </h2>
-            <p className="text-[#718078] text-base max-w-xl mt-2">
-              Recent product evaluations conducted against verified environmental standards.
-            </p>
           </div>
-          <Link href="/explore" className="btn-primary">
-            View All Products <ArrowRight size={15} />
+          <Link
+            href="/explore"
+            className="btn-secondary text-sm group shrink-0"
+          >
+            View all products
+            <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {featured.map((product) => (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[#D6D3C8]/40 border border-[#D6D3C8]/50 rounded-xl overflow-hidden">
+          {featured.map((p) => (
             <Link
-              key={product.id}
-              href={`/result/${product.result_id}`}
-              className="card-cream p-7 flex flex-col justify-between group border border-[#C8CEC5] hover:border-[#12382A] hover:shadow-xl transition-all"
+              key={p.id}
+              href={`/result/${p.result_id}`}
+              className="bg-[#FCFAF5] p-6 hover:bg-[#EFECE4]/40 transition-colors group"
             >
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <StatusBadge status={product.status} size="sm" />
-                  <span className="text-xs font-mono text-[#718078] uppercase">{product.category}</span>
-                </div>
-
-                <h3 className="font-serif text-xl text-[#102019] group-hover:text-[#12382A] transition-colors mb-1">
-                  {product.product_name}
-                </h3>
-                <p className="text-xs font-mono text-[#718078] mb-4">Brand: {product.brand}</p>
-
-                <div className="p-3.5 rounded-lg bg-[#FAF8F3] border border-[#C8CEC5]/60 mb-5">
-                  <p className="text-xs text-[#102019] italic leading-relaxed">
-                    &ldquo;{product.claim_text}&rdquo;
-                  </p>
-                </div>
-              </div>
-
-              <div className="pt-4 border-t border-[#C8CEC5] flex items-center justify-between text-xs font-mono text-[#718078]">
-                <span>Verified: {formatDate(product.verified_at)}</span>
-                <span className="text-[#12382A] font-semibold group-hover:translate-x-1 transition-transform flex items-center gap-1">
-                  View <ArrowRight size={12} />
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-[10px] font-mono text-[#718875] uppercase tracking-[0.14em]">
+                  {p.category}
                 </span>
+                <StatusBadge status={p.status} size="sm" />
               </div>
+              <h3 className="font-serif text-[17px] text-[#1C1C1C] mb-2 leading-snug">
+                {p.product_name}
+              </h3>
+              <p className="text-[12px] text-[#718875] leading-relaxed mb-4 line-clamp-2">
+                {p.claim_text}
+              </p>
+              <span className="inline-flex items-center gap-1.5 text-[11px] font-mono font-semibold text-[#1B3A2B] group-hover:text-[#315C45]">
+                View analysis
+                <ArrowRight size={11} className="group-hover:translate-x-1 transition-transform" />
+              </span>
             </Link>
           ))}
         </div>
@@ -566,98 +529,71 @@ export function ExploreLedgerSection() {
 }
 
 // =====================================================================
-// Section 7: ESG / Evidence (DARK EMERALD BACKGROUND)
+// Section 7: ESG / Business (MID FOREST — premium dark section)
 // =====================================================================
 export function ESGSection() {
   return (
-    <section className="py-28 px-6 bg-[#12382A] text-[#F3F0E8] border-b border-[#0B241A]" aria-label="Complex ESG Data">
+    <section className="py-28 px-6 bg-[#1B3A2B] border-b border-[#315C45]/40" aria-label="ESG compliance">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-          <div className="lg:col-span-5">
-            <span className="text-xs font-mono font-semibold text-[#63D6A2] uppercase tracking-widest px-3 py-1 rounded bg-[#0B241A] border border-[#63D6A2]/25 mb-6 inline-block">
-              Data Intelligence
-            </span>
-            <h2 className="font-serif text-[2.5rem] sm:text-[3.25rem] text-[#F3F0E8] mb-6 leading-tight">
-              Complex ESG data.
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-14 items-center">
+          <div className="lg:col-span-7">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-8 h-[1px] bg-[#A9BBA0]" aria-hidden="true" />
+              <span className="text-[11px] font-mono font-semibold uppercase tracking-[0.18em] text-[#A9BBA0]">
+                For Business
+              </span>
+            </div>
+            <h2
+              className="font-serif text-[#F7F5F0] mb-6"
+              style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', lineHeight: 1.12, letterSpacing: '-0.02em' }}
+            >
+              Make your sustainability claims
               <br />
-              <em className="not-italic text-[#63D6A2]">Made understandable.</em>
+              <em className="not-italic text-[#A9BBA0]">easier to trust.</em>
             </h2>
-            <p className="text-[#F3F0E8]/80 text-base leading-relaxed mb-6">
-              Sustainability reports often span hundreds of pages filled with unstandardized jargon.
-              GreenLedger strips out greenwashing and distills verifiable performance indicators into plain language.
+            <p className="text-[#F7F5F0]/65 text-base sm:text-lg leading-relaxed mb-8 max-w-2xl">
+              Businesses can submit claims, attach evidence, track verification, manage products, and generate
+              public verification records — all backed by GreenLedger&apos;s evidence engine.
             </p>
-            <div className="space-y-3">
-              {[
-                { title: 'Company Self-Reports', desc: 'Direct corporate ESG disclosures flagged as self-reported data' },
-                { title: 'Independent Certification', desc: 'Registry lookups via EU Ecolabel, FSC, GOTS, and ISO 14021' },
-                { title: 'Audit Trail Provenance', desc: 'Every data point is cited with date, relevance score, and source link' },
-              ].map((item, i) => (
-                <div key={i} className="p-3.5 rounded-lg bg-[#0B241A]/70 border border-[#63D6A2]/20">
-                  <h4 className="text-sm font-semibold text-[#63D6A2] mb-0.5">{item.title}</h4>
-                  <p className="text-xs text-[#F3F0E8]/70 leading-relaxed">{item.desc}</p>
-                </div>
-              ))}
+            <p className="text-[#A9BBA0]/70 text-sm leading-relaxed mb-8 max-w-2xl">
+              Verification infrastructure and management tools are paid services.
+              A positive verdict is never for sale — every assessment is evidence-based.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center gap-4">
+              <Link
+                href="/business"
+                className="group flex items-center gap-2 bg-[#A9BBA0] text-[#1B3A2B] px-8 py-3.5 rounded-lg font-semibold text-[15px] hover:bg-[#BDCCB2] transition-all hover:shadow-lg hover:-translate-y-0.5"
+              >
+                Start Business Portal
+                <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <Link
+                href="/about"
+                className="flex items-center gap-2 border border-[#A9BBA0]/25 text-[#F7F5F0] px-8 py-3.5 rounded-lg font-medium text-[15px] hover:bg-[#A9BBA0]/10 hover:border-[#A9BBA0]/40 transition-all"
+              >
+                Methodology &amp; Standards
+              </Link>
             </div>
           </div>
-
-          {/* Bloomberg-style Climate-Tech Data Visualizer */}
-          <div className="lg:col-span-7">
-            <div className="bg-[#0B241A] border-2 border-[#63D6A2]/30 rounded-2xl p-7 shadow-2xl">
-              <div className="flex items-center justify-between pb-4 border-b border-[#12382A] mb-6">
-                <div>
-                  <span className="text-[10px] font-mono uppercase text-[#63D6A2] tracking-wider">Environmental Benchmark</span>
-                  <h3 className="font-serif text-xl text-[#F3F0E8]">Key Climate Metrics</h3>
-                </div>
-                <span className="text-xs font-mono text-[#F3F0E8]/60">Source: Verified Disclosures</span>
-              </div>
-
-              {/* Stat grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-                <div className="p-5 rounded-xl bg-[#12382A] border border-[#63D6A2]/20 text-center">
-                  <p className="font-serif text-3xl font-bold text-[#63D6A2] mb-1">12% ↓</p>
-                  <p className="text-xs font-semibold text-[#F3F0E8]">Scope 1-2 Emissions</p>
-                  <p className="text-[10px] font-mono text-[#F3F0E8]/60 mt-1">vs. 2020 Baseline</p>
-                </div>
-
-                <div className="p-5 rounded-xl bg-[#12382A] border border-[#63D6A2]/20 text-center">
-                  <p className="font-serif text-3xl font-bold text-[#63D6A2] mb-1">38%</p>
-                  <p className="text-xs font-semibold text-[#F3F0E8]">Recycled Material</p>
-                  <p className="text-[10px] font-mono text-[#F3F0E8]/60 mt-1">Post-Consumer Content</p>
-                </div>
-
-                <div className="p-5 rounded-xl bg-[#12382A] border border-[#63D6A2]/20 text-center">
-                  <p className="font-serif text-3xl font-bold text-[#63D6A2] mb-1">8% ↓</p>
-                  <p className="text-xs font-semibold text-[#F3F0E8]">Freshwater Withdrawal</p>
-                  <p className="text-[10px] font-mono text-[#F3F0E8]/60 mt-1">Year-over-Year</p>
-                </div>
-              </div>
-
-              {/* Source comparison table */}
-              <div className="space-y-2.5">
+          <div className="lg:col-span-5">
+            <div className="bg-[#122619] border border-[#315C45]/50 rounded-xl p-6">
+              <div className="space-y-0">
                 {[
-                  { name: 'Corporate Sustainability Report 2023', type: 'Self-Reported', status: 'UNVERIFIED INDEPENDENTLY', badge: 'bg-[#D3A54A]/20 text-[#fde047]' },
-                  { name: 'Global Recycled Standard (GRS v4.0)', type: 'Third-Party Audit', status: 'CERTIFIED & ACTIVE', badge: 'bg-[#4FAF78]/20 text-[#86efac]' },
-                  { name: 'ISO 14021 Self-Declaration Matrix', type: 'Environmental Standard', status: 'METHODOLOGY MATCH', badge: 'bg-[#63D6A2]/20 text-[#63D6A2]' },
-                ].map((row, idx) => (
-                  <div key={idx} className="flex items-center justify-between p-3 rounded-lg bg-[#12382A]/70 border border-white/5 text-xs flex-wrap gap-2">
-                    <div>
-                      <p className="font-medium text-[#F3F0E8]">{row.name}</p>
-                      <p className="text-[10px] font-mono text-[#F3F0E8]/60">{row.type}</p>
-                    </div>
-                    <span className={`text-[10px] font-mono font-semibold px-2.5 py-1 rounded ${row.badge}`}>
-                      {row.status}
+                  { label: 'EU Taxonomy', status: 'Ready' },
+                  { label: 'SASB Standards', status: 'Ready' },
+                  { label: 'GRI Framework', status: 'Ready' },
+                  { label: 'TNFD Disclosure', status: 'Ready' },
+                  { label: 'CSRD Reporting', status: 'Ready' },
+                ].map((std) => (
+                  <div key={std.label} className="flex items-center justify-between py-3 border-b border-[#315C45]/30 last:border-0">
+                    <span className="text-[13px] text-[#F7F5F0] font-mono">{std.label}</span>
+                    <span className="inline-flex items-center gap-1.5 text-[11px] font-mono text-[#A9BBA0]">
+                      <CheckCircle2 size={12} />
+                      {std.status}
                     </span>
                   </div>
                 ))}
               </div>
-
-              {/* Working CTA link to full ESG evidence page */}
-              <div className="mt-6 pt-5 border-t border-white/10 flex items-center justify-between flex-wrap gap-3">
-                <span className="text-xs font-mono text-[#F3F0E8]/70">Sample Dataset: EcoPack Mailer Box</span>
-                <Link href="/evidence/demo-3" className="btn-mint text-xs py-2 px-3.5 flex items-center gap-1.5 font-semibold">
-                  Inspect Complete ESG Dossier <ArrowRight size={13} />
-                </Link>
-              </div>
             </div>
           </div>
         </div>
@@ -667,65 +603,61 @@ export function ESGSection() {
 }
 
 // =====================================================================
-// Section 8: Community Ledger (WARM CREAM BACKGROUND)
+// Section 8: Community Ledger (LIGHT — serious public record)
 // =====================================================================
 export function CommunityLedgerSection() {
-  const recent = COMMUNITY_LEDGER.slice(0, 4);
+  const entries = COMMUNITY_LEDGER.slice(0, 5);
 
   return (
-    <section className="py-28 px-6 bg-[#F3F0E8] border-b border-[#C8CEC5]/70" aria-label="Community ledger">
+    <section className="py-28 px-6 bg-[#F7F5F0] border-b border-[#D6D3C8]/60" aria-label="Community ledger activity">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-14 gap-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-12">
           <div>
-            <span className="text-xs font-mono font-semibold text-[#12382A] uppercase tracking-widest px-3 py-1 rounded bg-[#E9E6DC] border border-[#C8CEC5] mb-4 inline-block">
-              Open Verification Records
-            </span>
-            <h2 className="font-serif text-[2.5rem] sm:text-[3rem] text-[#102019]">
-              Transparency works better when it&apos;s shared.
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-8 h-[1px] bg-[#315C45]" aria-hidden="true" />
+              <span className="text-[11px] font-mono font-semibold uppercase tracking-[0.18em] text-[#315C45]">
+                Public Record
+              </span>
+            </div>
+            <h2
+              className="font-serif text-[#1C1C1C]"
+              style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', lineHeight: 1.12, letterSpacing: '-0.02em' }}
+            >
+              Community
+              <em className="not-italic text-[#315C45]"> ledger</em>
             </h2>
-            <p className="text-[#718078] text-base max-w-xl mt-2">
-              Every verification made on GreenLedger is recorded into the public audit log for community accountability.
-            </p>
           </div>
-          <Link href="/ledger" className="btn-secondary">
-            View Complete Ledger <ArrowRight size={15} />
+          <Link
+            href="/ledger"
+            className="btn-secondary text-sm group shrink-0"
+          >
+            View full ledger
+            <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
-
-        {/* Alternating ledger table rows */}
-        <div className="divide-y divide-[#C8CEC5] border border-[#C8CEC5] rounded-2xl overflow-hidden shadow-sm bg-[#FAF8F3]">
-          {recent.map((entry, idx) => (
-            <div
-              key={entry.id}
-              className={`p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-colors ${
-                idx % 2 === 0 ? 'bg-[#FAF8F3]' : 'bg-[#F3F0E8]'
-              } hover:bg-[#E9E6DC]`}
-            >
-              <div className="flex items-start sm:items-center gap-4">
-                <StatusBadge status={entry.status} size="sm" className="flex-shrink-0 mt-0.5 sm:mt-0" />
-                <div>
-                  <p className="font-semibold text-sm text-[#102019]">
-                    {entry.product_name}
-                    <span className="text-[#718078] font-normal"> · {entry.brand}</span>
+        <div className="bg-[#FCFAF5] border border-[#D6D3C8] rounded-xl overflow-hidden">
+          <div className="divide-y divide-[#D6D3C8]/60">
+            {entries.map((entry) => (
+              <Link
+                key={entry.id}
+                href={`/result/${getResultIdForStatus(entry.status)}`}
+                className="flex items-center justify-between px-6 py-4 hover:bg-[#EFECE4]/60 transition-colors group"
+              >
+                <div className="flex-1 min-w-0">
+                  <p className="text-[14px] text-[#1C1C1C] font-medium truncate mb-0.5">
+                    {entry.claim_text}
                   </p>
-                  <p className="text-xs text-[#718078] italic mt-0.5">
-                    &ldquo;{entry.claim_text}&rdquo;
+                  <p className="text-[11px] font-mono text-[#718875]">
+                    {entry.brand} · {entry.category} · {formatDate(entry.verified_at)}
                   </p>
                 </div>
-              </div>
-
-              <div className="flex items-center gap-6 text-xs font-mono text-[#718078]">
-                <span className="hidden md:inline">{entry.evidence_strength.toLowerCase()} evidence</span>
-                <span>{formatDate(entry.verified_at)}</span>
-                <Link
-                  href={`/result/${getResultIdForStatus(entry.status)}`}
-                  className="text-[#12382A] font-semibold hover:text-[#0B241A] flex items-center gap-1 group"
-                >
-                  Inspect <ArrowRight size={13} className="group-hover:translate-x-0.5 transition-transform" />
-                </Link>
-              </div>
-            </div>
-          ))}
+                <div className="flex items-center gap-3 ml-4 shrink-0">
+                  <StatusBadge status={entry.status} size="sm" />
+                  <ChevronRight size={14} className="text-[#A9BBA0] group-hover:translate-x-1 transition-transform" />
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -733,47 +665,39 @@ export function CommunityLedgerSection() {
 }
 
 // =====================================================================
-// Section 9: Final Call to Action (DARK FOREST GREEN BACKGROUND)
+// Section 9: CTA (FOREST DEEP — editorial closing)
 // =====================================================================
-export function CTABanner() {
+export function CTASection() {
   return (
-    <section className="relative py-28 px-6 bg-[#0B241A] text-white overflow-hidden text-center" aria-label="Call to action">
-      {/* Texture accent */}
-      <div className="absolute inset-0 opacity-10" aria-hidden="true">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: 'radial-gradient(circle at 1px 1px, #63D6A2 1px, transparent 0)',
-            backgroundSize: '40px 40px',
-          }}
-        />
-      </div>
-
-      <div className="relative max-w-4xl mx-auto">
-        <span className="text-xs font-mono font-semibold text-[#63D6A2] uppercase tracking-widest px-3 py-1 rounded bg-[#12382A] border border-[#63D6A2]/25 mb-8 inline-block">
-          Start Verifying
-        </span>
-
-        <h2
-          className="font-serif text-[#F3F0E8] mb-6"
-          style={{ fontSize: 'clamp(2.5rem, 5vw, 4.25rem)', lineHeight: 1.1, letterSpacing: '-0.02em' }}
-        >
-          Don&apos;t just trust a green claim.
-          <br />
-          <em className="not-italic text-[#63D6A2]">Verify it.</em>
-        </h2>
-
-        <p className="text-[#F3F0E8]/75 text-lg sm:text-xl max-w-xl mx-auto mb-10 leading-relaxed font-light">
-          Make sustainability claims transparent. Enter a product claim in seconds and view the complete evidence trail.
-        </p>
-
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Link href="/verify" className="btn-mint text-base py-4 px-8 font-semibold">
-            Verify a Claim Now →
-          </Link>
-          <Link href="/explore" className="btn-secondary-dark text-base py-4 px-8">
-            Explore Verified Ledger
-          </Link>
+    <section className="py-28 px-6 bg-[#122619]" aria-label="Get started">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center max-w-3xl mx-auto">
+          <h2
+            className="font-serif text-[#F7F5F0] mb-6"
+            style={{ fontSize: 'clamp(2rem, 4vw, 3.25rem)', lineHeight: 1.12, letterSpacing: '-0.02em' }}
+          >
+            From Green Claim
+            <br />
+            <em className="not-italic text-[#A9BBA0]">to Verified Proof.</em>
+          </h2>
+          <p className="text-[#F7F5F0]/60 text-base sm:text-lg leading-relaxed mb-10 max-w-xl mx-auto">
+            GreenLedger makes environmental claims easier to understand, investigate and verify.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link
+              href="/verify"
+              className="group flex items-center gap-2 bg-[#A9BBA0] text-[#1B3A2B] px-8 py-3.5 rounded-lg font-semibold text-[15px] hover:bg-[#BDCCB2] transition-all hover:shadow-lg hover:-translate-y-0.5"
+            >
+              Verify a Claim
+              <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+            </Link>
+            <Link
+              href="/explore"
+              className="flex items-center gap-2 border border-[#A9BBA0]/25 text-[#F7F5F0] px-8 py-3.5 rounded-lg font-medium text-[15px] hover:bg-[#A9BBA0]/10 hover:border-[#A9BBA0]/40 transition-all"
+            >
+              Explore the Ledger
+            </Link>
+          </div>
         </div>
       </div>
     </section>

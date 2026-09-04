@@ -49,19 +49,19 @@ function SidebarLink({
       className={cn(
         'flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group',
         active
-          ? 'bg-[#63D6A2]/15 text-[#63D6A2] border border-[#63D6A2]/25'
-          : 'text-[#F3F0E8]/70 hover:text-[#F3F0E8] hover:bg-white/8'
+          ? 'bg-[#A9BBA0]/15 text-[#A9BBA0] border border-[#A9BBA0]/25'
+          : 'text-[#F7F5F0]/70 hover:text-[#F7F5F0] hover:bg-white/8'
       )}
     >
       <Icon
         size={16}
         className={cn(
           'shrink-0 transition-colors',
-          active ? 'text-[#63D6A2]' : 'text-[#F3F0E8]/50 group-hover:text-[#63D6A2]'
+          active ? 'text-[#A9BBA0]' : 'text-[#F7F5F0]/50 group-hover:text-[#A9BBA0]'
         )}
       />
       <span className="truncate">{label}</span>
-      {active && <ChevronRight size={12} className="ml-auto text-[#63D6A2]/60" />}
+      {active && <ChevronRight size={12} className="ml-auto text-[#A9BBA0]/60" />}
     </Link>
   );
 }
@@ -73,17 +73,17 @@ export default function BusinessSidebar() {
     <div className="flex flex-col h-full py-6">
       {/* Company Header */}
       <div className="px-4 mb-6">
-        <div className="flex items-center gap-3 p-3 rounded-xl bg-[#12382A]/60 border border-[#63D6A2]/15">
-          <div className="w-9 h-9 rounded-lg bg-[#63D6A2]/20 border border-[#63D6A2]/30 flex items-center justify-center shrink-0">
-            <Building2 size={16} className="text-[#63D6A2]" />
+        <div className="flex items-center gap-3 p-3 rounded-xl bg-[#315C45]/60 border border-[#A9BBA0]/15">
+          <div className="w-9 h-9 rounded-lg bg-[#A9BBA0]/20 border border-[#A9BBA0]/30 flex items-center justify-center shrink-0">
+            <Building2 size={16} className="text-[#A9BBA0]" />
           </div>
           <div className="min-w-0">
-            <p className="text-xs text-[#F3F0E8]/50 uppercase tracking-widest font-mono leading-none mb-0.5">Company</p>
-            <p className="text-sm font-semibold text-[#F3F0E8] truncate">EcoPure Industries</p>
+            <p className="text-xs text-[#F7F5F0]/50 uppercase tracking-widest font-mono leading-none mb-0.5">Company</p>
+            <p className="text-sm font-semibold text-[#F7F5F0] truncate">EcoPure Industries</p>
           </div>
         </div>
         <div className="mt-2 px-1">
-          <span className="text-[10px] font-mono text-[#63D6A2]/70 uppercase tracking-widest">
+          <span className="text-[10px] font-mono text-[#A9BBA0]/70 uppercase tracking-widest">
             ⬤ Demo Mode
           </span>
         </div>
@@ -91,7 +91,7 @@ export default function BusinessSidebar() {
 
       {/* Navigation */}
       <nav className="flex-1 px-3 space-y-1">
-        <p className="px-1 mb-2 text-[10px] font-mono uppercase tracking-widest text-[#F3F0E8]/30">
+        <p className="px-1 mb-2 text-[10px] font-mono uppercase tracking-widest text-[#F7F5F0]/30">
           Portal
         </p>
         {navItems.map((item) => (
@@ -105,12 +105,12 @@ export default function BusinessSidebar() {
 
       {/* Trust Principle */}
       <div className="px-4 mt-6">
-        <div className="p-3 rounded-lg border border-[#63D6A2]/20 bg-[#12382A]/40">
+        <div className="p-3 rounded-lg border border-[#A9BBA0]/20 bg-[#315C45]/40">
           <div className="flex items-start gap-2 mb-1.5">
-            <ShieldCheck size={12} className="text-[#63D6A2] mt-0.5 shrink-0" />
-            <p className="text-[10px] font-semibold text-[#63D6A2] uppercase tracking-wider">Trust Principle</p>
+            <ShieldCheck size={12} className="text-[#A9BBA0] mt-0.5 shrink-0" />
+            <p className="text-[10px] font-semibold text-[#A9BBA0] uppercase tracking-wider">Trust Principle</p>
           </div>
-          <p className="text-[10px] text-[#F3F0E8]/50 leading-relaxed">
+          <p className="text-[10px] text-[#F7F5F0]/50 leading-relaxed">
             Verification outcomes are evidence-based and cannot be purchased.
           </p>
         </div>
@@ -120,7 +120,7 @@ export default function BusinessSidebar() {
       <div className="px-4 mt-3">
         <Link
           href="/"
-          className="flex items-center gap-2 px-3 py-2 rounded-lg text-[10px] font-mono uppercase tracking-wider text-[#F3F0E8]/40 hover:text-[#63D6A2] hover:bg-white/5 transition-colors"
+          className="flex items-center gap-2 px-3 py-2 rounded-lg text-[10px] font-mono uppercase tracking-wider text-[#F7F5F0]/40 hover:text-[#A9BBA0] hover:bg-white/5 transition-colors"
         >
           ← Consumer View
         </Link>
@@ -132,7 +132,7 @@ export default function BusinessSidebar() {
     <>
       {/* Mobile toggle button */}
       <button
-        className="fixed top-[72px] left-4 z-40 md:hidden bg-[#0B241A] border border-[#63D6A2]/30 text-[#63D6A2] p-2 rounded-lg shadow-lg"
+        className="fixed top-[72px] left-4 z-40 md:hidden bg-[#1B3A2B] border border-[#A9BBA0]/30 text-[#A9BBA0] p-2 rounded-lg shadow-lg"
         onClick={() => setMobileOpen(!mobileOpen)}
         aria-label="Toggle business sidebar"
       >
@@ -150,7 +150,7 @@ export default function BusinessSidebar() {
       {/* Sidebar — desktop fixed, mobile slide-in */}
       <aside
         className={cn(
-          'fixed top-[72px] left-0 bottom-0 z-35 w-60 bg-[#0B241A] border-r border-[#63D6A2]/15 overflow-y-auto transition-transform duration-300',
+          'fixed top-[72px] left-0 bottom-0 z-35 w-60 bg-[#1B3A2B] border-r border-[#A9BBA0]/15 overflow-y-auto transition-transform duration-300',
           'md:translate-x-0 md:sticky md:top-[72px] md:h-[calc(100vh-72px)] md:shrink-0',
           mobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         )}

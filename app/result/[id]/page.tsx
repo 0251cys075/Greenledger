@@ -13,20 +13,20 @@ import { useTranslation, useLanguage } from '@/lib/i18n-context';
 function SourceTypeBadge({ type }: { type: string }) {
   const norm = type.toLowerCase();
   const configs: Record<string, { label: string; className: string }> = {
-    certification_registry: { label: 'Certification Registry', className: 'bg-[#4FAF78]/15 text-[#12382A] border border-[#4FAF78]/40' },
-    certification: { label: 'Certification Registry', className: 'bg-[#4FAF78]/15 text-[#12382A] border border-[#4FAF78]/40' },
-    third_party_audit: { label: 'Third-Party Audit', className: 'bg-[#0B241A] text-[#F3F0E8] border border-white/20' },
-    laboratory_report: { label: 'Laboratory Report', className: 'bg-[#12382A] text-[#63D6A2] border border-[#63D6A2]/30' },
-    esg_sustainability_report: { label: 'ESG / Sustainability Report', className: 'bg-[#12382A]/10 text-[#12382A] border border-[#12382A]/30' },
-    sustainability_report: { label: 'Sustainability Report', className: 'bg-[#12382A]/10 text-[#12382A] border border-[#12382A]/30' },
-    government_public_database: { label: 'Gov / Public Database', className: 'bg-[#D3A54A]/15 text-[#8B6414] border border-[#D3A54A]/40' },
-    environmental_standard: { label: 'Env. Standard', className: 'bg-[#D3A54A]/15 text-[#8B6414] border border-[#D3A54A]/40' },
-    regulatory: { label: 'Regulatory Database', className: 'bg-[#D3A54A]/15 text-[#8B6414] border border-[#D3A54A]/40' },
-    company_documentation: { label: 'Company Documentation', className: 'bg-[#E9E6DC] text-[#718078] border border-[#C8CEC5]' },
-    company_claim: { label: 'Company Documentation', className: 'bg-[#E9E6DC] text-[#718078] border border-[#C8CEC5]' },
-    marketing_material: { label: 'Marketing Material', className: 'bg-[#C95C5C]/15 text-[#962A2A] border border-[#C95C5C]/40' },
+    certification_registry: { label: 'Certification Registry', className: 'bg-[#3E7D4F]/15 text-[#315C45] border border-[#3E7D4F]/40' },
+    certification: { label: 'Certification Registry', className: 'bg-[#3E7D4F]/15 text-[#315C45] border border-[#3E7D4F]/40' },
+    third_party_audit: { label: 'Third-Party Audit', className: 'bg-[#1B3A2B] text-[#F7F5F0] border border-white/20' },
+    laboratory_report: { label: 'Laboratory Report', className: 'bg-[#315C45] text-[#A9BBA0] border border-[#A9BBA0]/30' },
+    esg_sustainability_report: { label: 'ESG / Sustainability Report', className: 'bg-[#315C45]/10 text-[#315C45] border border-[#315C45]/30' },
+    sustainability_report: { label: 'Sustainability Report', className: 'bg-[#315C45]/10 text-[#315C45] border border-[#315C45]/30' },
+    government_public_database: { label: 'Gov / Public Database', className: 'bg-[#C9A227]/15 text-[#8A6A1E] border border-[#C9A227]/40' },
+    environmental_standard: { label: 'Env. Standard', className: 'bg-[#C9A227]/15 text-[#8A6A1E] border border-[#C9A227]/40' },
+    regulatory: { label: 'Regulatory Database', className: 'bg-[#C9A227]/15 text-[#8A6A1E] border border-[#C9A227]/40' },
+    company_documentation: { label: 'Company Documentation', className: 'bg-[#EFECE4] text-[#718875] border border-[#D6D3C8]' },
+    company_claim: { label: 'Company Documentation', className: 'bg-[#EFECE4] text-[#718875] border border-[#D6D3C8]' },
+    marketing_material: { label: 'Marketing Material', className: 'bg-[#C1443E]/15 text-[#9E3B33] border border-[#C1443E]/40' },
   };
-  const cfg = configs[norm] || { label: type.replace(/_/g, ' '), className: 'bg-[#E9E6DC] text-[#718078] border border-[#C8CEC5]' };
+  const cfg = configs[norm] || { label: type.replace(/_/g, ' '), className: 'bg-[#EFECE4] text-[#718875] border border-[#D6D3C8]' };
   return (
     <span className={cn('text-[10px] font-mono font-semibold uppercase tracking-wider px-2 py-0.5 rounded', cfg.className)}>
       {cfg.label}
@@ -43,10 +43,10 @@ function ReliabilityBadge({ level }: { level?: string }) {
       className={cn(
         'text-[10px] font-mono font-semibold uppercase tracking-wider px-2 py-0.5 rounded border',
         isTier1
-          ? 'bg-[#4FAF78]/15 text-[#12382A] border-[#4FAF78]/40'
+          ? 'bg-[#3E7D4F]/15 text-[#315C45] border-[#3E7D4F]/40'
           : isTier2
-          ? 'bg-[#12382A] text-[#63D6A2] border-[#63D6A2]/30'
-          : 'bg-[#E9E6DC] text-[#718078] border-[#C8CEC5]'
+          ? 'bg-[#315C45] text-[#A9BBA0] border-[#A9BBA0]/30'
+          : 'bg-[#EFECE4] text-[#718875] border-[#D6D3C8]'
       )}
     >
       {isTier1 ? 'Tier 1 Certified' : isTier2 ? 'Tier 2 Audited' : 'Tier 3 Self-Reported'}
@@ -64,12 +64,12 @@ function ClaimMatchBadge({ match }: { match?: string }) {
       className={cn(
         'text-[10px] font-mono font-semibold uppercase tracking-wider px-2 py-0.5 rounded border',
         isConfirm
-          ? 'bg-[#4FAF78]/15 text-[#12382A] border-[#4FAF78]/40'
+          ? 'bg-[#3E7D4F]/15 text-[#315C45] border-[#3E7D4F]/40'
           : isContra
-          ? 'bg-[#C95C5C]/15 text-[#962A2A] border-[#C95C5C]/40'
+          ? 'bg-[#C1443E]/15 text-[#9E3B33] border-[#C1443E]/40'
           : isPartial
-          ? 'bg-[#D3A54A]/15 text-[#8B6414] border-[#D3A54A]/40'
-          : 'bg-[#E9E6DC] text-[#718078] border-[#C8CEC5]'
+          ? 'bg-[#C9A227]/15 text-[#8A6A1E] border-[#C9A227]/40'
+          : 'bg-[#EFECE4] text-[#718875] border-[#D6D3C8]'
       )}
     >
       {isConfirm ? '✓ Confirms Claim' : isContra ? '✕ Contradicts Claim' : isPartial ? '⚠ Partial Match' : '○ Insufficient Match'}
@@ -83,8 +83,8 @@ function IndependentBadge({ isIndependent }: { isIndependent: boolean }) {
       className={cn(
         'text-[10px] font-mono font-semibold uppercase tracking-wider px-2 py-0.5 rounded border',
         isIndependent
-          ? 'bg-[#4FAF78]/15 text-[#12382A] border-[#4FAF78]/40'
-          : 'bg-[#D3A54A]/15 text-[#8B6414] border-[#D3A54A]/40'
+          ? 'bg-[#3E7D4F]/15 text-[#315C45] border-[#3E7D4F]/40'
+          : 'bg-[#C9A227]/15 text-[#8A6A1E] border-[#C9A227]/40'
       )}
     >
       {isIndependent ? '✓ Third-Party Independent' : '⚠️ Self-Reported'}
@@ -194,20 +194,20 @@ export default function ResultPage() {
   const evidenceRecords = result.evidence_records || [];
 
   return (
-    <div className="min-h-screen bg-[#F3F0E8] pt-24 pb-24">
+    <div className="min-h-screen bg-[#F7F5F0] pt-24 pb-24">
       {/* Top Breadcrumb & Actions Bar */}
-      <div className="bg-[#E9E6DC] border-b border-[#C8CEC5] py-4 px-6 mb-10">
+      <div className="bg-[#EFECE4] border-b border-[#D6D3C8] py-4 px-6 mb-10">
         <div className="max-w-7xl mx-auto flex items-center justify-between flex-wrap gap-4">
           <Link
             href="/verify"
-            className="inline-flex items-center gap-2 text-xs font-mono font-semibold text-[#12382A] hover:text-[#0B241A] transition-colors"
+            className="inline-flex items-center gap-2 text-xs font-mono font-semibold text-[#315C45] hover:text-[#1B3A2B] transition-colors"
           >
             <ArrowLeft size={14} />
             {t('result.backToVerify')}
           </Link>
-          <div className="flex items-center gap-2 text-xs font-mono text-[#718078]">
+          <div className="flex items-center gap-2 text-xs font-mono text-[#718875]">
             <span>{t('result.recordId')}</span>
-            <span className="font-semibold text-[#102019] uppercase bg-[#FAF8F3] px-2 py-0.5 rounded border border-[#C8CEC5]">
+            <span className="font-semibold text-[#1C1C1C] uppercase bg-[#FCFAF5] px-2 py-0.5 rounded border border-[#D6D3C8]">
               GL-{result.id.toUpperCase()}-2024
             </span>
           </div>
@@ -219,77 +219,77 @@ export default function ResultPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
           {/* LEFT COLUMN: Product & Claim Information */}
           <div className="lg:col-span-4 space-y-6">
-            <div className="card-cream p-7 border-2 border-[#C8CEC5] shadow-sm">
-              <span className="text-[11px] font-mono font-semibold uppercase tracking-wider text-[#12382A] bg-[#E9E6DC] px-2 py-1 rounded inline-block mb-4">
+            <div className="card-cream p-7 border-2 border-[#D6D3C8] shadow-sm">
+              <span className="text-[11px] font-mono font-semibold uppercase tracking-wider text-[#315C45] bg-[#EFECE4] px-2 py-1 rounded inline-block mb-4">
                 {t('result.verifiedStatement')}
               </span>
-              <blockquote className="font-serif text-2xl sm:text-3xl text-[#102019] italic leading-snug mb-4">
+              <blockquote className="font-serif text-2xl sm:text-3xl text-[#1C1C1C] italic leading-snug mb-4">
                 &ldquo;{result.claim_text}&rdquo;
               </blockquote>
-              <div className="space-y-2 pt-4 border-t border-[#C8CEC5] text-xs font-mono text-[#718078]">
+              <div className="space-y-2 pt-4 border-t border-[#D6D3C8] text-xs font-mono text-[#718875]">
                 <div className="flex justify-between">
                   <span>{t('result.product')}</span>
-                  <span className="font-semibold text-[#102019]">{result.product_name || 'Verified Consumer Item'}</span>
+                  <span className="font-semibold text-[#1C1C1C]">{result.product_name || 'Verified Consumer Item'}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>{t('result.brand')}</span>
-                  <span className="font-semibold text-[#102019]">{result.brand || 'EcoHome Co.'}</span>
+                  <span className="font-semibold text-[#1C1C1C]">{result.brand || 'EcoHome Co.'}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>{t('result.category')}</span>
-                  <span className="font-semibold text-[#102019]">{result.category || 'Household & Packaging'}</span>
+                  <span className="font-semibold text-[#1C1C1C]">{result.category || 'Household & Packaging'}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>{t('result.verifiedOn')}</span>
-                  <span className="font-semibold text-[#102019]">{formatDate(result.verified_at)}</span>
+                  <span className="font-semibold text-[#1C1C1C]">{formatDate(result.verified_at)}</span>
                 </div>
               </div>
             </div>
 
             {/* Structured Claim Dimensions */}
             {result.structured_claim && (
-              <div className="card-cream p-5 border border-[#C8CEC5] space-y-2.5">
-                <div className="flex items-center justify-between pb-2 border-b border-[#C8CEC5]">
-                  <span className="text-[10px] font-mono font-semibold uppercase tracking-wider text-[#12382A]">
+              <div className="card-cream p-5 border border-[#D6D3C8] space-y-2.5">
+                <div className="flex items-center justify-between pb-2 border-b border-[#D6D3C8]">
+                  <span className="text-[10px] font-mono font-semibold uppercase tracking-wider text-[#315C45]">
                     {t('result.dimensionsTitle')}
                   </span>
-                  <span className="text-[10px] font-mono text-[#718078]">Claim Extraction</span>
+                  <span className="text-[10px] font-mono text-[#718875]">Claim Extraction</span>
                 </div>
                 <div className="space-y-1.5 text-xs font-mono">
                   {result.structured_claim.material && (
                     <div className="flex justify-between">
-                      <span className="text-[#718078]">{t('result.material')}</span>
-                      <span className="font-semibold text-[#102019] capitalize">{result.structured_claim.material}</span>
+                      <span className="text-[#718875]">{t('result.material')}</span>
+                      <span className="font-semibold text-[#1C1C1C] capitalize">{result.structured_claim.material}</span>
                     </div>
                   )}
                   {result.structured_claim.percentage !== undefined && (
                     <div className="flex justify-between">
-                      <span className="text-[#718078]">{t('result.percentage')}</span>
-                      <span className="font-semibold text-[#12382A]">{result.structured_claim.percentage}%</span>
+                      <span className="text-[#718875]">{t('result.percentage')}</span>
+                      <span className="font-semibold text-[#315C45]">{result.structured_claim.percentage}%</span>
                     </div>
                   )}
                   {result.structured_claim.environmentalAttribute && (
                     <div className="flex justify-between">
-                      <span className="text-[#718078]">{t('result.attribute')}</span>
-                      <span className="font-semibold text-[#102019] capitalize">{result.structured_claim.environmentalAttribute}</span>
+                      <span className="text-[#718875]">{t('result.attribute')}</span>
+                      <span className="font-semibold text-[#1C1C1C] capitalize">{result.structured_claim.environmentalAttribute}</span>
                     </div>
                   )}
                   {result.structured_claim.scope && (
                     <div className="flex justify-between">
-                      <span className="text-[#718078]">{t('result.scope')}</span>
-                      <span className="font-semibold text-[#102019] capitalize">{result.structured_claim.scope}</span>
+                      <span className="text-[#718875]">{t('result.scope')}</span>
+                      <span className="font-semibold text-[#1C1C1C] capitalize">{result.structured_claim.scope}</span>
                     </div>
                   )}
                   {result.structured_claim.certificationMentioned && (
                     <div className="flex justify-between">
-                      <span className="text-[#718078]">{t('result.certification')}</span>
-                      <span className="font-semibold text-[#102019]">{result.structured_claim.certificationMentioned}</span>
+                      <span className="text-[#718875]">{t('result.certification')}</span>
+                      <span className="font-semibold text-[#1C1C1C]">{result.structured_claim.certificationMentioned}</span>
                     </div>
                   )}
                   {result.structured_claim.measurableMetric && (
                     <div className="flex justify-between">
-                      <span className="text-[#718078]">{t('result.measurableMetric')}</span>
-                      <span className="font-semibold text-[#12382A]">{result.structured_claim.measurableMetric}</span>
+                      <span className="text-[#718875]">{t('result.measurableMetric')}</span>
+                      <span className="font-semibold text-[#315C45]">{result.structured_claim.measurableMetric}</span>
                     </div>
                   )}
                 </div>
@@ -297,12 +297,12 @@ export default function ResultPage() {
             )}
 
             {/* Evidence Strength Meter */}
-            <div className="card-cream p-6 border border-[#C8CEC5]">
+            <div className="card-cream p-6 border border-[#D6D3C8]">
               <EvidenceStrengthBar strength={result.evidence_strength} />
             </div>
 
             {/* Actions card */}
-            <div className="card-cream p-6 border border-[#C8CEC5] space-y-3">
+            <div className="card-cream p-6 border border-[#D6D3C8] space-y-3">
               <Link href={`/evidence/${id}`} className="btn-primary w-full justify-center">
                 <BookOpen size={16} />
                 {t('result.viewEsgEvidence')}
@@ -312,7 +312,7 @@ export default function ResultPage() {
                 {saved ? 'Audit Record Saved!' : t('result.savePdf')}
               </button>
               <button onClick={handleShare} className="btn-secondary w-full justify-center">
-                {copied ? <Check size={16} className="text-[#4FAF78]" /> : <Share2 size={16} />}
+                {copied ? <Check size={16} className="text-[#3E7D4F]" /> : <Share2 size={16} />}
                 {copied ? 'Verification Link Copied!' : t('result.share')}
               </button>
               <Link
@@ -331,32 +331,32 @@ export default function ResultPage() {
             <StatusHero status={result.status} />
 
             {/* Evidence Assessment Table */}
-            <div className="card-cream p-6 sm:p-8 border border-[#C8CEC5]">
-              <div className="flex items-center justify-between mb-6 pb-3 border-b border-[#C8CEC5]">
-                <h2 className="font-serif text-xl text-[#102019]">Evidence Assessment</h2>
-                <span className="text-xs font-mono text-[#718078]">Audit Dimensions</span>
+            <div className="card-cream p-6 sm:p-8 border border-[#D6D3C8]">
+              <div className="flex items-center justify-between mb-6 pb-3 border-b border-[#D6D3C8]">
+                <h2 className="font-serif text-xl text-[#1C1C1C]">Evidence Assessment</h2>
+                <span className="text-xs font-mono text-[#718875]">Audit Dimensions</span>
               </div>
 
               <div className="space-y-4">
                 {result.evidence_assessment.map((item, i) => (
                   <div
                     key={i}
-                    className="flex items-start justify-between p-4 rounded-xl bg-[#FAF8F3] border border-[#C8CEC5] gap-4"
+                    className="flex items-start justify-between p-4 rounded-xl bg-[#FCFAF5] border border-[#D6D3C8] gap-4"
                   >
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-[#102019] mb-1">{item.label}</p>
+                      <p className="text-sm font-semibold text-[#1C1C1C] mb-1">{item.label}</p>
                       {item.detail && (
-                        <p className="text-xs text-[#718078] leading-relaxed">{item.detail}</p>
+                        <p className="text-xs text-[#718875] leading-relaxed">{item.detail}</p>
                       )}
                     </div>
                     <span
                       className={cn(
                         'w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold font-mono flex-shrink-0',
                         item.status === 'PASS'
-                          ? 'bg-[#4FAF78]/20 text-[#12382A]'
+                          ? 'bg-[#3E7D4F]/20 text-[#315C45]'
                           : item.status === 'WARN'
-                          ? 'bg-[#D3A54A]/20 text-[#8B6414]'
-                          : 'bg-[#C95C5C]/20 text-[#962A2A]'
+                          ? 'bg-[#C9A227]/20 text-[#8A6A1E]'
+                          : 'bg-[#C1443E]/20 text-[#9E3B33]'
                       )}
                       aria-label={`${item.label}: ${item.status}`}
                     >
@@ -369,18 +369,18 @@ export default function ResultPage() {
 
             {/* Defensible Rules Engine Audit Trail */}
             {result.audit_trail && (
-              <div className="card-cream p-6 sm:p-8 border border-[#C8CEC5]">
-                <div className="flex items-center justify-between mb-4 pb-3 border-b border-[#C8CEC5]">
+              <div className="card-cream p-6 sm:p-8 border border-[#D6D3C8]">
+                <div className="flex items-center justify-between mb-4 pb-3 border-b border-[#D6D3C8]">
                   <div>
-                    <h3 className="font-serif text-xl text-[#102019] flex items-center gap-2">
-                      <ShieldCheck size={20} className="text-[#12382A]" />
+                    <h3 className="font-serif text-xl text-[#1C1C1C] flex items-center gap-2">
+                      <ShieldCheck size={20} className="text-[#315C45]" />
                       Audit Trail: Rules Triggered
                     </h3>
-                    <p className="text-xs text-[#718078] mt-0.5">
+                    <p className="text-xs text-[#718875] mt-0.5">
                       Deterministic verification — zero AI opinion, strictly rules-based evaluation
                     </p>
                   </div>
-                  <span className="text-[10px] font-mono font-semibold uppercase px-2 py-0.5 rounded bg-[#E9E6DC] text-[#12382A]">
+                  <span className="text-[10px] font-mono font-semibold uppercase px-2 py-0.5 rounded bg-[#EFECE4] text-[#315C45]">
                     {result.audit_trail.rulesTriggered.length} Rules Evaluated
                   </span>
                 </div>
@@ -389,25 +389,25 @@ export default function ResultPage() {
                   {result.audit_trail.rulesTriggered.map((rule) => (
                     <div
                       key={rule.ruleId}
-                      className="p-3.5 rounded-xl bg-[#FAF8F3] border border-[#C8CEC5] flex items-start justify-between gap-4"
+                      className="p-3.5 rounded-xl bg-[#FCFAF5] border border-[#D6D3C8] flex items-start justify-between gap-4"
                     >
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="text-[10px] font-mono font-semibold px-1.5 py-0.5 rounded bg-[#E9E6DC] text-[#102019]">
+                          <span className="text-[10px] font-mono font-semibold px-1.5 py-0.5 rounded bg-[#EFECE4] text-[#1C1C1C]">
                             {rule.ruleId}
                           </span>
-                          <span className="text-xs font-semibold text-[#102019]">{rule.ruleName}</span>
+                          <span className="text-xs font-semibold text-[#1C1C1C]">{rule.ruleName}</span>
                         </div>
-                        <p className="text-xs text-[#718078] leading-relaxed">{rule.description}</p>
+                        <p className="text-xs text-[#718875] leading-relaxed">{rule.description}</p>
                       </div>
                       <span
                         className={cn(
                           'text-[10px] font-mono font-semibold px-2 py-1 rounded flex-shrink-0 uppercase',
                           rule.passed
-                            ? 'bg-[#4FAF78]/15 text-[#12382A] border border-[#4FAF78]/30'
+                            ? 'bg-[#3E7D4F]/15 text-[#315C45] border border-[#3E7D4F]/30'
                             : rule.severity === 'CRITICAL'
-                            ? 'bg-[#C95C5C]/15 text-[#962A2A] border border-[#C95C5C]/30'
-                            : 'bg-[#D3A54A]/15 text-[#8B6414] border border-[#D3A54A]/30'
+                            ? 'bg-[#C1443E]/15 text-[#9E3B33] border border-[#C1443E]/30'
+                            : 'bg-[#C9A227]/15 text-[#8A6A1E] border border-[#C9A227]/30'
                         )}
                       >
                         {rule.passed ? '✓ PASSED' : '✕ FLAGGED'}
@@ -416,7 +416,7 @@ export default function ResultPage() {
                   ))}
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-[#C8CEC5] flex items-center justify-between text-[10px] font-mono text-[#718078]">
+                <div className="mt-4 pt-3 border-t border-[#D6D3C8] flex items-center justify-between text-[10px] font-mono text-[#718875]">
                   <span>Defensible Audit Trail Recorded</span>
                   <span>Timestamp: {formatDate(result.audit_trail.timestamp)}</span>
                 </div>
@@ -432,38 +432,38 @@ export default function ResultPage() {
 
               return (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="p-6 rounded-xl bg-[#FAF8F3] border border-[#C8CEC5]">
+                  <div className="p-6 rounded-xl bg-[#FCFAF5] border border-[#D6D3C8]">
                     <div className="flex items-center justify-between mb-2 gap-2 flex-wrap">
-                      <h3 className="font-serif text-lg text-[#102019] flex items-center gap-2">
-                        <ShieldCheck size={18} className="text-[#12382A]" />
+                      <h3 className="font-serif text-lg text-[#1C1C1C] flex items-center gap-2">
+                        <ShieldCheck size={18} className="text-[#315C45]" />
                         Why GreenLedger Gave This Result
                       </h3>
                       <button
                         type="button"
                         onClick={() => handleSpeak(localizedExplanation)}
-                        className="inline-flex items-center gap-1.5 text-xs font-mono text-[#12382A] hover:text-[#0B241A] font-semibold bg-[#E9E6DC] px-2.5 py-1 rounded-lg border border-[#C8CEC5] transition-colors cursor-pointer"
+                        className="inline-flex items-center gap-1.5 text-xs font-mono text-[#315C45] hover:text-[#1B3A2B] font-semibold bg-[#EFECE4] px-2.5 py-1 rounded-lg border border-[#D6D3C8] transition-colors cursor-pointer"
                         title="Listen to localized explanation"
                       >
-                        <Volume2 size={13} className={cn("text-[#12382A]", speaking && "animate-pulse text-[#4FAF78]")} />
+                        <Volume2 size={13} className={cn("text-[#315C45]", speaking && "animate-pulse text-[#3E7D4F]")} />
                         {t('result.listenAudio')}
                       </button>
                     </div>
-                    <p className="text-xs sm:text-sm text-[#102019]/90 leading-relaxed font-light">
+                    <p className="text-xs sm:text-sm text-[#1C1C1C]/90 leading-relaxed font-light">
                       {localizedExplanation}
                     </p>
                     {result.reason && result.reason !== localizedExplanation && (
-                      <p className="text-[11px] text-[#718078] mt-3 pt-2.5 border-t border-[#C8CEC5]/50 italic">
+                      <p className="text-[11px] text-[#718875] mt-3 pt-2.5 border-t border-[#D6D3C8]/50 italic">
                         Original audit rationale: {result.reason}
                       </p>
                     )}
                   </div>
 
-                  <div className="p-6 rounded-xl bg-[#FAF8F3] border border-[#C8CEC5]">
-                    <h3 className="font-serif text-lg text-[#102019] mb-2 flex items-center gap-2">
-                      <AlertCircle size={18} className="text-[#D3A54A]" />
+                  <div className="p-6 rounded-xl bg-[#FCFAF5] border border-[#D6D3C8]">
+                    <h3 className="font-serif text-lg text-[#1C1C1C] mb-2 flex items-center gap-2">
+                      <AlertCircle size={18} className="text-[#C9A227]" />
                       What Would Change This?
                     </h3>
-                    <p className="text-xs sm:text-sm text-[#102019]/85 leading-relaxed font-light">
+                    <p className="text-xs sm:text-sm text-[#1C1C1C]/85 leading-relaxed font-light">
                       {result.what_is_missing}
                     </p>
                   </div>
@@ -473,10 +473,10 @@ export default function ResultPage() {
 
             {/* Sources Consulted */}
             {(evidenceRecords.length > 0 || result.sources.length > 0) && (
-              <div className="card-cream p-6 sm:p-8 border border-[#C8CEC5]">
-                <div className="flex items-center justify-between mb-5 pb-3 border-b border-[#C8CEC5]">
-                  <h3 className="font-serif text-xl text-[#102019]">Audited Evidence Sources</h3>
-                  <span className="text-xs font-mono text-[#718078]">
+              <div className="card-cream p-6 sm:p-8 border border-[#D6D3C8]">
+                <div className="flex items-center justify-between mb-5 pb-3 border-b border-[#D6D3C8]">
+                  <h3 className="font-serif text-xl text-[#1C1C1C]">Audited Evidence Sources</h3>
+                  <span className="text-xs font-mono text-[#718875]">
                     {evidenceRecords.length || result.sources.length} Evidence Records
                   </span>
                 </div>
@@ -486,21 +486,21 @@ export default function ResultPage() {
                     ? evidenceRecords.map((record) => (
                         <div
                           key={record.id || record.sourceName}
-                          className="p-4 rounded-xl bg-[#FAF8F3] border border-[#C8CEC5] flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                          className="p-4 rounded-xl bg-[#FCFAF5] border border-[#D6D3C8] flex flex-col sm:flex-row sm:items-center justify-between gap-4"
                         >
                           <div className="flex-1">
                             <div className="flex flex-wrap items-center gap-2 mb-2">
-                              <span className="font-semibold text-sm text-[#102019]">{record.sourceName}</span>
+                              <span className="font-semibold text-sm text-[#1C1C1C]">{record.sourceName}</span>
                               <SourceTypeBadge type={record.sourceType} />
                               <ReliabilityBadge level={record.reliabilityLevel} />
                               <ClaimMatchBadge match={record.claimMatch} />
                             </div>
                             {record.evidenceText && (
-                              <p className="text-xs text-[#718078] italic leading-relaxed border-l-2 border-[#12382A]/30 pl-2.5 my-1.5">
+                              <p className="text-xs text-[#718875] italic leading-relaxed border-l-2 border-[#315C45]/30 pl-2.5 my-1.5">
                                 &ldquo;{record.evidenceText}&rdquo;
                               </p>
                             )}
-                            <div className="flex flex-wrap items-center gap-4 text-[10px] font-mono text-[#718078] mt-1">
+                            <div className="flex flex-wrap items-center gap-4 text-[10px] font-mono text-[#718875] mt-1">
                               <span>Published: {formatDate(record.publicationDate)}</span>
                               <span>Verified: {formatDate(record.verificationDate)}</span>
                               {record.productMatch && (
@@ -515,7 +515,7 @@ export default function ResultPage() {
                                 href={record.sourceURL}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-xs text-[#12382A] hover:text-[#0B241A] font-semibold flex items-center gap-1 underline"
+                                className="text-xs text-[#315C45] hover:text-[#1B3A2B] font-semibold flex items-center gap-1 underline"
                               >
                                 {t('result.viewOriginalSource')} <ExternalLink size={11} />
                               </a>
@@ -526,26 +526,26 @@ export default function ResultPage() {
                     : result.sources.map((source) => (
                         <div
                           key={source.id}
-                          className="p-4 rounded-xl bg-[#FAF8F3] border border-[#C8CEC5] flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                          className="p-4 rounded-xl bg-[#FCFAF5] border border-[#D6D3C8] flex flex-col sm:flex-row sm:items-center justify-between gap-4"
                         >
                           <div className="flex-1">
                             <div className="flex flex-wrap items-center gap-2 mb-2">
-                              <span className="font-semibold text-sm text-[#102019]">{source.source_name}</span>
+                              <span className="font-semibold text-sm text-[#1C1C1C]">{source.source_name}</span>
                               <SourceTypeBadge type={source.source_type} />
                               <IndependentBadge isIndependent={source.is_independent} />
                             </div>
                             {source.excerpt && (
-                              <p className="text-xs text-[#718078] italic leading-relaxed border-l-2 border-[#12382A]/30 pl-2.5 my-1.5">
+                              <p className="text-xs text-[#718875] italic leading-relaxed border-l-2 border-[#315C45]/30 pl-2.5 my-1.5">
                                 &ldquo;{source.excerpt}&rdquo;
                               </p>
                             )}
-                            <span className="text-[10px] font-mono text-[#718078]">
+                            <span className="text-[10px] font-mono text-[#718875]">
                               Published / Verified: {formatDate(source.source_date)}
                             </span>
                           </div>
 
                           <div className="flex items-center gap-3 flex-shrink-0">
-                            <span className="text-[10px] font-mono font-semibold px-2 py-1 rounded bg-[#E9E6DC] text-[#12382A]">
+                            <span className="text-[10px] font-mono font-semibold px-2 py-1 rounded bg-[#EFECE4] text-[#315C45]">
                               {source.relevance} Relevance
                             </span>
                             {source.source_url && source.source_url !== '#' && (
@@ -553,7 +553,7 @@ export default function ResultPage() {
                                 href={source.source_url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-xs text-[#12382A] hover:text-[#0B241A] font-semibold flex items-center gap-1 underline"
+                                className="text-xs text-[#315C45] hover:text-[#1B3A2B] font-semibold flex items-center gap-1 underline"
                               >
                                 View Source <ExternalLink size={11} />
                               </a>

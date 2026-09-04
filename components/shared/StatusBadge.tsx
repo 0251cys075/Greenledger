@@ -18,31 +18,31 @@ export function StatusBadge({ status, size = 'md', showIcon = true, className, t
 
   const configsLight = {
     VERIFIED: {
-      base: 'bg-[#4FAF78]/15 border border-[#4FAF78]/40 text-[#12382A]',
-      dot: 'bg-[#4FAF78]',
+      base: 'bg-[#3E7D4F]/15 border border-[#3E7D4F]/40 text-[#315C45]',
+      dot: 'bg-[#3E7D4F]',
     },
     INSUFFICIENT_EVIDENCE: {
-      base: 'bg-[#D3A54A]/15 border border-[#D3A54A]/40 text-[#8B6414]',
-      dot: 'bg-[#D3A54A]',
+      base: 'bg-[#C9A227]/15 border border-[#C9A227]/40 text-[#8A6A1E]',
+      dot: 'bg-[#C9A227]',
     },
     POTENTIAL_GREENWASHING: {
-      base: 'bg-[#C95C5C]/15 border border-[#C95C5C]/40 text-[#962A2A]',
-      dot: 'bg-[#C95C5C]',
+      base: 'bg-[#C1443E]/15 border border-[#C1443E]/40 text-[#9E3B33]',
+      dot: 'bg-[#C1443E]',
     },
   };
 
   const configsDark = {
     VERIFIED: {
-      base: 'bg-[#4FAF78]/20 border border-[#4FAF78]/50 text-[#86efac]',
-      dot: 'bg-[#4FAF78]',
+      base: 'bg-[#3E7D4F]/20 border border-[#3E7D4F]/50 text-[#A3C9A9]',
+      dot: 'bg-[#3E7D4F]',
     },
     INSUFFICIENT_EVIDENCE: {
-      base: 'bg-[#D3A54A]/20 border border-[#D3A54A]/50 text-[#fde047]',
-      dot: 'bg-[#D3A54A]',
+      base: 'bg-[#C9A227]/20 border border-[#C9A227]/50 text-[#E4C25C]',
+      dot: 'bg-[#C9A227]',
     },
     POTENTIAL_GREENWASHING: {
-      base: 'bg-[#C95C5C]/20 border border-[#C95C5C]/50 text-[#fca5a5]',
-      dot: 'bg-[#C95C5C]',
+      base: 'bg-[#C1443E]/20 border border-[#C1443E]/50 text-[#E4A29C]',
+      dot: 'bg-[#C1443E]',
     },
   };
 
@@ -91,33 +91,33 @@ export function StatusHero({ status, className, isDarkTheme = false }: StatusHer
   const configs = {
     VERIFIED: {
       wrapper: isDarkTheme
-        ? 'bg-[#12382A] border-2 border-[#4FAF78]/50 text-[#F3F0E8]'
-        : 'bg-[#4FAF78]/10 border-2 border-[#4FAF78]/40 text-[#0B241A]',
+        ? 'bg-[#315C45] border-2 border-[#3E7D4F]/50 text-[#F7F5F0]'
+        : 'bg-[#3E7D4F]/10 border-2 border-[#3E7D4F]/40 text-[#1B3A2B]',
       icon: '✓',
-      iconBg: 'bg-[#4FAF78] text-[#0B241A]',
+      iconBg: 'bg-[#3E7D4F] text-[#1B3A2B]',
       defaultDesc: 'Available reliable public evidence sufficiently supports this claim.',
-      textColor: isDarkTheme ? 'text-[#F3F0E8]' : 'text-[#0B241A]',
-      labelColor: isDarkTheme ? 'text-[#86efac]' : 'text-[#12382A]',
+      textColor: isDarkTheme ? 'text-[#F7F5F0]' : 'text-[#1B3A2B]',
+      labelColor: isDarkTheme ? 'text-[#A3C9A9]' : 'text-[#315C45]',
     },
     INSUFFICIENT_EVIDENCE: {
       wrapper: isDarkTheme
-        ? 'bg-[#182c23] border-2 border-[#D3A54A]/50 text-[#F3F0E8]'
-        : 'bg-[#D3A54A]/10 border-2 border-[#D3A54A]/40 text-[#102019]',
+        ? 'bg-[#243F2E] border-2 border-[#C9A227]/50 text-[#F7F5F0]'
+        : 'bg-[#C9A227]/10 border-2 border-[#C9A227]/40 text-[#1C1C1C]',
       icon: '⚠',
-      iconBg: 'bg-[#D3A54A] text-[#0B241A]',
+      iconBg: 'bg-[#C9A227] text-[#1B3A2B]',
       defaultDesc: 'There is not enough reliable public evidence to confidently verify this claim.',
-      textColor: isDarkTheme ? 'text-[#F3F0E8]' : 'text-[#102019]',
-      labelColor: isDarkTheme ? 'text-[#fde047]' : 'text-[#8B6414]',
+      textColor: isDarkTheme ? 'text-[#F7F5F0]' : 'text-[#1C1C1C]',
+      labelColor: isDarkTheme ? 'text-[#E4C25C]' : 'text-[#8A6A1E]',
     },
     POTENTIAL_GREENWASHING: {
       wrapper: isDarkTheme
-        ? 'bg-[#211818] border-2 border-[#C95C5C]/50 text-[#F3F0E8]'
-        : 'bg-[#C95C5C]/10 border-2 border-[#C95C5C]/40 text-[#102019]',
+        ? 'bg-[#3A2420] border-2 border-[#C1443E]/50 text-[#F7F5F0]'
+        : 'bg-[#C1443E]/10 border-2 border-[#C1443E]/40 text-[#1C1C1C]',
       icon: '✕',
-      iconBg: 'bg-[#C95C5C] text-white',
+      iconBg: 'bg-[#C1443E] text-white',
       defaultDesc: 'The claim appears vague, unsupported, or inconsistent with available evidence.',
-      textColor: isDarkTheme ? 'text-[#F3F0E8]' : 'text-[#102019]',
-      labelColor: isDarkTheme ? 'text-[#fca5a5]' : 'text-[#962A2A]',
+      textColor: isDarkTheme ? 'text-[#F7F5F0]' : 'text-[#1C1C1C]',
+      labelColor: isDarkTheme ? 'text-[#E4A29C]' : 'text-[#9E3B33]',
     },
   };
 
@@ -140,13 +140,13 @@ export function StatusHero({ status, className, isDarkTheme = false }: StatusHer
             <span className={cn('text-xs font-mono font-bold tracking-widest uppercase', cfg.labelColor)}>
               Verdict
             </span>
-            <span className="text-xs text-[#718078]">•</span>
-            <span className="text-xs font-mono text-[#718078]">Audit Status</span>
+            <span className="text-xs text-[#718875]">•</span>
+            <span className="text-xs font-mono text-[#718875]">Audit Status</span>
           </div>
           <h2 className={cn('text-2xl sm:text-3xl font-serif font-bold tracking-tight mt-1 mb-2', cfg.textColor)}>
             {label}
           </h2>
-          <p className={cn('text-sm sm:text-base leading-relaxed', isDarkTheme ? 'text-[#C8CEC5]' : 'text-[#4A5550]')}>
+          <p className={cn('text-sm sm:text-base leading-relaxed', isDarkTheme ? 'text-[#D6D3C8]' : 'text-[#5A6660]')}>
             {description || cfg.defaultDesc}
           </p>
         </div>
@@ -167,25 +167,25 @@ export function EvidenceStrengthBar({ strength, className, isDarkTheme = false }
     STRONG: {
       percentage: 85,
       label: 'Strong Evidence',
-      color: 'bg-[#4FAF78]',
+      color: 'bg-[#3E7D4F]',
       desc: 'Multiple verified independent sources, public databases, or accredited certifications.',
     },
     MODERATE: {
       percentage: 55,
       label: 'Moderate Evidence',
-      color: 'bg-[#D3A54A]',
+      color: 'bg-[#C9A227]',
       desc: 'Some verified data, but relying partly on self-reported corporate disclosures.',
     },
     WEAK: {
       percentage: 20,
       label: 'Weak Evidence',
-      color: 'bg-[#C95C5C]',
+      color: 'bg-[#C1443E]',
       desc: 'Unsubstantiated claim, vague terminology, or contradictory public findings.',
     },
     NONE: {
       percentage: 5,
       label: 'No Evidence',
-      color: 'bg-[#718078]',
+      color: 'bg-[#718875]',
       desc: 'No public records, certifications, or corroborating disclosures found.',
     },
   };
@@ -195,16 +195,16 @@ export function EvidenceStrengthBar({ strength, className, isDarkTheme = false }
   return (
     <div className={cn('space-y-2', className)}>
       <div className="flex items-center justify-between text-xs font-mono">
-        <span className={isDarkTheme ? 'text-[#C8CEC5]' : 'text-[#718078]'}>Evidence Quality</span>
-        <span className={cn('font-bold', isDarkTheme ? 'text-[#F3F0E8]' : 'text-[#102019]')}>{cfg.label}</span>
+        <span className={isDarkTheme ? 'text-[#D6D3C8]' : 'text-[#718875]'}>Evidence Quality</span>
+        <span className={cn('font-bold', isDarkTheme ? 'text-[#F7F5F0]' : 'text-[#1C1C1C]')}>{cfg.label}</span>
       </div>
-      <div className={cn('h-2 rounded-full overflow-hidden', isDarkTheme ? 'bg-white/10' : 'bg-[#C8CEC5]/40')}>
+      <div className={cn('h-2 rounded-full overflow-hidden', isDarkTheme ? 'bg-white/10' : 'bg-[#D6D3C8]/40')}>
         <div
           className={cn('h-full transition-all duration-700 ease-out rounded-full', cfg.color)}
           style={{ width: `${cfg.percentage}%` }}
         />
       </div>
-      <p className={cn('text-[11px] leading-relaxed', isDarkTheme ? 'text-[#C8CEC5]/80' : 'text-[#718078]')}>
+      <p className={cn('text-[11px] leading-relaxed', isDarkTheme ? 'text-[#D6D3C8]/80' : 'text-[#718875]')}>
         {cfg.desc}
       </p>
     </div>

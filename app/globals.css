@@ -4,39 +4,29 @@
 
 /* ============================================================
    GreenLedger — Design System
-   Premium Climate-Tech + Trust & Verification Platform
+   Premium Environmental Certification + Audit + Editorial
    ============================================================ */
 
 @theme {
-  /* Core Brand Colors */
-  --color-forest-primary: #0B241A;
-  --color-forest-secondary: #12382A;
-  --color-forest-dark: #071710;
-  --color-forest-card: #0e2b1f;
+  /* Paper / Warm Neutrals */
+  --color-paper: #F7F5F0;
+  --color-cream: #EFECE4;
+  --color-card: #FCFAF5;
+  --color-charcoal: #1C1C1C;
 
-  /* Accent Colors */
-  --color-mint-accent: #63D6A2;
-  --color-mint-muted: #4fa376;
-  --color-mint-subtle: rgba(99, 214, 162, 0.12);
-
-  /* Backgrounds */
-  --color-cream-light: #F3F0E8;
-  --color-beige-soft: #E9E6DC;
-  --color-cream-card: #FAF8F3;
-
-  /* Typography & Neutrals */
-  --color-text-dark: #102019;
-  --color-text-muted: #718078;
-  --color-text-subtle: #98A49D;
-  --color-border-light: #C8CEC5;
-  --color-border-dark: rgba(99, 214, 162, 0.18);
+  /* Structural Greens (accent, not overwhelming) */
+  --color-forest: #1B3A2B;
+  --color-forest-mid: #315C45;
+  --color-forest-deep: #122619;
+  --color-sage: #718875;
+  --color-sage-light: #A9BBA0;
 
   /* Semantic Verification Colors */
-  --color-status-verified: #4FAF78;
-  --color-status-insufficient: #D3A54A;
-  --color-status-greenwashing: #C95C5C;
+  --color-status-verified: #3E7D4F;
+  --color-status-insufficient: #C9A227;
+  --color-status-greenwashing: #C1443E;
 
-  /* Fonts */
+  /* Typography */
   --font-serif: "DM Serif Display", Georgia, serif;
   --font-sans: Inter, Manrope, system-ui, sans-serif;
 }
@@ -53,8 +43,8 @@ html {
 }
 
 body {
-  background-color: #F3F0E8;
-  color: #102019;
+  background-color: #F7F5F0;
+  color: #1C1C1C;
   font-family: Inter, Manrope, system-ui, sans-serif;
   line-height: 1.6;
 }
@@ -69,81 +59,81 @@ body {
 
 .hero-overlay {
   background: linear-gradient(
-    165deg,
-    rgba(7, 23, 16, 0.90) 0%,
-    rgba(11, 36, 26, 0.82) 45%,
-    rgba(18, 56, 42, 0.72) 100%
+    150deg,
+    rgba(18, 38, 25, 0.96) 0%,
+    rgba(27, 58, 43, 0.90) 40%,
+    rgba(49, 92, 69, 0.72) 100%
   );
 }
 
-/* ── Section Backgrounds (Dark / Light Rhythm) ───────────── */
+/* ── Section Backgrounds (Light rhythm, green as accent) ─── */
 
-.section-dark-forest {
-  background-color: #0B241A;
-  color: #F3F0E8;
+.section-paper {
+  background-color: #F7F5F0;
+  color: #1C1C1C;
 }
 
-.section-dark-emerald {
-  background-color: #12382A;
-  color: #F3F0E8;
+.section-cream {
+  background-color: #EFECE4;
+  color: #1C1C1C;
 }
 
-.section-warm-cream {
-  background-color: #F3F0E8;
-  color: #102019;
+.section-forest {
+  background-color: #1B3A2B;
+  color: #F7F5F0;
 }
 
-.section-soft-beige {
-  background-color: #E9E6DC;
-  color: #102019;
+.section-forest-mid {
+  background-color: #315C45;
+  color: #F7F5F0;
 }
 
-.section-deepest-forest {
-  background-color: #071710;
-  color: #F3F0E8;
+.section-forest-deep {
+  background-color: #122619;
+  color: #F7F5F0;
 }
 
 /* ── Cards ────────────────────────────────────────────────── */
 
 .card-cream {
-  background: #FAF8F3;
-  border: 1px solid #C8CEC5;
+  background: #FCFAF5;
+  border: 1px solid #D6D3C8;
   border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(16, 32, 25, 0.05), 0 1px 2px rgba(16, 32, 25, 0.03);
+  box-shadow: 0 1px 3px rgba(28, 28, 28, 0.04), 0 1px 2px rgba(28, 28, 28, 0.02);
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .card-cream:hover {
-  border-color: #98A49D;
-  box-shadow: 0 6px 20px rgba(11, 36, 26, 0.08);
+  border-color: #A8B3AA;
+  box-shadow: 0 6px 20px rgba(27, 58, 43, 0.08);
 }
 
 .card-dark {
-  background: #12382A;
-  border: 1px solid rgba(99, 214, 162, 0.16);
+  background: #315C45;
+  border: 1px solid rgba(169, 187, 160, 0.16);
   border-radius: 12px;
-  color: #F3F0E8;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  color: #F7F5F0;
+  box-shadow: 0 4px 20px rgba(18, 38, 25, 0.25);
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .card-dark:hover {
-  border-color: rgba(99, 214, 162, 0.35);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+  border-color: rgba(169, 187, 160, 0.35);
+  box-shadow: 0 8px 30px rgba(18, 38, 25, 0.35);
 }
 
 .card-dark-subtle {
-  background: rgba(18, 56, 42, 0.7);
-  border: 1px solid rgba(99, 214, 162, 0.14);
+  background: rgba(49, 92, 69, 0.7);
+  border: 1px solid rgba(169, 187, 160, 0.14);
   border-radius: 12px;
 }
 
 /* ── Buttons ──────────────────────────────────────────────── */
 
 .btn-primary {
-  background: #0B241A;
-  color: #F3F0E8;
-  border: 1px solid #12382A;
+  background: #1B3A2B;
+  color: #F7F5F0;
+  border: 1px solid #315C45;
   border-radius: 8px;
   padding: 11px 24px;
   font-family: Inter, sans-serif;
@@ -159,17 +149,17 @@ body {
 }
 
 .btn-primary:hover {
-  background: #12382A;
-  border-color: #63D6A2;
-  color: #63D6A2;
-  box-shadow: 0 4px 18px rgba(11, 36, 26, 0.35);
+  background: #315C45;
+  border-color: #A9BBA0;
+  color: #A9BBA0;
+  box-shadow: 0 4px 18px rgba(27, 58, 43, 0.35);
   transform: translateY(-1px);
 }
 
 .btn-mint {
-  background: #63D6A2;
-  color: #0B241A;
-  border: 1px solid #63D6A2;
+  background: #A9BBA0;
+  color: #1B3A2B;
+  border: 1px solid #A9BBA0;
   border-radius: 8px;
   padding: 11px 24px;
   font-family: Inter, sans-serif;
@@ -185,15 +175,15 @@ body {
 }
 
 .btn-mint:hover {
-  background: #7eedb8;
-  box-shadow: 0 4px 20px rgba(99, 214, 162, 0.35);
+  background: #BDCCB2;
+  box-shadow: 0 4px 20px rgba(169, 187, 160, 0.35);
   transform: translateY(-1px);
 }
 
 .btn-secondary {
   background: transparent;
-  color: #0B241A;
-  border: 1.5px solid #0B241A;
+  color: #1C1C1C;
+  border: 1.5px solid #1B3A2B;
   border-radius: 8px;
   padding: 10px 22px;
   font-family: Inter, sans-serif;
@@ -208,14 +198,14 @@ body {
 }
 
 .btn-secondary:hover {
-  background: #0B241A;
-  color: #F3F0E8;
+  background: #1B3A2B;
+  color: #F7F5F0;
 }
 
 .btn-secondary-dark {
   background: transparent;
-  color: #F3F0E8;
-  border: 1.5px solid rgba(243, 240, 232, 0.35);
+  color: #F7F5F0;
+  border: 1.5px solid rgba(247, 245, 240, 0.35);
   border-radius: 8px;
   padding: 10px 22px;
   font-family: Inter, sans-serif;
@@ -230,15 +220,15 @@ body {
 }
 
 .btn-secondary-dark:hover {
-  border-color: #63D6A2;
-  color: #63D6A2;
-  background: rgba(99, 214, 162, 0.08);
+  border-color: #A9BBA0;
+  color: #A9BBA0;
+  background: rgba(169, 187, 160, 0.08);
 }
 
 .btn-ghost {
   background: transparent;
-  color: #718078;
-  border: 1px solid #C8CEC5;
+  color: #718875;
+  border: 1px solid #D6D3C8;
   border-radius: 8px;
   padding: 10px 18px;
   font-size: 0.875rem;
@@ -252,9 +242,9 @@ body {
 }
 
 .btn-ghost:hover {
-  border-color: #0B241A;
-  color: #0B241A;
-  background: #E9E6DC;
+  border-color: #1B3A2B;
+  color: #1B3A2B;
+  background: #EFECE4;
 }
 
 /* ── Claim textarea ───────────────────────────────────────── */
@@ -266,9 +256,9 @@ body {
   font-family: Inter, sans-serif;
   font-size: 1rem;
   line-height: 1.6;
-  color: #102019;
-  background: #FAF8F3;
-  border: 1.5px solid #C8CEC5;
+  color: #1C1C1C;
+  background: #FCFAF5;
+  border: 1.5px solid #D6D3C8;
   border-radius: 10px;
   resize: vertical;
   outline: none;
@@ -276,12 +266,12 @@ body {
 }
 
 .claim-textarea:focus {
-  border-color: #0B241A;
-  box-shadow: 0 0 0 3px rgba(11, 36, 26, 0.12);
+  border-color: #1B3A2B;
+  box-shadow: 0 0 0 3px rgba(27, 58, 43, 0.12);
 }
 
 .claim-textarea::placeholder {
-  color: #98A49D;
+  color: #A8B3AA;
   font-style: italic;
 }
 
@@ -313,21 +303,45 @@ body {
 .delay-100 { animation-delay: 100ms; }
 .delay-200 { animation-delay: 200ms; }
 .delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
 
 /* ── Focus ────────────────────────────────────────────────── */
 
 :focus-visible {
-  outline: 2px solid #63D6A2;
+  outline: 2px solid #A9BBA0;
   outline-offset: 3px;
   border-radius: 4px;
+}
+
+/* ── Editorial rule line ──────────────────────────────────── */
+
+.editorial-rule {
+  width: 32px;
+  height: 1px;
+  background-color: #315C45;
+}
+
+.editorial-rule-light {
+  width: 32px;
+  height: 1px;
+  background-color: #A9BBA0;
+}
+
+/* ── Section divider (thin editorial line) ────────────────── */
+
+.section-divider {
+  width: 60px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #D6D3C8, transparent);
 }
 
 /* ── Scrollbar ────────────────────────────────────────────── */
 
 ::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #E9E6DC; }
-::-webkit-scrollbar-thumb { background: #C8CEC5; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #98A49D; }
+::-webkit-scrollbar-track { background: #EFECE4; }
+::-webkit-scrollbar-thumb { background: #D6D3C8; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #A8B3AA; }
 
 /* ── Line clamp ───────────────────────────────────────────── */
 
@@ -336,4 +350,14 @@ body {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+/* ── Editorial prose helpers ──────────────────────────────── */
+
+.eyebrow {
+  font-family: Inter, sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }

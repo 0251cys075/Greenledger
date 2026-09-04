@@ -215,11 +215,11 @@ export default function ProductCodeScannerModal({
       aria-modal="true"
       aria-labelledby="scanner-modal-title"
     >
-      <div className="card-cream max-w-lg w-full p-6 sm:p-7 rounded-2xl border-2 border-[#12382A]/30 shadow-2xl relative my-8">
+      <div className="card-cream max-w-lg w-full p-6 sm:p-7 rounded-2xl border-2 border-[#315C45]/30 shadow-2xl relative my-8">
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-lg bg-[#E9E6DC] text-[#718078] hover:text-[#102019] hover:bg-[#C8CEC5] transition-colors cursor-pointer z-20"
+          className="absolute top-4 right-4 p-2 rounded-lg bg-[#EFECE4] text-[#718875] hover:text-[#1C1C1C] hover:bg-[#D6D3C8] transition-colors cursor-pointer z-20"
           aria-label="Close product code scanner"
         >
           <X size={18} />
@@ -227,21 +227,21 @@ export default function ProductCodeScannerModal({
 
         {/* Header */}
         <div className="text-center mb-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#12382A] text-[#63D6A2] text-xs font-mono mb-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#315C45] text-[#A9BBA0] text-xs font-mono mb-3">
             <Barcode size={15} />
             <QrCode size={15} />
             <span>Unified Code Scanner</span>
           </div>
-          <h2 id="scanner-modal-title" className="font-serif text-2xl text-[#102019]">
+          <h2 id="scanner-modal-title" className="font-serif text-2xl text-[#1C1C1C]">
             {t('scanner.modalTitle')}
           </h2>
-          <p className="text-xs text-[#718078] font-light mt-1 max-w-sm mx-auto">
+          <p className="text-xs text-[#718875] font-light mt-1 max-w-sm mx-auto">
             {t('scanner.modalSubtitle')}
           </p>
         </div>
 
         {/* Camera Viewfinder / Frame */}
-        <div className="relative w-full max-w-[280px] h-[220px] mx-auto mb-6 bg-[#0B241A] rounded-2xl border-2 border-[#63D6A2]/40 overflow-hidden flex items-center justify-center shadow-inner">
+        <div className="relative w-full max-w-[280px] h-[220px] mx-auto mb-6 bg-[#1B3A2B] rounded-2xl border-2 border-[#A9BBA0]/40 overflow-hidden flex items-center justify-center shadow-inner">
           <video
             ref={videoRef}
             playsInline
@@ -253,24 +253,24 @@ export default function ProductCodeScannerModal({
           />
 
           {/* Scanning frame overlay */}
-          <div className="absolute inset-3 border-2 border-[#63D6A2]/50 rounded-xl pointer-events-none">
+          <div className="absolute inset-3 border-2 border-[#A9BBA0]/50 rounded-xl pointer-events-none">
             {/* Viewfinder corner accents */}
-            <div className="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-[#63D6A2]" />
-            <div className="absolute -top-1 -right-1 w-4 h-4 border-t-2 border-r-2 border-[#63D6A2]" />
-            <div className="absolute -bottom-1 -left-1 w-4 h-4 border-b-2 border-l-2 border-[#63D6A2]" />
-            <div className="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-[#63D6A2]" />
+            <div className="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-[#A9BBA0]" />
+            <div className="absolute -top-1 -right-1 w-4 h-4 border-t-2 border-r-2 border-[#A9BBA0]" />
+            <div className="absolute -bottom-1 -left-1 w-4 h-4 border-b-2 border-l-2 border-[#A9BBA0]" />
+            <div className="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-[#A9BBA0]" />
           </div>
 
           {/* Laser Scanning Animation */}
           {cameraActive && isScanning && (
-            <div className="absolute top-0 left-0 right-0 h-0.5 bg-[#63D6A2] shadow-[0_0_12px_#63D6A2] animate-bounce pointer-events-none" />
+            <div className="absolute top-0 left-0 right-0 h-0.5 bg-[#A9BBA0] shadow-[0_0_12px_#A9BBA0] animate-bounce pointer-events-none" />
           )}
 
           {/* Placeholder or Status indicator */}
           {!cameraActive && (
             <div className="text-center p-4 z-10">
-              <Camera size={36} className="text-[#63D6A2] opacity-60 mx-auto mb-2" />
-              <p className="text-xs font-mono text-[#F3F0E8]/70">
+              <Camera size={36} className="text-[#A9BBA0] opacity-60 mx-auto mb-2" />
+              <p className="text-xs font-mono text-[#F7F5F0]/70">
                 {cameraError ? 'Camera offline' : 'Initializing camera...'}
               </p>
             </div>
@@ -278,8 +278,8 @@ export default function ProductCodeScannerModal({
 
           {/* Scanning badge */}
           {cameraActive && (
-            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-sm px-2.5 py-1 rounded-full text-[10px] font-mono text-[#63D6A2] border border-[#63D6A2]/30 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#63D6A2] animate-pulse" />
+            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-sm px-2.5 py-1 rounded-full text-[10px] font-mono text-[#A9BBA0] border border-[#A9BBA0]/30 flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#A9BBA0] animate-pulse" />
               <span>{detectorSupported ? 'Detecting QR & Barcodes' : 'Align code in frame'}</span>
             </div>
           )}
@@ -287,7 +287,7 @@ export default function ProductCodeScannerModal({
 
         {/* Camera error notification if any */}
         {cameraError && (
-          <div className="mb-5 p-3.5 rounded-xl bg-[#C95C5C]/10 border border-[#C95C5C]/30 flex items-start gap-2.5 text-xs text-[#962A2A]">
+          <div className="mb-5 p-3.5 rounded-xl bg-[#C1443E]/10 border border-[#C1443E]/30 flex items-start gap-2.5 text-xs text-[#9E3B33]">
             <AlertCircle size={16} className="flex-shrink-0 mt-0.5" />
             <div className="flex-1">
               <p className="font-semibold mb-0.5">Camera Unavailable</p>
@@ -298,12 +298,12 @@ export default function ProductCodeScannerModal({
 
         {/* Lookup Loading state */}
         {lookupLoading && (
-          <div className="mb-5 p-4 rounded-xl bg-[#0B241A] text-[#F3F0E8] text-center border border-[#63D6A2]/30">
-            <Loader2 size={24} className="animate-spin text-[#63D6A2] mx-auto mb-2" />
-            <p className="text-xs font-mono text-[#63D6A2] font-semibold">
+          <div className="mb-5 p-4 rounded-xl bg-[#1B3A2B] text-[#F7F5F0] text-center border border-[#A9BBA0]/30">
+            <Loader2 size={24} className="animate-spin text-[#A9BBA0] mx-auto mb-2" />
+            <p className="text-xs font-mono text-[#A9BBA0] font-semibold">
               Querying GreenLedger Product Registry...
             </p>
-            <p className="text-[11px] text-[#F3F0E8]/70 mt-0.5">Resolving barcode to auditable verification record</p>
+            <p className="text-[11px] text-[#F7F5F0]/70 mt-0.5">Resolving barcode to auditable verification record</p>
           </div>
         )}
 
@@ -311,13 +311,13 @@ export default function ProductCodeScannerModal({
         {lookupResult && !lookupLoading && (
           <div className="mb-5">
             {lookupResult.found && lookupResult.product ? (
-              <div className="p-4 rounded-xl bg-[#FAF8F3] border-2 border-[#4FAF78] shadow-sm">
+              <div className="p-4 rounded-xl bg-[#FCFAF5] border-2 border-[#3E7D4F] shadow-sm">
                 <div className="flex items-center justify-between gap-2 mb-2">
-                  <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-[#12382A] text-[#63D6A2]">
+                  <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-[#315C45] text-[#A9BBA0]">
                     {lookupResult.detectedFormat} DETECTED
                   </span>
                   {lookupResult.isDemo && (
-                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-[#D3A54A]/20 text-[#8B6414] border border-[#D3A54A]/40">
+                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-[#C9A227]/20 text-[#8A6A1E] border border-[#C9A227]/40">
                       DEMO PRODUCT
                     </span>
                   )}
@@ -326,18 +326,18 @@ export default function ProductCodeScannerModal({
                   )}
                 </div>
 
-                <h3 className="font-serif text-lg text-[#102019] mb-1">
+                <h3 className="font-serif text-lg text-[#1C1C1C] mb-1">
                   {lookupResult.product.name}
                 </h3>
-                <p className="text-xs font-mono text-[#718078] mb-2.5">
+                <p className="text-xs font-mono text-[#718875] mb-2.5">
                   Brand: {lookupResult.product.brand} · {lookupResult.product.category}
                 </p>
 
-                <div className="p-3 rounded-lg bg-[#E9E6DC] border border-[#C8CEC5] mb-3">
-                  <span className="text-[10px] font-mono uppercase text-[#718078] block mb-0.5">
+                <div className="p-3 rounded-lg bg-[#EFECE4] border border-[#D6D3C8] mb-3">
+                  <span className="text-[10px] font-mono uppercase text-[#718875] block mb-0.5">
                     Verified Statement on Packaging:
                   </span>
-                  <p className="text-xs text-[#102019] italic font-medium">
+                  <p className="text-xs text-[#1C1C1C] italic font-medium">
                     &ldquo;{lookupResult.product.claim_text}&rdquo;
                   </p>
                 </div>
@@ -352,7 +352,7 @@ export default function ProductCodeScannerModal({
                 </button>
               </div>
             ) : (
-              <div className="p-4 rounded-xl bg-[#C95C5C]/10 border border-[#C95C5C]/40 text-xs text-[#962A2A]">
+              <div className="p-4 rounded-xl bg-[#C1443E]/10 border border-[#C1443E]/40 text-xs text-[#9E3B33]">
                 <div className="flex items-start gap-2.5 mb-2">
                   <AlertCircle size={18} className="flex-shrink-0 mt-0.5" />
                   <div>
@@ -363,13 +363,13 @@ export default function ProductCodeScannerModal({
                   </div>
                 </div>
 
-                <p className="text-[11px] leading-relaxed text-[#102019]/80 mb-3">
+                <p className="text-[11px] leading-relaxed text-[#1C1C1C]/80 mb-3">
                   {lookupResult.error ||
                     'This product or barcode has not yet been registered or audited in GreenLedger. You can manually enter the environmental statement below.'}
                 </p>
 
                 {lookupResult.isExternalUrl && lookupResult.externalUrl && (
-                  <div className="p-2.5 rounded bg-white/60 border border-[#C95C5C]/20 text-[11px] font-mono text-[#102019] break-all mb-2">
+                  <div className="p-2.5 rounded bg-white/60 border border-[#C1443E]/20 text-[11px] font-mono text-[#1C1C1C] break-all mb-2">
                     External URL: {lookupResult.externalUrl}
                   </div>
                 )}
@@ -379,8 +379,8 @@ export default function ProductCodeScannerModal({
         )}
 
         {/* Manual Fallback: Enter Product Code Manually */}
-        <div className="pt-4 border-t border-[#C8CEC5] mb-5">
-          <p className="text-xs font-mono font-semibold text-[#12382A] uppercase tracking-wider mb-2">
+        <div className="pt-4 border-t border-[#D6D3C8] mb-5">
+          <p className="text-xs font-mono font-semibold text-[#315C45] uppercase tracking-wider mb-2">
             Enter Product Code Manually
           </p>
           <form onSubmit={handleManualSubmit} className="flex gap-2">
@@ -389,12 +389,12 @@ export default function ProductCodeScannerModal({
               value={manualCode}
               onChange={(e) => setManualCode(e.target.value)}
               placeholder="e.g. 8901234567890 or greenledger.io/v/DEMO-3"
-              className="flex-1 px-3.5 py-2 text-xs bg-[#FAF8F3] border border-[#C8CEC5] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#12382A] text-[#102019] font-mono"
+              className="flex-1 px-3.5 py-2 text-xs bg-[#FCFAF5] border border-[#D6D3C8] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#315C45] text-[#1C1C1C] font-mono"
             />
             <button
               type="submit"
               disabled={!manualCode.trim() || lookupLoading}
-              className="px-4 py-2 bg-[#12382A] text-[#F3F0E8] text-xs font-mono font-semibold rounded-xl hover:bg-[#1B4D3A] transition-colors disabled:opacity-50 cursor-pointer flex items-center gap-1.5"
+              className="px-4 py-2 bg-[#315C45] text-[#F7F5F0] text-xs font-mono font-semibold rounded-xl hover:bg-[#2A533F] transition-colors disabled:opacity-50 cursor-pointer flex items-center gap-1.5"
             >
               <Search size={14} />
               Look Up Product
@@ -404,8 +404,8 @@ export default function ProductCodeScannerModal({
 
         {/* Demo Mode: Demo Products clearly labeled */}
         <div>
-          <p className="text-xs font-mono font-semibold text-[#718078] uppercase tracking-wider mb-2 flex items-center gap-1.5">
-            <Sparkles size={13} className="text-[#12382A]" />
+          <p className="text-xs font-mono font-semibold text-[#718875] uppercase tracking-wider mb-2 flex items-center gap-1.5">
+            <Sparkles size={13} className="text-[#315C45]" />
             {t('scanner.simulatedTitle')}
           </p>
           <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
@@ -414,20 +414,20 @@ export default function ProductCodeScannerModal({
                 key={demo.id}
                 type="button"
                 onClick={() => handleDemoClick(demo.code)}
-                className="w-full text-left p-2.5 rounded-xl bg-[#FAF8F3] border border-[#C8CEC5] hover:border-[#12382A] hover:bg-[#E9E6DC] transition-all text-xs flex items-center justify-between group cursor-pointer"
+                className="w-full text-left p-2.5 rounded-xl bg-[#FCFAF5] border border-[#D6D3C8] hover:border-[#315C45] hover:bg-[#EFECE4] transition-all text-xs flex items-center justify-between group cursor-pointer"
               >
                 <div>
                   <div className="flex items-center gap-1.5 mb-0.5">
-                    <span className="font-semibold text-[#102019]">{demo.name}</span>
-                    <span className="text-[9px] font-mono px-1 rounded bg-[#D3A54A]/20 text-[#8B6414]">
+                    <span className="font-semibold text-[#1C1C1C]">{demo.name}</span>
+                    <span className="text-[9px] font-mono px-1 rounded bg-[#C9A227]/20 text-[#8A6A1E]">
                       DEMO
                     </span>
                   </div>
-                  <p className="text-[10px] text-[#718078] font-mono">
+                  <p className="text-[10px] text-[#718875] font-mono">
                     {demo.type} · {demo.code}
                   </p>
                 </div>
-                <span className="text-[11px] font-mono text-[#12382A] font-semibold flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
+                <span className="text-[11px] font-mono text-[#315C45] font-semibold flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
                   Scan <ArrowRight size={11} />
                 </span>
               </button>

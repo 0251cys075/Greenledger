@@ -333,7 +333,7 @@ export const DEMO_SCAN_PRODUCTS = [
     type: 'EAN-13 Barcode',
     brand: 'GreenPack Industries',
     verdict: 'VERIFIED',
-    badge: 'bg-[#4FAF78]/15 text-[#12382A] border-[#4FAF78]/40',
+    badge: 'bg-[#3E7D4F]/15 text-[#315C45] border-[#3E7D4F]/40',
   },
   {
     id: 'demo-bubble-ean',
@@ -342,7 +342,7 @@ export const DEMO_SCAN_PRODUCTS = [
     type: 'EAN-13 Barcode',
     brand: 'PackRight Solutions',
     verdict: 'INSUFFICIENT EVIDENCE',
-    badge: 'bg-[#D3A54A]/15 text-[#8B6414] border-[#D3A54A]/40',
+    badge: 'bg-[#C9A227]/15 text-[#8A6A1E] border-[#C9A227]/40',
   },
   {
     id: 'demo-cleaner-upc',
@@ -351,7 +351,7 @@ export const DEMO_SCAN_PRODUCTS = [
     type: 'UPC-A Barcode',
     brand: 'CleanSurface Ltd.',
     verdict: 'POTENTIAL GREENWASHING',
-    badge: 'bg-[#C95C5C]/15 text-[#962A2A] border-[#C95C5C]/40',
+    badge: 'bg-[#C1443E]/15 text-[#9E3B33] border-[#C1443E]/40',
   },
   {
     id: 'demo-trace-qr',
@@ -360,6 +360,6 @@ export const DEMO_SCAN_PRODUCTS = [
     type: 'QR Code Payload',
     brand: 'GreenPack Industries',
     verdict: 'VERIFIED',
-    badge: 'bg-[#4FAF78]/15 text-[#12382A] border-[#4FAF78]/40',
+    badge: 'bg-[#3E7D4F]/15 text-[#315C45] border-[#3E7D4F]/40',
   },
 ];

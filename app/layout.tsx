@@ -32,13 +32,13 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body
+<body
         style={{
-          backgroundColor: '#F3F0E8',
-          color: '#102019',
+          backgroundColor: '#F7F5F0',
+          color: '#1C1C1C',
           fontFamily: 'Inter, Manrope, system-ui, sans-serif',
         }}
-        className="antialiased min-h-screen flex flex-col selection:bg-[#63D6A2] selection:text-[#0B241A]"
+        className="antialiased min-h-screen flex flex-col selection:bg-[#A9BBA0] selection:text-[#1B3A2B]"
       >
         <LanguageProvider>
           <Navbar />

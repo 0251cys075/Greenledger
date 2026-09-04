@@ -111,18 +111,18 @@ function ExploreContent() {
   }, [products, search, category, status]);
 
   return (
-    <div className="min-h-screen bg-[#F3F0E8] pt-24 pb-20">
+    <div className="min-h-screen bg-[#F7F5F0] pt-24 pb-20">
       {/* Header Banner - Dark Forest */}
-      <div className="bg-[#0B241A] text-[#F3F0E8] py-16 px-6 border-b border-[#12382A]">
+      <div className="bg-[#1B3A2B] text-[#F7F5F0] py-16 px-6 border-b border-[#315C45]">
         <div className="max-w-7xl mx-auto">
           <div className="max-w-3xl">
-            <span className="text-xs font-mono font-semibold text-[#63D6A2] uppercase tracking-widest px-3 py-1 rounded bg-[#12382A] border border-[#63D6A2]/25 mb-4 inline-block">
+            <span className="text-xs font-mono font-semibold text-[#A9BBA0] uppercase tracking-widest px-3 py-1 rounded bg-[#315C45] border border-[#A9BBA0]/25 mb-4 inline-block">
               {t('explore.badge', 'Open Product Index')}
             </span>
-            <h1 className="font-serif text-3xl sm:text-5xl text-[#F3F0E8] mb-3">
+            <h1 className="font-serif text-3xl sm:text-5xl text-[#F7F5F0] mb-3">
               {t('explore.title', 'Explore Verified Products')}
             </h1>
-            <p className="text-base sm:text-lg text-[#F3F0E8]/75 font-light">
+            <p className="text-base sm:text-lg text-[#F7F5F0]/75 font-light">
               {t('explore.subtitle', 'Search and inspect environmental claims across consumer goods that have undergone the GreenLedger verification pipeline.')}
             </p>
           </div>
@@ -131,10 +131,10 @@ function ExploreContent() {
 
       <div className="max-w-7xl mx-auto px-6 -mt-6">
         {/* Search & Filter Bar */}
-        <div className="card-cream p-6 border-2 border-[#C8CEC5] rounded-2xl shadow-lg mb-8">
+        <div className="card-cream p-6 border-2 border-[#D6D3C8] rounded-2xl shadow-lg mb-8">
           {/* Search Input */}
           <div className="relative mb-5">
-            <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#718078]" />
+            <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#718875]" />
             <input
               id="explore-search"
               name="q"
@@ -142,7 +142,7 @@ function ExploreContent() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={t('explore.searchPlaceholder', 'Search products by name, brand, or category...')}
-              className="w-full pl-11 pr-4 py-3 text-sm bg-[#FAF8F3] border border-[#C8CEC5] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#12382A] text-[#102019] placeholder-[#98A49D]"
+              className="w-full pl-11 pr-4 py-3 text-sm bg-[#FCFAF5] border border-[#D6D3C8] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#315C45] text-[#1C1C1C] placeholder-[#A8B3AA]"
               aria-label="Search verified products"
             />
           </div>
@@ -150,7 +150,7 @@ function ExploreContent() {
           <div className="flex flex-col lg:flex-row gap-5 justify-between">
             {/* Status filters */}
             <div>
-              <p className="text-xs font-mono font-semibold text-[#12382A] uppercase tracking-wider mb-2">
+              <p className="text-xs font-mono font-semibold text-[#315C45] uppercase tracking-wider mb-2">
                 {t('explore.filterVerdict', 'Filter by Verdict')}
               </p>
               <div className="flex flex-wrap gap-2">
@@ -161,8 +161,8 @@ function ExploreContent() {
                     className={cn(
                       'text-xs font-mono px-3 py-1.5 rounded-lg border transition-all',
                       status === s.value
-                        ? 'bg-[#0B241A] text-[#63D6A2] border-[#0B241A] shadow-sm font-semibold'
-                        : 'border-[#C8CEC5] bg-[#FAF8F3] text-[#718078] hover:border-[#12382A] hover:text-[#102019]'
+                        ? 'bg-[#1B3A2B] text-[#A9BBA0] border-[#1B3A2B] shadow-sm font-semibold'
+                        : 'border-[#D6D3C8] bg-[#FCFAF5] text-[#718875] hover:border-[#315C45] hover:text-[#1C1C1C]'
                     )}
                   >
                     {t(s.labelKey, s.fallback)}
@@ -173,7 +173,7 @@ function ExploreContent() {
 
             {/* Category filters */}
             <div>
-              <p className="text-xs font-mono font-semibold text-[#12382A] uppercase tracking-wider mb-2">
+              <p className="text-xs font-mono font-semibold text-[#315C45] uppercase tracking-wider mb-2">
                 {t('explore.productCategory', 'Product Category')}
               </p>
               <div className="flex flex-wrap gap-1.5">
@@ -184,8 +184,8 @@ function ExploreContent() {
                     className={cn(
                       'text-xs px-3 py-1.5 rounded-lg border transition-all',
                       category === cat
-                        ? 'bg-[#12382A] text-[#F3F0E8] border-[#12382A] font-semibold'
-                        : 'border-[#C8CEC5] bg-[#FAF8F3] text-[#718078] hover:border-[#12382A] hover:text-[#102019]'
+                        ? 'bg-[#315C45] text-[#F7F5F0] border-[#315C45] font-semibold'
+                        : 'border-[#D6D3C8] bg-[#FCFAF5] text-[#718875] hover:border-[#315C45] hover:text-[#1C1C1C]'
                     )}
                   >
                     {cat}
@@ -197,15 +197,15 @@ function ExploreContent() {
         </div>
 
         {/* Results Counter */}
-        <div className="flex items-center justify-between mb-6 text-xs font-mono text-[#718078]">
+        <div className="flex items-center justify-between mb-6 text-xs font-mono text-[#718875]">
           <span>
             {loading ? (
               <span className="inline-flex items-center gap-2">
-                <Loader2 size={12} className="inline animate-spin text-[#12382A]" />
+                <Loader2 size={12} className="inline animate-spin text-[#315C45]" />
                 {t('explore.loadingRecords', 'Loading verified records…')}
               </span>
             ) : error ? (
-              <span className="text-[#C95C5C]">{t('explore.recordsError', 'Unable to load product records')}</span>
+              <span className="text-[#C1443E]">{t('explore.recordsError', 'Unable to load product records')}</span>
             ) : (
               t('explore.showingRecords', 'Showing {count} record(s)', { count: filtered.length })
             )}
@@ -215,26 +215,26 @@ function ExploreContent() {
 
         {/* Loading State */}
         {loading && (
-          <div className="text-center py-20 card-cream border border-[#C8CEC5] rounded-2xl">
-            <Loader2 size={32} className="animate-spin text-[#12382A] mx-auto mb-3" />
-            <h3 className="font-serif text-xl text-[#102019] mb-1">{t('explore.loadingTitle', 'Loading verified claims directory…')}</h3>
-            <p className="text-xs text-[#718078] font-mono">{t('explore.loadingDesc', 'Retrieving public environmental audit records.')}</p>
+          <div className="text-center py-20 card-cream border border-[#D6D3C8] rounded-2xl">
+            <Loader2 size={32} className="animate-spin text-[#315C45] mx-auto mb-3" />
+            <h3 className="font-serif text-xl text-[#1C1C1C] mb-1">{t('explore.loadingTitle', 'Loading verified claims directory…')}</h3>
+            <p className="text-xs text-[#718875] font-mono">{t('explore.loadingDesc', 'Retrieving public environmental audit records.')}</p>
           </div>
         )}
 
         {/* Error State */}
         {error && !loading && (
-          <div className="text-center py-16 px-6 card-cream border-2 border-[#C95C5C]/30 rounded-2xl shadow-sm">
-            <div className="w-12 h-12 rounded-full bg-[#C95C5C]/15 text-[#C95C5C] flex items-center justify-center mx-auto mb-4">
+          <div className="text-center py-16 px-6 card-cream border-2 border-[#C1443E]/30 rounded-2xl shadow-sm">
+            <div className="w-12 h-12 rounded-full bg-[#C1443E]/15 text-[#C1443E] flex items-center justify-center mx-auto mb-4">
               <AlertCircle size={24} />
             </div>
-            <h3 className="font-serif text-2xl text-[#102019] mb-2">{t('explore.errorTitle', 'Unable to load product records.')}</h3>
-            <p className="text-xs font-mono text-[#718078] max-w-md mx-auto mb-6">
+            <h3 className="font-serif text-2xl text-[#1C1C1C] mb-2">{t('explore.errorTitle', 'Unable to load product records.')}</h3>
+            <p className="text-xs font-mono text-[#718875] max-w-md mx-auto mb-6">
               {error}
             </p>
             <button
               onClick={fetchProducts}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#12382A] text-[#F3F0E8] text-xs font-mono font-semibold hover:bg-[#1B4D3A] transition-colors shadow-sm"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#315C45] text-[#F7F5F0] text-xs font-mono font-semibold hover:bg-[#2A533F] transition-colors shadow-sm"
             >
               {t('explore.tryAgain', 'Try Again')}
             </button>
@@ -243,21 +243,21 @@ function ExploreContent() {
 
         {/* Empty State */}
         {!loading && !error && filtered.length === 0 && (
-          <div className="text-center py-20 card-cream border border-[#C8CEC5] rounded-2xl">
-            <Search size={36} className="text-[#718078] mx-auto mb-3 opacity-60" />
-            <h3 className="font-serif text-xl text-[#102019] mb-1">
+          <div className="text-center py-20 card-cream border border-[#D6D3C8] rounded-2xl">
+            <Search size={36} className="text-[#718875] mx-auto mb-3 opacity-60" />
+            <h3 className="font-serif text-xl text-[#1C1C1C] mb-1">
               {search
                 ? t('explore.noSearchResults', 'No products found.')
                 : t('explore.noClaims', 'No products match your current filters.')}
             </h3>
-            <p className="text-xs text-[#718078] font-mono mb-4 max-w-md mx-auto leading-relaxed">
+            <p className="text-xs text-[#718875] font-mono mb-4 max-w-md mx-auto leading-relaxed">
               {search
                 ? t('explore.noSearchDesc', 'No claims matched "{query}". Try adjusting keywords, brand name, or clearing filters.', { query: search })
                 : t('explore.noClaimsDesc', 'Try adjusting your keywords or clearing the category and verdict filters.')}
             </p>
             <button
               onClick={handleResetFilters}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#12382A] text-[#F3F0E8] text-xs font-mono hover:bg-[#1B4D3A] transition-colors font-semibold"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#315C45] text-[#F7F5F0] text-xs font-mono hover:bg-[#2A533F] transition-colors font-semibold"
             >
               <X size={14} /> {t('explore.resetFilters', 'Reset all filters')}
             </button>
@@ -270,38 +270,38 @@ function ExploreContent() {
             {filtered.map((product) => (
               <div
                 key={product.id}
-                className="card-cream p-6 rounded-2xl border border-[#C8CEC5] hover:border-[#12382A] flex flex-col justify-between group transition-all shadow-sm"
+                className="card-cream p-6 rounded-2xl border border-[#D6D3C8] hover:border-[#315C45] flex flex-col justify-between group transition-all shadow-sm"
               >
                 <div>
                   <div className="flex items-start justify-between gap-3 mb-4">
                     <StatusBadge status={product.status} size="sm" />
-                    <span className="text-[11px] font-mono text-[#718078] uppercase">{product.category}</span>
+                    <span className="text-[11px] font-mono text-[#718875] uppercase">{product.category}</span>
                   </div>
 
                   <Link href={`/result/${product.result_id}`} className="block group/title">
-                    <h3 className="font-serif text-xl text-[#102019] group-hover/title:text-[#12382A] transition-colors mb-1">
+                    <h3 className="font-serif text-xl text-[#1C1C1C] group-hover/title:text-[#315C45] transition-colors mb-1">
                       {product.product_name}
                     </h3>
                   </Link>
-                  <p className="text-xs font-mono text-[#718078] mb-4">
+                  <p className="text-xs font-mono text-[#718875] mb-4">
                     {t('explore.brand', 'Brand')}: {product.brand}
                   </p>
 
-                  <div className="p-3.5 rounded-xl bg-[#FAF8F3] border border-[#C8CEC5]/70 mb-5">
-                    <p className="text-xs text-[#102019] italic leading-relaxed line-clamp-2">
+                  <div className="p-3.5 rounded-xl bg-[#FCFAF5] border border-[#D6D3C8]/70 mb-5">
+                    <p className="text-xs text-[#1C1C1C] italic leading-relaxed line-clamp-2">
                       &ldquo;{product.claim_text}&rdquo;
                     </p>
                   </div>
                 </div>
 
-                <div className="pt-4 border-t border-[#C8CEC5] flex items-center justify-between text-xs font-mono text-[#718078] gap-2">
+                <div className="pt-4 border-t border-[#D6D3C8] flex items-center justify-between text-xs font-mono text-[#718875] gap-2">
                   <span>
                     {t('explore.verifiedDate', 'Verified')}: {formatDate(product.verified_at)}
                   </span>
                   <div className="flex items-center gap-3">
                     <Link
                       href={`/report?productId=${encodeURIComponent(product.id)}&brand=${encodeURIComponent(product.brand)}&product=${encodeURIComponent(product.product_name)}&claim=${encodeURIComponent(product.claim_text)}`}
-                      className="text-xs font-mono text-[#718078] hover:text-[#C95C5C] flex items-center gap-1 transition-colors"
+                      className="text-xs font-mono text-[#718875] hover:text-[#C1443E] flex items-center gap-1 transition-colors"
                       title="Report this claim"
                     >
                       <Flag size={12} />
@@ -309,7 +309,7 @@ function ExploreContent() {
                     </Link>
                     <Link
                       href={`/result/${product.result_id}`}
-                      className="text-[#12382A] font-semibold flex items-center gap-1 hover:text-[#0B241A] group-hover:translate-x-0.5 transition-transform"
+                      className="text-[#315C45] font-semibold flex items-center gap-1 hover:text-[#1B3A2B] group-hover:translate-x-0.5 transition-transform"
                       title="Inspect audit details"
                     >
                       <span>{t('explore.inspect', 'Inspect')}</span>
@@ -330,9 +330,9 @@ export default function ExplorePage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-[#F3F0E8] pt-32 pb-20 flex flex-col items-center justify-center">
-          <Loader2 className="animate-spin text-[#12382A] mb-3" size={32} />
-          <p className="text-sm font-mono text-[#718078]">Loading verified claims directory...</p>
+        <div className="min-h-screen bg-[#F7F5F0] pt-32 pb-20 flex flex-col items-center justify-center">
+          <Loader2 className="animate-spin text-[#315C45] mb-3" size={32} />
+          <p className="text-sm font-mono text-[#718875]">Loading verified claims directory...</p>
         </div>
       }
     >

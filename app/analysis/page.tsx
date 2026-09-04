@@ -148,12 +148,12 @@ function AnalysisContent() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#0B241A] text-[#F3F0E8] flex items-center justify-center px-6">
+      <div className="min-h-screen bg-[#1B3A2B] text-[#F7F5F0] flex items-center justify-center px-6">
         <div className="text-center max-w-md">
-          <p className="text-[#C95C5C] font-mono text-sm mb-4">{error}</p>
+          <p className="text-[#C1443E] font-mono text-sm mb-4">{error}</p>
           <button
             onClick={() => router.replace('/verify')}
-            className="px-6 py-3 rounded-xl bg-[#63D6A2] text-[#0B241A] font-semibold text-sm"
+            className="px-6 py-3 rounded-xl bg-[#A9BBA0] text-[#1B3A2B] font-semibold text-sm"
           >
             Return to Verify Terminal
           </button>
@@ -163,31 +163,31 @@ function AnalysisContent() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0B241A] text-[#F3F0E8] flex items-center justify-center px-6 py-24 relative overflow-hidden">
+    <div className="min-h-screen bg-[#1B3A2B] text-[#F7F5F0] flex items-center justify-center px-6 py-24 relative overflow-hidden">
       {/* Background ambient lighting */}
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#63D6A2]/5 blur-3xl rounded-full pointer-events-none" />
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#A9BBA0]/5 blur-3xl rounded-full pointer-events-none" />
 
       <div className="w-full max-w-2xl relative z-10">
         {/* Header */}
         <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-2.5 bg-[#12382A] border border-[#63D6A2]/30 rounded-full px-4 py-1.5 mb-5 shadow-lg">
-            <span className="w-2 h-2 rounded-full bg-[#63D6A2] animate-pulse" />
-            <span className="text-xs font-mono font-semibold text-[#63D6A2] uppercase tracking-wider">
+          <div className="inline-flex items-center gap-2.5 bg-[#315C45] border border-[#A9BBA0]/30 rounded-full px-4 py-1.5 mb-5 shadow-lg">
+            <span className="w-2 h-2 rounded-full bg-[#A9BBA0] animate-pulse" />
+            <span className="text-xs font-mono font-semibold text-[#A9BBA0] uppercase tracking-wider">
               Verification Engine Active
             </span>
           </div>
-          <h1 className="font-serif text-3xl sm:text-4xl text-[#F3F0E8] mb-3">
+          <h1 className="font-serif text-3xl sm:text-4xl text-[#F7F5F0] mb-3">
             {t('analysis.title')}
           </h1>
           {claim && (
-            <p className="text-[#F3F0E8]/70 text-sm max-w-md mx-auto truncate font-light">
-              Claim: <span className="font-medium text-[#63D6A2]">&ldquo;{claim}&rdquo;</span>
+            <p className="text-[#F7F5F0]/70 text-sm max-w-md mx-auto truncate font-light">
+              Claim: <span className="font-medium text-[#A9BBA0]">&ldquo;{claim}&rdquo;</span>
             </p>
           )}
         </div>
 
         {/* Pipeline container */}
-        <div className="bg-[#12382A]/90 border border-[#63D6A2]/25 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-md">
+        <div className="bg-[#315C45]/90 border border-[#A9BBA0]/25 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-md">
           <div className="space-y-1">
             {PIPELINE_STEPS.map((step, idx) => {
               const isDone = completedSteps.includes(step.id);
@@ -201,24 +201,24 @@ function AnalysisContent() {
                     className={cn(
                       'flex items-start gap-4 py-3.5 px-4 rounded-xl transition-all duration-300',
                       isDone
-                        ? 'bg-[#0B241A]/70 border border-[#63D6A2]/20'
+                        ? 'bg-[#1B3A2B]/70 border border-[#A9BBA0]/20'
                         : isActive
-                        ? 'bg-[#0B241A] border border-[#63D6A2]/50 shadow-md ring-1 ring-[#63D6A2]/30'
+                        ? 'bg-[#1B3A2B] border border-[#A9BBA0]/50 shadow-md ring-1 ring-[#A9BBA0]/30'
                         : 'opacity-40'
                     )}
                   >
                     {/* Node status indicator */}
                     <div className="flex-shrink-0 mt-0.5">
                       {isDone ? (
-                        <div className="w-5 h-5 rounded-full bg-[#63D6A2] text-[#0B241A] flex items-center justify-center font-bold text-xs animate-fade-in">
+                        <div className="w-5 h-5 rounded-full bg-[#A9BBA0] text-[#1B3A2B] flex items-center justify-center font-bold text-xs animate-fade-in">
                           ✓
                         </div>
                       ) : isActive ? (
-                        <div className="w-5 h-5 rounded-full border-2 border-[#63D6A2] flex items-center justify-center">
-                          <span className="w-2 h-2 rounded-full bg-[#63D6A2] animate-ping" />
+                        <div className="w-5 h-5 rounded-full border-2 border-[#A9BBA0] flex items-center justify-center">
+                          <span className="w-2 h-2 rounded-full bg-[#A9BBA0] animate-ping" />
                         </div>
                       ) : (
-                        <Circle size={20} className="text-[#F3F0E8]/30" />
+                        <Circle size={20} className="text-[#F7F5F0]/30" />
                       )}
                     </div>
 
@@ -228,23 +228,23 @@ function AnalysisContent() {
                         className={cn(
                           'text-sm font-semibold transition-colors',
                           isDone
-                            ? 'text-[#63D6A2]'
+                            ? 'text-[#A9BBA0]'
                             : isActive
-                            ? 'text-[#F3F0E8]'
-                            : 'text-[#F3F0E8]/50'
+                            ? 'text-[#F7F5F0]'
+                            : 'text-[#F7F5F0]/50'
                         )}
                       >
                         {stepLabel}
                       </p>
                       {(isActive || isDone) && (
-                        <p className="text-xs text-[#F3F0E8]/70 mt-0.5 animate-fade-in font-light">
+                        <p className="text-xs text-[#F7F5F0]/70 mt-0.5 animate-fade-in font-light">
                           {stepDesc}
                         </p>
                       )}
                     </div>
 
                     {/* Index */}
-                    <span className="text-[11px] font-mono text-[#63D6A2]/70 flex-shrink-0">
+                    <span className="text-[11px] font-mono text-[#A9BBA0]/70 flex-shrink-0">
                       0{idx + 1}
                     </span>
                   </div>
@@ -254,7 +254,7 @@ function AnalysisContent() {
                     <div
                       className={cn(
                         'ml-6 h-2.5 w-0.5 transition-colors duration-300',
-                        isDone ? 'bg-[#63D6A2]/60' : 'bg-white/10'
+                        isDone ? 'bg-[#A9BBA0]/60' : 'bg-white/10'
                       )}
                       aria-hidden="true"
                     />
@@ -266,22 +266,22 @@ function AnalysisContent() {
 
           {/* Progress bar */}
           <div className="mt-8 pt-6 border-t border-white/10">
-            <div className="flex items-center justify-between text-xs font-mono text-[#F3F0E8]/70 mb-2">
+            <div className="flex items-center justify-between text-xs font-mono text-[#F7F5F0]/70 mb-2">
               <span>Engine Progression</span>
-              <span className="text-[#63D6A2]">
+              <span className="text-[#A9BBA0]">
                 {Math.round((completedSteps.length / PIPELINE_STEPS.length) * 100)}%
               </span>
             </div>
-            <div className="h-2 bg-[#0B241A] rounded-full overflow-hidden border border-white/10">
+            <div className="h-2 bg-[#1B3A2B] rounded-full overflow-hidden border border-white/10">
               <div
-                className="h-full bg-gradient-to-r from-[#12382A] via-[#4fa376] to-[#63D6A2] rounded-full transition-all duration-500"
+                className="h-full bg-gradient-to-r from-[#315C45] via-[#718875] to-[#A9BBA0] rounded-full transition-all duration-500"
                 style={{ width: `${(completedSteps.length / PIPELINE_STEPS.length) * 100}%` }}
               />
             </div>
           </div>
         </div>
 
-        <p className="text-center text-xs font-mono text-[#F3F0E8]/50 mt-5">
+        <p className="text-center text-xs font-mono text-[#F7F5F0]/50 mt-5">
           Deterministic verification in progress · Multiple databases being queried
         </p>
       </div>
@@ -293,8 +293,8 @@ export default function AnalysisPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-[#0B241A] flex items-center justify-center">
-          <Loader2 size={32} className="text-[#63D6A2] animate-spin" />
+        <div className="min-h-screen bg-[#1B3A2B] flex items-center justify-center">
+          <Loader2 size={32} className="text-[#A9BBA0] animate-spin" />
         </div>
       }
     >
