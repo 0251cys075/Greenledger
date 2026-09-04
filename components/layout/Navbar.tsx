@@ -25,65 +25,43 @@ export default function Navbar() {
 
   const businessLink = { href: '/business', label: 'Business' };
 
-  const isHero = pathname === '/';
-
   useEffect(() => {
     const onScroll = () => {
       const y = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
-      setScrolled(y > 40);
+      setScrolled(y > 20);
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // When not on hero or when scrolled, show the solid paper navbar
-  const isSolid = !isHero || scrolled || menuOpen;
-
   return (
     <header
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
-        isSolid
-          ? 'bg-[#FCFAF5]/95 backdrop-blur-md border-b border-[#D6D3C8] shadow-sm'
-          : 'bg-transparent border-b border-white/10'
+        scrolled || menuOpen
+          ? 'bg-[#F7F5F0]/92 backdrop-blur-md border-b border-[#D6D3C8]/80 shadow-[0_2px_12px_rgba(27,58,43,0.03)]'
+          : 'bg-[#F7F5F0]/80 backdrop-blur-sm border-b border-[#D6D3C8]/50'
       )}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="flex items-center justify-between h-18">
+        <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 group" aria-label="GreenLedger Home">
-            <div
-              className={cn(
-                'w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-300',
-                isSolid
-                  ? 'bg-[#315C45] border border-[#A9BBA0]/30 text-[#A9BBA0]'
-                  : 'bg-white/15 backdrop-blur-sm border border-white/20 text-white'
-              )}
-            >
-              <ShieldCheck className="w-5 h-5 text-[#A9BBA0]" size={20} />
+            <div className="w-8 h-8 rounded-md bg-[#1B3A2B] text-[#F7F5F0] flex items-center justify-center transition-transform group-hover:scale-105 duration-200">
+              <ShieldCheck className="w-4.5 h-4.5 text-[#A9BBA0]" size={18} strokeWidth={2} />
             </div>
-            <span
-              className={cn(
-                'font-serif text-lg tracking-tight transition-colors',
-                isSolid ? 'text-[#1B3A2B]' : 'text-[#F7F5F0]'
-              )}
-            >
-              Green<span className={isSolid ? 'text-[#315C45]' : 'text-[#A9BBA0]'}>Ledger</span>
-            </span>
-            <span
-              className={cn(
-                'hidden sm:inline-block text-[10px] font-mono uppercase tracking-widest px-1.5 py-0.5 rounded border',
-                isSolid
-                  ? 'bg-[#EFECE4] text-[#718875] border-[#D6D3C8]'
-                  : 'bg-[#A9BBA0]/15 text-[#A9BBA0] border-[#A9BBA0]/25'
-              )}
-            >
-              Trust
-            </span>
+            <div className="flex items-baseline gap-1.5">
+              <span className="font-serif text-[20px] text-[#1B3A2B] tracking-tight">
+                Green<span className="text-[#315C45]">Ledger</span>
+              </span>
+              <span className="hidden sm:inline-block text-[9px] font-mono uppercase tracking-[0.2em] text-[#718875] px-1.5 py-0.5 border border-[#D6D3C8] rounded">
+                Audit
+              </span>
+            </div>
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-1.5" aria-label="Main navigation">
+          <nav className="hidden md:flex items-center gap-1" aria-label="Main navigation">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
               return (
@@ -91,18 +69,10 @@ export default function Navbar() {
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    'px-3.5 py-1.5 rounded-md text-sm font-medium transition-all duration-200',
-                    isSolid
-                      ? cn(
-                          isActive
-                            ? 'text-[#1B3A2B] bg-[#EFECE4]'
-                            : 'text-[#1C1C1C]/80 hover:text-[#1B3A2B] hover:bg-[#EFECE4]'
-                        )
-                      : cn(
-                          isActive
-                            ? 'text-[#A9BBA0] bg-[#315C45]/80'
-                            : 'text-[#F7F5F0]/80 hover:text-[#A9BBA0] hover:bg-white/5'
-                        )
+                    'px-3 py-1.5 rounded text-[13px] tracking-wide transition-all duration-150',
+                    isActive
+                      ? 'text-[#1B3A2B] font-semibold bg-[#EFECE4]'
+                      : 'text-[#1C1C1C]/75 font-medium hover:text-[#1B3A2B] hover:bg-[#EFECE4]/60'
                   )}
                 >
                   {link.label}
@@ -112,66 +82,48 @@ export default function Navbar() {
           </nav>
 
           {/* Right controls */}
-          <div className="hidden md:flex items-center gap-2.5">
-            <LanguageSelector isDarkNavbar={!isSolid} />
+          <div className="hidden md:flex items-center gap-3">
+            <LanguageSelector isDarkNavbar={false} />
+
             <Link
               href="/explore"
               aria-label={t('navbar.search')}
-              className={cn(
-                'p-2 rounded-lg transition-colors',
-                isSolid
-                  ? 'text-[#1C1C1C]/60 hover:text-[#1B3A2B] hover:bg-[#EFECE4]'
-                  : 'text-[#F7F5F0]/70 hover:text-[#A9BBA0] hover:bg-white/5'
-              )}
+              className="p-2 text-[#1C1C1C]/60 hover:text-[#1B3A2B] hover:bg-[#EFECE4]/70 rounded transition-colors"
             >
-              <Search size={18} />
+              <Search size={16} strokeWidth={1.75} />
             </Link>
+
             <Link
               href={businessLink.href}
               className={cn(
-                'flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-sm font-medium transition-all duration-200 border',
-                isSolid
-                  ? cn(
-                      pathname.startsWith('/business')
-                        ? 'text-[#1B3A2B] bg-[#EFECE4] border-[#315C45]/30'
-                        : 'text-[#1C1C1C]/70 hover:text-[#1B3A2B] hover:bg-[#EFECE4] border-transparent'
-                    )
-                  : cn(
-                      pathname.startsWith('/business')
-                        ? 'text-[#A9BBA0] bg-[#315C45]/80 border-[#A9BBA0]/30'
-                        : 'text-[#F7F5F0]/70 hover:text-[#A9BBA0] hover:bg-white/5 border-transparent'
-                    )
+                'flex items-center gap-1.5 px-3 py-1.5 rounded text-[13px] font-medium transition-all duration-150 border',
+                pathname.startsWith('/business')
+                  ? 'text-[#1B3A2B] bg-[#EFECE4] border-[#D6D3C8]'
+                  : 'text-[#1C1C1C]/75 hover:text-[#1B3A2B] hover:bg-[#EFECE4]/50 border-transparent'
               )}
             >
-              <Building2 size={14} />
+              <Building2 size={13} strokeWidth={1.75} />
               {businessLink.label}
             </Link>
+
             <Link
               href="/verify"
-              className={cn(
-                'px-4 py-2 rounded-lg text-sm font-semibold transition-all shadow-sm',
-                isSolid
-                  ? 'bg-[#1B3A2B] text-[#F7F5F0] hover:bg-[#315C45] hover:shadow-md hover:-translate-y-0.5'
-                  : 'bg-[#A9BBA0] text-[#1B3A2B] hover:bg-[#BDCCB2] hover:shadow-md hover:-translate-y-0.5'
-              )}
+              className="inline-flex items-center gap-1.5 bg-[#1B3A2B] text-[#F7F5F0] hover:bg-[#315C45] px-4.5 py-2 rounded-md text-[13px] font-medium tracking-wide transition-all shadow-sm hover:shadow hover:-translate-y-0.5"
             >
-              {t('navbar.verifyClaim')}
+              <span>{t('navbar.verifyClaim')}</span>
             </Link>
           </div>
 
           {/* Mobile menu button */}
           <div className="flex items-center gap-2 md:hidden">
-            <LanguageSelector isDarkNavbar={!isSolid} />
+            <LanguageSelector isDarkNavbar={false} />
             <button
-              className={cn(
-                'p-2 rounded-lg transition-colors',
-                isSolid ? 'text-[#1B3A2B] hover:text-[#315C45]' : 'text-[#F7F5F0] hover:text-[#A9BBA0]'
-              )}
+              className="p-2 text-[#1B3A2B] hover:bg-[#EFECE4] rounded transition-colors"
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label={menuOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={menuOpen}
             >
-              {menuOpen ? <X size={22} /> : <Menu size={22} />}
+              {menuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
         </div>
@@ -179,18 +131,18 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden bg-[#FCFAF5] border-t border-[#D6D3C8] shadow-2xl">
-          <div className="max-w-7xl mx-auto px-6 py-5 flex flex-col gap-1.5">
+        <div className="md:hidden bg-[#F7F5F0] border-t border-[#D6D3C8] shadow-lg">
+          <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col gap-1">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
                 className={cn(
-                  'px-4 py-3 rounded-lg text-sm font-medium transition-all',
+                  'px-3 py-2.5 rounded text-sm font-medium transition-all',
                   pathname === link.href
-                    ? 'text-[#1B3A2B] bg-[#EFECE4]'
-                    : 'text-[#1C1C1C]/85 hover:text-[#1B3A2B] hover:bg-[#EFECE4]'
+                    ? 'text-[#1B3A2B] bg-[#EFECE4] font-semibold'
+                    : 'text-[#1C1C1C]/80 hover:text-[#1B3A2B] hover:bg-[#EFECE4]/60'
                 )}
               >
                 {link.label}
@@ -200,19 +152,19 @@ export default function Navbar() {
               href={businessLink.href}
               onClick={() => setMenuOpen(false)}
               className={cn(
-                'px-4 py-3 rounded-lg text-sm font-medium transition-all flex items-center gap-2',
+                'px-3 py-2.5 rounded text-sm font-medium transition-all flex items-center gap-2',
                 pathname.startsWith('/business')
-                  ? 'text-[#1B3A2B] bg-[#EFECE4]'
-                  : 'text-[#1C1C1C]/85 hover:text-[#1B3A2B] hover:bg-[#EFECE4]'
+                  ? 'text-[#1B3A2B] bg-[#EFECE4] font-semibold'
+                  : 'text-[#1C1C1C]/80 hover:text-[#1B3A2B] hover:bg-[#EFECE4]/60'
               )}
             >
-              <Building2 size={14} /> {businessLink.label}
+              <Building2 size={15} /> {businessLink.label}
             </Link>
-            <div className="pt-4 border-t border-[#D6D3C8] mt-2">
+            <div className="pt-3 border-t border-[#D6D3C8] mt-2">
               <Link
                 href="/verify"
                 onClick={() => setMenuOpen(false)}
-                className="btn-mint w-full justify-center text-center block font-semibold"
+                className="w-full text-center block bg-[#1B3A2B] text-[#F7F5F0] py-2.5 rounded-md text-sm font-medium"
               >
                 {t('navbar.verifyClaim')} →
               </Link>
