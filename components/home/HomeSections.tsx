@@ -20,6 +20,8 @@ import {
   Building2,
   QrCode,
   Lock,
+  Leaf,
+  Users,
 } from 'lucide-react';
 import { StatusBadge } from '@/components/shared/StatusBadge';
 import {
@@ -30,63 +32,84 @@ import {
 import { formatDate } from '@/lib/utils';
 
 // =====================================================================
-// 1. Trust Information Strip (Immediately below hero)
-// Refined, thin horizontal editorial strip with 4 key tenets
+// 1. Trust & Metrics Information Strip (Immediately below hero)
+// Matches reference screenshot: Leaf principle + 4 key metric pillars
 // =====================================================================
 export function ValueStrip() {
-  const items = [
-    {
-      icon: ShieldCheck,
-      label: 'Evidence, Not Opinions',
-      desc: 'Every verdict links directly to verifiable source documentation',
-    },
-    {
-      icon: Eye,
-      label: 'Transparent Process',
-      desc: 'Open methodology, reproducible scores, zero black-box verdicts',
-    },
-    {
-      icon: FileText,
-      label: 'Traceable Results',
-      desc: 'Immutable audit records published openly for consumers and industry',
-    },
-    {
-      icon: BarChart3,
-      label: 'Better Decisions',
-      desc: 'Objective standards to distinguish genuine impact from marketing',
-    },
-  ];
-
   return (
     <section
-      className="bg-[#FCFAF5] border-b border-[#D6D3C8]/70 py-7"
-      aria-label="Core principles"
+      className="bg-[#FCFAF5] border-b border-[#D6D3C8]/70 py-6"
+      aria-label="Core verification metrics"
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 divide-y sm:divide-y-0 sm:divide-x divide-[#D6D3C8]/50">
-          {items.map((item, idx) => (
-            <div
-              key={item.label}
-              className={`flex items-start gap-3.5 ${idx > 0 ? 'sm:pl-6 pt-4 sm:pt-0' : ''}`}
-            >
-              <div className="w-8 h-8 rounded bg-[#EFECE4] border border-[#D6D3C8] flex items-center justify-center shrink-0 mt-0.5">
-                <item.icon size={16} className="text-[#1B3A2B]" strokeWidth={1.75} />
-              </div>
-              <div>
-                <h2 className="text-[13px] font-semibold text-[#1C1C1C] tracking-tight">
-                  {item.label}
-                </h2>
-                <p className="text-[12px] text-[#718875] leading-relaxed mt-0.5">
-                  {item.desc}
-                </p>
-              </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-6 lg:gap-0 items-center divide-y sm:divide-y-0 lg:divide-x divide-[#D6D3C8]/70">
+          {/* 1: Leaf Principle Statement (lg: 4 cols) */}
+          <div className="lg:col-span-4 flex items-center gap-3.5 lg:pr-8">
+            <div className="w-10 h-10 rounded-full bg-[#1B3A2B] text-[#A9BBA0] flex items-center justify-center shrink-0 shadow-xs">
+              <Leaf size={18} strokeWidth={2} />
             </div>
-          ))}
+            <span className="text-[13.5px] font-semibold text-[#1C1C1C] leading-snug">
+              We verify claims against evidence — not opinions.
+            </span>
+          </div>
+
+          {/* 2: Claims Verified (lg: 2 cols) */}
+          <div className="lg:col-span-2 flex items-center gap-3 lg:px-6 pt-4 sm:pt-0">
+            <FileText size={22} className="text-[#1B3A2B] shrink-0" strokeWidth={1.6} />
+            <div>
+              <span className="font-serif text-[22px] font-bold text-[#1C1C1C] block leading-none">
+                12.4K+
+              </span>
+              <span className="text-[11px] font-mono text-[#718875] tracking-wide mt-1 block">
+                Claims Verified
+              </span>
+            </div>
+          </div>
+
+          {/* 3: Verified (lg: 2 cols) */}
+          <div className="lg:col-span-2 flex items-center gap-3 lg:px-6 pt-4 sm:pt-0">
+            <ShieldCheck size={22} className="text-[#3E7D4F] shrink-0" strokeWidth={1.8} />
+            <div>
+              <span className="font-serif text-[22px] font-bold text-[#1C1C1C] block leading-none">
+                4.8K+
+              </span>
+              <span className="text-[11px] font-mono text-[#718875] tracking-wide mt-1 block">
+                Verified
+              </span>
+            </div>
+          </div>
+
+          {/* 4: Sources Analyzed (lg: 2 cols) */}
+          <div className="lg:col-span-2 flex items-center gap-3 lg:px-6 pt-4 sm:pt-0">
+            <Layers size={22} className="text-[#1B3A2B] shrink-0" strokeWidth={1.6} />
+            <div>
+              <span className="font-serif text-[22px] font-bold text-[#1C1C1C] block leading-none">
+                8.6K+
+              </span>
+              <span className="text-[11px] font-mono text-[#718875] tracking-wide mt-1 block">
+                Sources Analyzed
+              </span>
+            </div>
+          </div>
+
+          {/* 5: Public Audit Records (lg: 2 cols) */}
+          <div className="lg:col-span-2 flex items-center gap-3 lg:pl-6 pt-4 sm:pt-0">
+            <Users size={22} className="text-[#1B3A2B] shrink-0" strokeWidth={1.6} />
+            <div>
+              <span className="font-serif text-[22px] font-bold text-[#1C1C1C] block leading-none">
+                3.2K+
+              </span>
+              <span className="text-[11px] font-mono text-[#718875] tracking-wide mt-1 block">
+                Public Audit Records
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
   );
 }
+
 
 // =====================================================================
 // 2. Trust Problem Section: Investigative Claims Dossier
