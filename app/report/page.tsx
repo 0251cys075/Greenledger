@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { Upload, CheckCircle2, ShieldAlert, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Upload, CheckCircle2, ShieldAlert, ArrowLeft, ArrowRight, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const REASONS = [
@@ -14,7 +15,8 @@ const REASONS = [
   'Other governance or transparency concern',
 ];
 
-export default function ReportPage() {
+function ReportFormContent() {
+  const searchParams = useSearchParams();
   const [form, setForm] = useState({
     brand: '',
     claim: '',
@@ -23,6 +25,18 @@ export default function ReportPage() {
   });
   const [submitted, setSubmitted] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
+
+  useEffect(() => {
+    const claimParam = searchParams.get('claim') || '';
+    const brandParam = searchParams.get('brand') || '';
+    if (claimParam || brandParam) {
+      setForm((prev) => ({
+        ...prev,
+        claim: claimParam || prev.claim,
+        brand: brandParam || prev.brand,
+      }));
+    }
+  }, [searchParams]);
 
   function handleChange(field: string, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -203,5 +217,19 @@ export default function ReportPage() {
         </form>
       </div>
     </div>
+  );
+}
+
+export default function ReportPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-[#F3F0E8] flex items-center justify-center">
+          <Loader2 size={32} className="text-[#12382A] animate-spin" />
+        </div>
+      }
+    >
+      <ReportFormContent />
+    </Suspense>
   );
 }

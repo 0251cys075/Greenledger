@@ -192,7 +192,10 @@ export default function EvidencePage() {
           <Link href={`/result/${id}`} className="btn-primary">
             Back to Result Summary
           </Link>
-          <Link href="/report" className="btn-secondary">
+          <Link
+            href={`/report?claim=${encodeURIComponent(result.claim_text)}`}
+            className="btn-secondary"
+          >
             Report Inaccuracy to Governance
           </Link>
         </div>

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { ArrowLeft, ArrowRight, BookOpen, Download, Flag, ExternalLink, ShieldCheck, CheckCircle2, AlertCircle } from 'lucide-react';
 import { MOCK_RESULTS } from '@/lib/mock-data';
+import { runVerification } from '@/lib/verification-engine';
 import type { VerificationResult } from '@/lib/types';
 import { StatusHero, EvidenceStrengthBar, StatusBadge } from '@/components/shared/StatusBadge';
 import { getAssessmentIcon, formatDate, cn } from '@/lib/utils';
@@ -53,13 +54,24 @@ export default function ResultPage() {
     } else {
       const claim = typeof window !== 'undefined' ? sessionStorage.getItem('gl_claim') : null;
       if (claim) {
-        setResult({ ...MOCK_RESULTS['demo-1'], claim_text: claim, id: 'custom' });
+        runVerification(claim).then((res) => {
+          setResult({
+            ...res,
+            product_name: 'Custom Product Submission',
+            brand: 'Self-Submitted Claim',
+            category: 'General Consumer Good',
+            sources: res.sources.length > 0 ? res.sources : MOCK_RESULTS['demo-1'].sources,
+          });
+        });
       }
     }
   }, [id]);
 
   function handleSave() {
     setSaved(true);
+    if (typeof window !== 'undefined') {
+      window.print();
+    }
     setTimeout(() => setSaved(false), 3000);
   }
 
@@ -131,7 +143,10 @@ export default function ResultPage() {
                 <Download size={16} />
                 {saved ? 'Audit Record Saved!' : 'Save Verification PDF'}
               </button>
-              <Link href="/report" className="btn-ghost w-full justify-center text-xs">
+              <Link
+                href={`/report?claim=${encodeURIComponent(result.claim_text)}&brand=${encodeURIComponent(result.brand || result.product_name || '')}`}
+                className="btn-ghost w-full justify-center text-xs"
+              >
                 <Flag size={14} />
                 Report Inaccuracy to Governance
               </Link>

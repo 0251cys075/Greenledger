@@ -14,7 +14,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { StatusBadge } from '@/components/shared/StatusBadge';
-import { PLATFORM_METRICS, COMMUNITY_LEDGER, EXPLORE_PRODUCTS } from '@/lib/mock-data';
+import { PLATFORM_METRICS, COMMUNITY_LEDGER, EXPLORE_PRODUCTS, getResultIdForStatus } from '@/lib/mock-data';
 import { formatNumber, formatDate } from '@/lib/utils';
 
 // =====================================================================
@@ -72,9 +72,11 @@ export function ProblemSection() {
           <div className="lg:col-span-6 relative">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
               {claims.map((item, i) => (
-                <div
+                <Link
                   key={i}
-                  className="card-cream p-4 flex items-start gap-3 border border-[#C8CEC5] shadow-sm hover:shadow-md transition-all"
+                  href={`/verify?claim=${encodeURIComponent(item.text.replace(/"/g, ''))}`}
+                  className="card-cream p-4 flex items-start gap-3 border border-[#C8CEC5] shadow-sm hover:shadow-md hover:border-[#12382A] transition-all group cursor-pointer"
+                  title="Click to test verification for this claim"
                 >
                   <div
                     className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
@@ -83,16 +85,26 @@ export function ProblemSection() {
                   >
                     <AlertTriangle size={13} />
                   </div>
-                  <div>
-                    <span className="text-sm font-medium text-[#102019] block leading-snug">{item.text}</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-1">
+                      <span className="text-sm font-medium text-[#102019] group-hover:text-[#12382A] block leading-snug truncate">
+                        {item.text}
+                      </span>
+                      <span className="text-[10px] text-[#12382A] opacity-0 group-hover:opacity-100 transition-opacity font-mono font-semibold flex-shrink-0">
+                        Test →
+                      </span>
+                    </div>
                     <span className="text-[11px] font-mono text-[#718078] mt-0.5 block">{item.warn}</span>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
 
             {/* Overlaid preview badge */}
-            <div className="mt-4 sm:absolute sm:-bottom-6 sm:-right-4 card-cream p-5 rounded-xl max-w-xs shadow-xl border-2 border-[#12382A]/20 bg-[#FAF8F3]">
+            <Link
+              href="/result/demo-1"
+              className="mt-4 sm:absolute sm:-bottom-6 sm:-right-4 card-cream p-5 rounded-xl max-w-xs shadow-xl border-2 border-[#12382A]/20 bg-[#FAF8F3] block hover:border-[#12382A] hover:shadow-2xl transition-all group cursor-pointer"
+            >
               <div className="flex items-center justify-between mb-2">
                 <span className="text-[11px] font-mono uppercase text-[#718078]">GreenLedger Verdict</span>
                 <span className="w-2 h-2 rounded-full bg-[#C95C5C] animate-ping" />
@@ -101,7 +113,11 @@ export function ProblemSection() {
               <p className="text-xs text-[#102019] mt-2.5 leading-snug">
                 <strong>No independent evidence:</strong> &ldquo;100% Eco-Friendly&rdquo; lacks third-party life-cycle certification.
               </p>
-            </div>
+              <div className="pt-2 border-t border-[#C8CEC5] mt-2 flex items-center justify-between text-[11px] font-mono text-[#12382A] font-semibold">
+                <span>Inspect Audit Case</span>
+                <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
+              </div>
+            </Link>
           </div>
         </div>
       </div>
@@ -119,30 +135,35 @@ export function HowItWorksSection() {
       icon: <Upload size={20} />,
       title: 'Scan / Upload',
       desc: 'Enter claim text, paste advertising copy, or upload product label photo.',
+      href: '/verify',
     },
     {
       num: '02',
       icon: <Search size={20} />,
       title: 'Extract Claim',
       desc: 'Classifier isolates specific environmental attributes, scope, and metric units.',
+      href: '/verify',
     },
     {
       num: '03',
       icon: <BookOpen size={20} />,
       title: 'Check Evidence',
       desc: 'Disclosures, EU Ecolabel, FSC, GRS, and verified life-cycle data are cross-referenced.',
+      href: '/explore',
     },
     {
       num: '04',
       icon: <ShieldCheck size={20} />,
       title: 'Verify',
       desc: 'Deterministic rules engine evaluates evidence relevance, match, and independence.',
+      href: '/about#methodology',
     },
     {
       num: '05',
       icon: <Eye size={20} />,
       title: 'Understand',
       desc: 'Receive transparent verdict with complete audit trail, reasons, and missing proof.',
+      href: '/result/demo-1',
     },
   ];
 
@@ -165,7 +186,11 @@ export function HowItWorksSection() {
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-5 relative">
           {steps.map((step, i) => (
             <div key={i} className="relative flex flex-col">
-              <div className="card-dark p-6 flex-1 flex flex-col justify-between relative overflow-hidden group hover:border-[#63D6A2]/50 transition-all">
+              <Link
+                href={step.href}
+                className="card-dark p-6 flex-1 flex flex-col justify-between relative overflow-hidden group hover:border-[#63D6A2]/50 hover:bg-[#0e2f23] transition-all cursor-pointer block"
+                title={`Learn about Stage ${i + 1}: ${step.title}`}
+              >
                 {/* Glowing top line */}
                 <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#63D6A2]/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
@@ -174,19 +199,19 @@ export function HowItWorksSection() {
                     <span className="font-mono text-xs text-[#63D6A2] font-semibold tracking-wider">
                       {step.num}
                     </span>
-                    <div className="w-10 h-10 rounded-lg bg-[#0B241A] border border-[#63D6A2]/25 text-[#63D6A2] flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-lg bg-[#0B241A] border border-[#63D6A2]/25 text-[#63D6A2] flex items-center justify-center group-hover:border-[#63D6A2]/60 transition-colors">
                       {step.icon}
                     </div>
                   </div>
-                  <h3 className="font-serif text-lg text-[#F3F0E8] mb-2">{step.title}</h3>
+                  <h3 className="font-serif text-lg text-[#F3F0E8] group-hover:text-[#63D6A2] transition-colors mb-2">{step.title}</h3>
                   <p className="text-xs text-[#F3F0E8]/70 leading-relaxed">{step.desc}</p>
                 </div>
 
                 <div className="mt-6 pt-3 border-t border-white/10 flex items-center justify-between text-[11px] font-mono text-[#63D6A2]/80">
                   <span>Stage {i + 1}</span>
-                  <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                  <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform text-[#63D6A2]" />
                 </div>
-              </div>
+              </Link>
             </div>
           ))}
         </div>
@@ -604,6 +629,14 @@ export function ESGSection() {
                   </div>
                 ))}
               </div>
+
+              {/* Working CTA link to full ESG evidence page */}
+              <div className="mt-6 pt-5 border-t border-white/10 flex items-center justify-between flex-wrap gap-3">
+                <span className="text-xs font-mono text-[#F3F0E8]/70">Sample Dataset: EcoPack Mailer Box</span>
+                <Link href="/evidence/demo-3" className="btn-mint text-xs py-2 px-3.5 flex items-center gap-1.5 font-semibold">
+                  Inspect Complete ESG Dossier <ArrowRight size={13} />
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -664,10 +697,10 @@ export function CommunityLedgerSection() {
                 <span className="hidden md:inline">{entry.evidence_strength.toLowerCase()} evidence</span>
                 <span>{formatDate(entry.verified_at)}</span>
                 <Link
-                  href="/result/demo-1"
-                  className="text-[#12382A] font-semibold hover:text-[#0B241A] flex items-center gap-1"
+                  href={`/result/${getResultIdForStatus(entry.status)}`}
+                  className="text-[#12382A] font-semibold hover:text-[#0B241A] flex items-center gap-1 group"
                 >
-                  Inspect <ArrowRight size={13} />
+                  Inspect <ArrowRight size={13} className="group-hover:translate-x-0.5 transition-transform" />
                 </Link>
               </div>
             </div>

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Search, ShieldCheck, Database, FileCheck } from 'lucide-react';
-import { COMMUNITY_LEDGER } from '@/lib/mock-data';
+import { COMMUNITY_LEDGER, getResultIdForStatus } from '@/lib/mock-data';
 import { StatusBadge } from '@/components/shared/StatusBadge';
 import type { VerificationStatus } from '@/lib/types';
 import { formatRelativeDate, formatDate, cn } from '@/lib/utils';
@@ -142,10 +142,10 @@ export default function LedgerPage() {
                   {/* Link */}
                   <div className="text-left md:text-right">
                     <Link
-                      href="/result/demo-1"
-                      className="inline-flex items-center gap-1 text-xs font-semibold text-[#12382A] hover:text-[#0B241A]"
+                      href={`/result/${getResultIdForStatus(entry.status)}`}
+                      className="inline-flex items-center gap-1 text-xs font-semibold text-[#12382A] hover:text-[#0B241A] group"
                     >
-                      Audit Record <ArrowRight size={12} />
+                      Audit Record <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
                     </Link>
                   </div>
                 </div>

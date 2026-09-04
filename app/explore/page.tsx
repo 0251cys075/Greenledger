@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { Search, ArrowRight, Filter, ShieldCheck } from 'lucide-react';
+import { Search, ArrowRight, Filter, ShieldCheck, X, Loader2 } from 'lucide-react';
 import { EXPLORE_PRODUCTS } from '@/lib/mock-data';
 import { StatusBadge } from '@/components/shared/StatusBadge';
 import type { VerificationStatus } from '@/lib/types';
@@ -16,10 +17,28 @@ const STATUSES: { label: string; value: VerificationStatus | 'ALL' }[] = [
   { label: 'Potential Greenwashing', value: 'POTENTIAL_GREENWASHING' },
 ];
 
-export default function ExplorePage() {
+function ExploreContent() {
+  const searchParams = useSearchParams();
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
   const [status, setStatus] = useState<VerificationStatus | 'ALL'>('ALL');
+
+  useEffect(() => {
+    const q = searchParams.get('q') || searchParams.get('search');
+    const cat = searchParams.get('category');
+    const stat = searchParams.get('status') as VerificationStatus;
+    if (q) setSearch(q);
+    if (cat && CATEGORIES.includes(cat)) setCategory(cat);
+    if (stat && ['VERIFIED', 'INSUFFICIENT_EVIDENCE', 'POTENTIAL_GREENWASHING'].includes(stat)) {
+      setStatus(stat);
+    }
+  }, [searchParams]);
+
+  function handleResetFilters() {
+    setSearch('');
+    setCategory('All');
+    setStatus('ALL');
+  }
 
   const filtered = EXPLORE_PRODUCTS.filter((p) => {
     const matchSearch =
@@ -129,7 +148,13 @@ export default function ExplorePage() {
           <div className="text-center py-20 card-cream border border-[#C8CEC5] rounded-2xl">
             <Search size={36} className="text-[#718078] mx-auto mb-3 opacity-60" />
             <h3 className="font-serif text-xl text-[#102019] mb-1">No matching claims found</h3>
-            <p className="text-xs text-[#718078] font-mono">Try adjusting your keywords or clearing the category filters.</p>
+            <p className="text-xs text-[#718078] font-mono mb-4">Try adjusting your keywords or clearing the category filters.</p>
+            <button
+              onClick={handleResetFilters}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#12382A] text-[#F3F0E8] text-xs font-mono hover:bg-[#1B4D3A] transition-colors"
+            >
+              <X size={14} /> Reset all filters
+            </button>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -169,5 +194,20 @@ export default function ExplorePage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function ExplorePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-[#F3F0E8] pt-32 pb-20 flex flex-col items-center justify-center">
+          <Loader2 className="animate-spin text-[#12382A] mb-3" size={32} />
+          <p className="text-sm font-mono text-[#718078]">Loading verified claims directory...</p>
+        </div>
+      }
+    >
+      <ExploreContent />
+    </Suspense>
   );
 }

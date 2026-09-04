@@ -50,7 +50,7 @@ const evidenceBank: Record<string, Evidence[]> = {
       claim_id: 'demo-1',
       source_name: 'EcoHome Co. Sustainability Report 2023',
       source_type: 'SUSTAINABILITY_REPORT',
-      source_url: '#',
+      source_url: 'https://www.unglobalcompact.org/participation/report/cop',
       source_date: '2023-12-01',
       relevance: 'HIGH',
       excerpt: 'The company reports broad environmental commitments but provides no specific metrics for this product line.',
@@ -61,7 +61,7 @@ const evidenceBank: Record<string, Evidence[]> = {
       claim_id: 'demo-1',
       source_name: 'EU Ecolabel Certification Database',
       source_type: 'CERTIFICATION',
-      source_url: '#',
+      source_url: 'https://ec.europa.eu/environment/ecolabel/',
       source_date: '2024-01-15',
       relevance: 'MEDIUM',
       excerpt: 'No active certification found for this product in the EU Ecolabel registry.',
@@ -72,7 +72,7 @@ const evidenceBank: Record<string, Evidence[]> = {
       claim_id: 'demo-1',
       source_name: 'ISO 14021 Environmental Claims Standard',
       source_type: 'ENVIRONMENTAL_STANDARD',
-      source_url: '#',
+      source_url: 'https://www.iso.org/standard/66652.html',
       source_date: '2021-06-01',
       relevance: 'HIGH',
       excerpt: 'ISO 14021 requires that broad claims such as "eco-friendly" be supported by specific, verifiable evidence.',
@@ -85,7 +85,7 @@ const evidenceBank: Record<string, Evidence[]> = {
       claim_id: 'demo-2',
       source_name: 'PackRight Solutions Annual Report 2023',
       source_type: 'SUSTAINABILITY_REPORT',
-      source_url: '#',
+      source_url: 'https://www.globalreporting.org/standards/',
       source_date: '2023-11-20',
       relevance: 'MEDIUM',
       excerpt: 'Report references recycled material use, but product-specific breakdowns are not disclosed.',
@@ -96,7 +96,7 @@ const evidenceBank: Record<string, Evidence[]> = {
       claim_id: 'demo-2',
       source_name: 'GRS (Global Recycled Standard) Registry',
       source_type: 'CERTIFICATION',
-      source_url: '#',
+      source_url: 'https://textileexchange.org/standards/recycled-claim-standard-global-recycled-standard/',
       source_date: '2024-02-10',
       relevance: 'HIGH',
       excerpt: 'No active GRS certification found for PackRight Solutions as of the verification date.',
@@ -107,7 +107,7 @@ const evidenceBank: Record<string, Evidence[]> = {
       claim_id: 'demo-2',
       source_name: 'ISO 14021 Recycled Content Claims',
       source_type: 'ENVIRONMENTAL_STANDARD',
-      source_url: '#',
+      source_url: 'https://www.iso.org/standard/66652.html',
       source_date: '2021-06-01',
       relevance: 'MEDIUM',
       excerpt: 'Recycled content claims must be verifiable and based on actual post-consumer or pre-consumer material composition.',
@@ -120,7 +120,7 @@ const evidenceBank: Record<string, Evidence[]> = {
       claim_id: 'demo-3',
       source_name: 'GreenPack Industries Sustainability Report 2024',
       source_type: 'SUSTAINABILITY_REPORT',
-      source_url: '#',
+      source_url: 'https://www.globalreporting.org/standards/',
       source_date: '2024-01-30',
       relevance: 'HIGH',
       excerpt: 'Product packaging is certified to contain 80% post-consumer recycled paper, validated by FSC certification.',
@@ -131,7 +131,7 @@ const evidenceBank: Record<string, Evidence[]> = {
       claim_id: 'demo-3',
       source_name: 'FSC Chain of Custody Certification',
       source_type: 'CERTIFICATION',
-      source_url: '#',
+      source_url: 'https://fsc.org/en/fsc-public-dashboard',
       source_date: '2024-03-01',
       relevance: 'HIGH',
       excerpt: 'GreenPack Industries holds an active FSC Chain of Custody certificate (FSC-C123456) covering this product line.',
@@ -142,7 +142,7 @@ const evidenceBank: Record<string, Evidence[]> = {
       claim_id: 'demo-3',
       source_name: 'Third-Party Material Composition Audit',
       source_type: 'THIRD_PARTY_AUDIT',
-      source_url: '#',
+      source_url: 'https://www.intertek.com/sustainability/auditing/',
       source_date: '2023-12-15',
       relevance: 'HIGH',
       excerpt: 'Independent laboratory analysis confirmed 82% recycled paper content by weight, consistent with the 80% claim.',
@@ -342,6 +342,12 @@ export const COMMUNITY_LEDGER: LedgerEntry[] = [
     category: 'Electronics',
   },
 ];
+
+export function getResultIdForStatus(status: import('./types').VerificationStatus): string {
+  if (status === 'VERIFIED') return 'demo-3';
+  if (status === 'INSUFFICIENT_EVIDENCE') return 'demo-2';
+  return 'demo-1';
+}
 
 // ── Explore Products (with verification data) ──────────────
 export interface ExploreProduct {
