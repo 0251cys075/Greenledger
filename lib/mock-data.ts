@@ -176,11 +176,37 @@ const assessmentsBank: Record<string, EvidenceAssessmentItem[]> = {
 };
 
 // ── Full Verification Results ──────────────────────────────
+import {
+  extractStructuredClaim,
+  retrieveAuditedEvidence,
+  validateSources,
+  runRulesEngine,
+  buildAuditTrail,
+} from './evidence-engine';
+
+const demo1Claim = extractStructuredClaim('100% Eco-Friendly', 'Multi-Surface Plant-Based Cleaner', 'EcoHome Co.');
+const demo1Records = validateSources(retrieveAuditedEvidence(demo1Claim));
+const demo1Rules = runRulesEngine(demo1Claim, demo1Records);
+const demo1Audit = buildAuditTrail(demo1Claim, demo1Records, demo1Rules);
+
+const demo2Claim = extractStructuredClaim('Made with 70% recycled material', 'Recycled Air Bubble Packaging Rolls', 'PackRight Solutions');
+const demo2Records = validateSources(retrieveAuditedEvidence(demo2Claim));
+const demo2Rules = runRulesEngine(demo2Claim, demo2Records);
+const demo2Audit = buildAuditTrail(demo2Claim, demo2Records, demo2Rules);
+
+const demo3Claim = extractStructuredClaim('Product packaging contains 80% recycled paper', 'EcoPack Corrugated Mailer Box', 'GreenPack Industries');
+const demo3Records = validateSources(retrieveAuditedEvidence(demo3Claim));
+const demo3Rules = runRulesEngine(demo3Claim, demo3Records);
+const demo3Audit = buildAuditTrail(demo3Claim, demo3Records, demo3Rules);
+
 export const MOCK_RESULTS: Record<string, VerificationResult> = {
   'demo-1': {
     id: 'result-demo-1',
     claim_id: 'demo-1',
     claim_text: '100% Eco-Friendly',
+    product_name: 'Multi-Surface Plant-Based Cleaner',
+    brand: 'EcoHome Co.',
+    category: 'Household Products',
     status: 'POTENTIAL_GREENWASHING',
     evidence_strength: 'WEAK',
     scores: {
@@ -197,12 +223,18 @@ export const MOCK_RESULTS: Record<string, VerificationResult> = {
       'To move toward a verified status, the company would need to: (1) specify which environmental aspects the claim refers to (e.g., materials, emissions, packaging), (2) provide measurable metrics such as lifecycle analysis data, (3) obtain independent certification from a recognised body such as EU Ecolabel, and (4) make supporting evidence publicly accessible.',
     evidence_assessment: assessmentsBank['demo-1'],
     sources: evidenceBank['demo-1'],
+    structured_claim: demo1Claim,
+    evidence_records: demo1Records,
+    audit_trail: demo1Audit,
     verified_at: new Date().toISOString(),
   },
   'demo-2': {
     id: 'result-demo-2',
     claim_id: 'demo-2',
     claim_text: 'Made with 70% recycled material',
+    product_name: 'Recycled Air Bubble Packaging Rolls',
+    brand: 'PackRight Solutions',
+    category: 'Packaging',
     status: 'INSUFFICIENT_EVIDENCE',
     evidence_strength: 'MODERATE',
     scores: {
@@ -219,12 +251,18 @@ export const MOCK_RESULTS: Record<string, VerificationResult> = {
       'To verify this claim, the following evidence is needed: (1) Global Recycled Standard (GRS) or equivalent certification covering this product, (2) product-specific material composition disclosure, (3) a third-party material audit, and (4) supply chain documentation tracing recycled input materials.',
     evidence_assessment: assessmentsBank['demo-2'],
     sources: evidenceBank['demo-2'],
+    structured_claim: demo2Claim,
+    evidence_records: demo2Records,
+    audit_trail: demo2Audit,
     verified_at: new Date().toISOString(),
   },
   'demo-3': {
     id: 'result-demo-3',
     claim_id: 'demo-3',
     claim_text: 'Product packaging contains 80% recycled paper',
+    product_name: 'EcoPack Corrugated Mailer Box',
+    brand: 'GreenPack Industries',
+    category: 'Packaging',
     status: 'VERIFIED',
     evidence_strength: 'STRONG',
     scores: {
@@ -241,6 +279,9 @@ export const MOCK_RESULTS: Record<string, VerificationResult> = {
       'No significant gaps identified. For continued verification, periodic re-auditing of material composition and maintenance of FSC certification renewal is recommended.',
     evidence_assessment: assessmentsBank['demo-3'],
     sources: evidenceBank['demo-3'],
+    structured_claim: demo3Claim,
+    evidence_records: demo3Records,
+    audit_trail: demo3Audit,
     verified_at: new Date().toISOString(),
   },
 };

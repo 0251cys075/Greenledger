@@ -15,7 +15,81 @@ export type ClaimType =
   | 'ZERO_WASTE'
   | 'OTHER';
 
-export type SourceType = 'SUSTAINABILITY_REPORT' | 'CERTIFICATION' | 'ENVIRONMENTAL_STANDARD' | 'REGULATORY' | 'THIRD_PARTY_AUDIT' | 'COMPANY_CLAIM';
+export type SourceType =
+  | 'SUSTAINABILITY_REPORT'
+  | 'CERTIFICATION'
+  | 'ENVIRONMENTAL_STANDARD'
+  | 'REGULATORY'
+  | 'THIRD_PARTY_AUDIT'
+  | 'COMPANY_CLAIM'
+  | 'certification_registry'
+  | 'third_party_audit'
+  | 'laboratory_report'
+  | 'esg_sustainability_report'
+  | 'government_public_database'
+  | 'company_documentation'
+  | 'marketing_material';
+
+export type EvidenceSourceType =
+  | 'certification_registry'
+  | 'third_party_audit'
+  | 'laboratory_report'
+  | 'esg_sustainability_report'
+  | 'government_public_database'
+  | 'company_documentation'
+  | 'marketing_material'
+  | SourceType;
+
+export type SourceReliabilityLevel =
+  | 'TIER_1_CERTIFIED'       // Independent certification registry, neutral public database, ISO accredited lab
+  | 'TIER_2_AUDITED'         // Independent third-party audit, accredited LCA
+  | 'TIER_3_SELF_REPORTED';   // Corporate ESG report, internal declaration, marketing material
+
+export interface StructuredClaim {
+  claimText: string;
+  product?: string;
+  brand?: string;
+  material?: string;
+  percentage?: number;
+  environmentalAttribute: string;
+  certificationMentioned?: string;
+  measurableMetric?: string;
+  scope?: 'packaging' | 'product' | 'manufacturing' | 'company-wide';
+}
+
+export interface EvidenceRecord {
+  id?: string;
+  sourceName: string;
+  sourceType: EvidenceSourceType;
+  sourceURL?: string;
+  evidenceText: string;
+  publicationDate: string;
+  verificationDate: string;
+  reliabilityLevel: SourceReliabilityLevel;
+  productMatch: 'EXACT' | 'PRODUCT_LINE' | 'BRAND_LEVEL' | 'UNMATCHED';
+  claimMatch: 'CONFIRMS' | 'PARTIAL' | 'CONTRADICTS' | 'INSUFFICIENT';
+  findings?: {
+    confirmedPercentage?: number;
+    standardReferenced?: string;
+  };
+}
+
+export interface VerificationRuleTrigger {
+  ruleId: string;
+  ruleName: string;
+  passed: boolean;
+  severity: 'CRITICAL' | 'MAJOR' | 'INFO';
+  description: string;
+}
+
+export interface AuditTrail {
+  claim: StructuredClaim;
+  evidenceSources: EvidenceRecord[];
+  rulesTriggered: VerificationRuleTrigger[];
+  evidenceStrength: EvidenceStrength;
+  finalVerdict: VerificationStatus;
+  timestamp: string;
+}
 
 export type EvidenceStrength = 'STRONG' | 'MODERATE' | 'WEAK' | 'NONE';
 
@@ -88,6 +162,9 @@ export interface VerificationResult {
   product_name?: string;
   brand?: string;
   category?: string;
+  structured_claim?: StructuredClaim;
+  evidence_records?: EvidenceRecord[];
+  audit_trail?: AuditTrail;
 }
 
 export interface EvidenceAssessmentItem {

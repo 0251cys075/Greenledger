@@ -204,6 +204,16 @@ export function generateExplanation(
   };
 }
 
+import {
+  extractStructuredClaim,
+  identifyProduct,
+  retrieveAuditedEvidence,
+  validateSources,
+  runRulesEngine,
+  buildAuditTrail,
+  convertToLegacyEvidence,
+} from './evidence-engine';
+
 // ── MASTER: Run Full Verification Pipeline ────────────────
 // In demo mode: return pre-computed mock results for demo claims
 // In production mode: run each step against real APIs
@@ -237,83 +247,101 @@ export async function runVerification(
     );
   }
 
-  // LIVE MODE: run the modular pipeline
-  const claim = extractClaim(claimText);
-  const evidence = retrieveEvidence(claim);
-  const matching = matchClaimToEvidence(claim);
+  // ARCHITECTURE STEP 1: Structured Claim Extraction
+  const structured_claim = extractStructuredClaim(claimText);
 
-  const scores: VerificationScores = {
-    ...matching,
-    ...evidence,
-    total:
-      matching.claim_specificity +
-      evidence.evidence_availability +
-      evidence.certification_status +
-      evidence.source_reliability +
-      matching.claim_evidence_match,
-  };
+  // ARCHITECTURE STEP 2: Product Identification
+  const productInfo = identifyProduct(claimText);
 
-  const status = applyVerificationRules(scores, claim);
-  const evidence_strength = calculateEvidenceStrength(scores);
-  const { reason, what_is_missing } = generateExplanation(status, claim, scores);
+  // ARCHITECTURE STEP 3: Audited Evidence Retrieval
+  // NEVER fill missing evidence with AI-generated assumptions!
+  const retrievedEvidence = retrieveAuditedEvidence(structured_claim);
+
+  // ARCHITECTURE STEP 4: Source Validation & Reliability Classification
+  const validatedEvidence = validateSources(retrievedEvidence);
+
+  // ARCHITECTURE STEP 5: Defensible Rules Engine Evaluation
+  // Strictly rules-driven: LLM provides structured analysis; Rules Engine determines final verdict
+  const rulesResult = runRulesEngine(structured_claim, validatedEvidence);
+
+  // ARCHITECTURE STEP 6: Defensible Audit Trail Construction
+  const audit_trail = buildAuditTrail(structured_claim, validatedEvidence, rulesResult);
 
   const resultId = `result-${Date.now()}`;
+  const legacySources = convertToLegacyEvidence(validatedEvidence, resultId);
+
+  const hasTier1 = validatedEvidence.some((e) => e.reliabilityLevel === 'TIER_1_CERTIFIED');
+  const hasTier2 = validatedEvidence.some((e) => e.reliabilityLevel === 'TIER_2_AUDITED');
+  const hasCert = validatedEvidence.some((e) => e.sourceType === 'certification_registry');
+
+  const scores: VerificationScores = {
+    claim_specificity: structured_claim.percentage !== undefined ? 3 : structured_claim.material ? 2 : 1,
+    evidence_availability: validatedEvidence.length >= 3 ? 3 : validatedEvidence.length > 0 ? 2 : 0,
+    certification_status: hasCert ? 2 : 0,
+    source_reliability: hasTier1 ? 2 : hasTier2 ? 1 : 0,
+    claim_evidence_match: rulesResult.verdict === 'VERIFIED' ? 3 : rulesResult.verdict === 'INSUFFICIENT_EVIDENCE' ? 1 : 0,
+    total: 0,
+  };
+  scores.total =
+    scores.claim_specificity +
+    scores.evidence_availability +
+    scores.certification_status +
+    scores.source_reliability +
+    scores.claim_evidence_match;
 
   return {
     id: resultId,
     claim_id: `claim-${Date.now()}`,
     claim_text: claimText,
-    status,
-    evidence_strength,
+    status: rulesResult.verdict,
+    evidence_strength: rulesResult.evidenceStrength,
     scores,
-    reason,
-    what_is_missing,
+    reason: rulesResult.explanation,
+    what_is_missing: rulesResult.whatIsMissing,
     evidence_assessment: [
       {
         label: 'Specific environmental criteria',
-        status: claim.specificity_level === 'HIGH' ? 'PASS' : claim.specificity_level === 'MEDIUM' ? 'WARN' : 'FAIL',
-        detail: claim.specificity_level === 'HIGH'
-          ? 'Claim includes specific, measurable criteria'
-          : claim.specificity_level === 'MEDIUM'
-          ? 'Claim contains some specificity but may need further detail'
+        status: structured_claim.percentage !== undefined ? 'PASS' : structured_claim.material ? 'PASS' : 'FAIL',
+        detail: structured_claim.measurableMetric
+          ? `Claim specifies concrete measurable metric: ${structured_claim.measurableMetric}`
           : 'Claim uses broad language without measurable criteria',
       },
       {
-        label: 'Supporting evidence',
-        status: scores.evidence_availability >= 3 ? 'PASS' : scores.evidence_availability >= 2 ? 'WARN' : 'FAIL',
-        detail: scores.evidence_availability >= 3
-          ? 'Supporting evidence identified from multiple sources'
-          : scores.evidence_availability >= 2
-          ? 'Limited evidence available; gaps remain'
-          : 'No sufficient supporting evidence found',
+        label: 'Audited evidence availability',
+        status: validatedEvidence.length >= 2 ? 'PASS' : validatedEvidence.length === 1 ? 'WARN' : 'FAIL',
+        detail: validatedEvidence.length > 0
+          ? `${validatedEvidence.length} public records evaluated against registry benchmarks`
+          : 'No third-party audited evidence found in public registers',
       },
       {
-        label: 'Certification',
-        status: scores.certification_status >= 2 ? 'PASS' : scores.certification_status >= 1 ? 'WARN' : 'FAIL',
-        detail: scores.certification_status >= 2
-          ? 'Active independent certification confirmed'
-          : scores.certification_status >= 1
-          ? 'Partial certification information available'
-          : 'No relevant certification identified',
+        label: 'Certification registry status',
+        status: hasCert ? 'PASS' : 'FAIL',
+        detail: hasCert
+          ? 'Verified against accredited certification registry'
+          : 'No active third-party certification scope found',
       },
       {
-        label: 'Source reliability',
-        status: scores.source_reliability >= 2 ? 'PASS' : scores.source_reliability >= 1 ? 'WARN' : 'FAIL',
-        detail: scores.source_reliability >= 2
-          ? 'Sources include independent verification'
-          : 'Sources primarily self-reported',
+        label: 'Source reliability rating',
+        status: hasTier1 ? 'PASS' : hasTier2 ? 'WARN' : 'FAIL',
+        detail: hasTier1
+          ? 'Tier 1 certified independent laboratory or official registry'
+          : hasTier2
+          ? 'Tier 2 third-party audit documentation'
+          : 'Sources are self-reported company claims',
       },
       {
-        label: 'Claim-evidence match',
-        status: scores.claim_evidence_match >= 3 ? 'PASS' : scores.claim_evidence_match >= 1 ? 'WARN' : 'FAIL',
-        detail: scores.claim_evidence_match >= 3
-          ? 'Evidence closely aligns with the stated claim'
-          : scores.claim_evidence_match >= 1
-          ? 'Partial alignment between evidence and claim'
-          : 'Evidence does not support the stated claim',
+        label: 'Rules Engine claim-evidence match',
+        status: rulesResult.verdict === 'VERIFIED' ? 'PASS' : rulesResult.verdict === 'POTENTIAL_GREENWASHING' ? 'FAIL' : 'WARN',
+        detail: rulesResult.rulesTriggered.map((r) => `${r.ruleId}: ${r.passed ? 'PASS' : 'FAIL'}`).join(' | '),
       },
     ],
-    sources: [],
+    sources: legacySources,
+    product_name: productInfo.product,
+    brand: productInfo.brand,
+    category: productInfo.category,
+    structured_claim,
+    evidence_records: validatedEvidence,
+    audit_trail,
     verified_at: new Date().toISOString(),
   };
 }
