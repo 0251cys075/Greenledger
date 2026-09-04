@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect, Suspense } from 'react';
+import { useState, useRef, useEffect, Suspense, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
   ArrowRight,
@@ -12,21 +12,31 @@ import {
   CheckCircle2,
   Loader2,
   AlertCircle,
+  ImageIcon,
+  FileText,
 } from 'lucide-react';
 import { DEMO_CLAIMS } from '@/lib/mock-data';
-import { classifyEnvironmentalClaim } from '@/lib/claim-classifier';
+import { analyzeMultilingualClaim } from '@/lib/multilingual-nlp';
+import { useTranslation } from '@/lib/i18n-context';
 import ProductCodeScannerModal from '@/components/verify/ProductCodeScannerModal';
 import { cn } from '@/lib/utils';
+
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
 function VerifyFormContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { t, language } = useTranslation();
 
   const [claim, setClaim] = useState('');
   const [activeDemo, setActiveDemo] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
+  const [filePreview, setFilePreview] = useState<string | null>(null);
   const [isScanningOCR, setIsScanningOCR] = useState(false);
+  const [ocrProgress, setOcrProgress] = useState(0);
+  const [ocrError, setOcrError] = useState<string | null>(null);
   const [qrModalOpen, setQrModalOpen] = useState(false);
   const [validationError, setValidationError] = useState<{
     message: string;
@@ -34,6 +44,33 @@ function VerifyFormContent() {
     reason?: string;
   } | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const workerRef = useRef<any>(null);
+
+  // Initialize Tesseract worker
+  useEffect(() => {
+    let active = true;
+    if (typeof window !== 'undefined') {
+      import('tesseract.js').then(async ({ createWorker }) => {
+        try {
+          const worker = await createWorker('eng');
+          if (active) {
+            workerRef.current = worker;
+          } else {
+            await worker.terminate().catch(() => {});
+          }
+        } catch {
+          // Worker creation failed - will show error on use
+        }
+      }).catch(() => {});
+    }
+    return () => {
+      active = false;
+      if (workerRef.current && typeof workerRef.current.terminate === 'function') {
+        workerRef.current.terminate().catch(() => {});
+        workerRef.current = null;
+      }
+    };
+  }, []);
 
   // Read URL search parameter if user arrived from clicking a sample claim
   useEffect(() => {
@@ -60,15 +97,14 @@ function VerifyFormContent() {
     const trimmed = claim.trim();
     if (!trimmed) return;
 
-    // STEP 1 & 2: Mandatory Environmental Claim Relevance Check
-    // Prevent non-environmental text from entering the verification pipeline
-    const classification = classifyEnvironmentalClaim(trimmed);
+    // STEP 1 & 2: Multilingual Environmental Claim Relevance Check
+    // Prevent non-environmental text in ANY of the 8 languages from entering pipeline
+    const analysis = analyzeMultilingualClaim(trimmed, language);
 
-    if (!classification.isEnvironmentalClaim) {
+    if (!analysis.isEnvironmentalClaim) {
       setValidationError({
-        message: classification.message || 'GreenLedger verifies environmental and sustainability claims only.',
-        suggestion: classification.suggestion,
-        reason: classification.reason,
+        message: analysis.message || t('verify.nonEnvMessage'),
+        suggestion: analysis.suggestion || t('verify.nonEnvSuggestion'),
       });
       return;
     }
@@ -82,18 +118,77 @@ function VerifyFormContent() {
     if (typeof window !== 'undefined') {
       sessionStorage.setItem('gl_claim', trimmed);
       sessionStorage.setItem('gl_demo_id', matchedDemo?.id || '');
+      sessionStorage.setItem('gl_language', language);
     }
     router.push(`/analysis?id=${resultId}`);
   }
 
-  function processFileUpload(file: File) {
+  function removeFile() {
+    setFileName(null);
+    setFilePreview(null);
+    setClaim('');
+    setActiveDemo(null);
+    setOcrError(null);
+    setOcrProgress(0);
+    if (fileRef.current) {
+      fileRef.current.value = '';
+    }
+  }
+
+  async function processFileUpload(file: File) {
+    // Validate file type
+    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+      setOcrError('Unsupported file type. Please upload JPG, PNG, or WebP images.');
+      return;
+    }
+
+    // Validate file size
+    if (file.size > MAX_FILE_SIZE) {
+      setOcrError('File size exceeds 10MB limit. Please upload a smaller image.');
+      return;
+    }
+
     setFileName(file.name);
+    setOcrError(null);
+    setOcrProgress(0);
     setIsScanningOCR(true);
-    setTimeout(() => {
+
+    // Create object URL for preview
+    const previewUrl = URL.createObjectURL(file);
+    setFilePreview(previewUrl);
+
+    try {
+      if (!workerRef.current || typeof workerRef.current.recognize !== 'function') {
+        const { createWorker } = await import('tesseract.js');
+        const worker = await createWorker('eng+hin+ben+mar+tel+tam+kan', 1, {
+          logger: (m: any) => {
+            if (m.status === 'recognizing text') {
+              setOcrProgress(Math.round((m.progress || 0) * 100));
+            }
+          },
+        });
+        workerRef.current = worker;
+      }
+
+      const { data: { text } } = await workerRef.current.recognize(file);
+
       setIsScanningOCR(false);
-      setClaim('100% Recyclable & Carbon Neutral Packaging');
-      setActiveDemo(null);
-    }, 700);
+      setOcrProgress(100);
+
+      const extractedText = text.trim();
+      if (extractedText) {
+        // Clean up the extracted text - remove excessive whitespace
+        const cleanedText = extractedText.replace(/\s+/g, ' ').trim();
+        setClaim(cleanedText);
+        setActiveDemo(null);
+      } else {
+        setOcrError('No text could be extracted from the image. Please try a clearer photo.');
+      }
+    } catch (err) {
+      console.error('OCR error:', err);
+      setIsScanningOCR(false);
+      setOcrError('OCR processing failed. Please try again or enter the claim manually.');
+    }
   }
 
   function handleFileDrop(e: React.DragEvent) {
@@ -113,7 +208,6 @@ function VerifyFormContent() {
   }
 
 
-
   return (
     <div className="min-h-screen bg-[#F3F0E8] pt-24 pb-20">
       {/* Editorial Header Banner - Dark Forest */}
@@ -123,10 +217,10 @@ function VerifyFormContent() {
             Verification Terminal
           </span>
           <h1 className="font-serif text-3xl sm:text-5xl text-[#F3F0E8] mb-3">
-            Verify an Environmental Claim
+            {t('verify.pageTitle')}
           </h1>
           <p className="text-base sm:text-lg text-[#F3F0E8]/75 font-light">
-            Evidence, not marketing. Enter a product claim to cross-reference with public audit registries.
+            {t('verify.pageSubtitle')}
           </p>
         </div>
       </div>
@@ -136,7 +230,7 @@ function VerifyFormContent() {
         <div className="mb-6 p-4 rounded-xl bg-[#FAF8F3] border border-[#C8CEC5] shadow-sm">
           <p className="text-xs font-mono font-semibold text-[#12382A] uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
             <Sparkles size={14} className="text-[#63D6A2]" />
-            Quick Demo — Select Sample Claim
+            {t('verify.sampleClaimsTitle')}
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
             {DEMO_CLAIMS.map((demo) => {
@@ -155,7 +249,7 @@ function VerifyFormContent() {
                 >
                   <p className="font-medium mb-1 line-clamp-1">&ldquo;{demo.claim_text}&rdquo;</p>
                   <span className="text-[10px] font-mono opacity-80 uppercase">
-                    {demo.expected_verdict.replace('_', ' ').toLowerCase()}
+                    {t(`verdict.${demo.expected_verdict}`) || demo.expected_verdict.replace('_', ' ').toLowerCase()}
                   </span>
                 </button>
               );
@@ -166,7 +260,7 @@ function VerifyFormContent() {
         {/* Main Verification Card */}
         <div className="bg-[#FAF8F3] border-2 border-[#12382A]/20 rounded-2xl shadow-xl overflow-hidden p-6 sm:p-8">
           <label htmlFor="claim-input" className="block text-xs font-mono font-semibold text-[#12382A] uppercase tracking-wider mb-3">
-            Product Environmental Claim
+            {t('verify.inputLabel')}
           </label>
 
           <div className="relative mb-6">
@@ -179,7 +273,7 @@ function VerifyFormContent() {
                 setActiveDemo(null);
                 if (validationError) setValidationError(null);
               }}
-              placeholder="Paste an environmental claim from product packaging, advertisements, or e-commerce listing (e.g. &quot;100% Eco-Friendly&quot; or &quot;Made with 70% recycled ocean plastic&quot;)..."
+              placeholder={t('verify.inputPlaceholder')}
               rows={4}
             />
             {claim && (
@@ -188,7 +282,11 @@ function VerifyFormContent() {
                   setClaim('');
                   setActiveDemo(null);
                   setFileName(null);
+                  setFilePreview(null);
                   setValidationError(null);
+                  setOcrError(null);
+                  setOcrProgress(0);
+                  if (fileRef.current) fileRef.current.value = '';
                 }}
                 className="absolute top-3.5 right-3.5 p-1.5 rounded-lg bg-[#E9E6DC] text-[#718078] hover:text-[#102019] hover:bg-[#C8CEC5] transition-colors"
                 aria-label="Clear claim"
@@ -239,6 +337,26 @@ function VerifyFormContent() {
             </div>
           )}
 
+          {/* OCR Error banner */}
+          {ocrError && (
+            <div className="mb-6 p-4 rounded-xl bg-[#C95C5C]/10 border-2 border-[#C95C5C]/40 text-[#102019] animate-fade-in">
+              <div className="flex items-start gap-3">
+                <AlertCircle size={20} className="text-[#C95C5C] flex-shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <h3 className="font-semibold text-sm text-[#962A2A]">OCR Processing Error</h3>
+                  <p className="text-xs text-[#102019]/90 mt-1 leading-relaxed">{ocrError}</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={removeFile}
+                  className="px-3 py-1.5 rounded-lg bg-[#12382A] text-[#F3F0E8] text-xs font-mono font-semibold hover:bg-[#1B4D3A] transition-colors cursor-pointer flex-shrink-0"
+                >
+                  Remove Image
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Divider */}
           <div className="flex items-center gap-4 mb-6">
             <div className="flex-1 h-px bg-[#C8CEC5]" />
@@ -252,24 +370,25 @@ function VerifyFormContent() {
               'border-2 border-dashed rounded-xl p-6 text-center transition-all cursor-pointer mb-6',
               dragOver
                 ? 'border-[#63D6A2] bg-[#63D6A2]/10'
-                : 'border-[#C8CEC5] bg-[#F3F0E8] hover:border-[#12382A] hover:bg-[#E9E6DC]'
+                : 'border-[#C8CEC5] bg-[#F3F0E8] hover:border-[#12382A] hover:bg-[#E9E6DC]',
+              fileName && 'cursor-default'
             )}
             onDragOver={(e) => {
               e.preventDefault();
-              setDragOver(true);
+              if (!fileName) setDragOver(true);
             }}
             onDragLeave={() => setDragOver(false)}
             onDrop={handleFileDrop}
-            onClick={() => fileRef.current?.click()}
+            onClick={() => !fileName && fileRef.current?.click()}
             role="button"
             tabIndex={0}
             aria-label="Upload product label or photo"
-            onKeyDown={(e) => e.key === 'Enter' && fileRef.current?.click()}
+            onKeyDown={(e) => !fileName && e.key === 'Enter' && fileRef.current?.click()}
           >
             <input
               ref={fileRef}
               type="file"
-              accept="image/*"
+              accept="image/jpeg,image/jpg,image/png,image/webp"
               className="hidden"
               onChange={handleFileChange}
               aria-label="Upload file"
@@ -277,29 +396,48 @@ function VerifyFormContent() {
             {isScanningOCR ? (
               <div className="flex flex-col items-center justify-center py-2">
                 <Loader2 size={24} className="text-[#12382A] animate-spin mb-2" />
-                <p className="text-sm font-semibold text-[#102019]">Extracting text via OCR scan...</p>
-                <p className="text-xs font-mono text-[#718078]">Isolating environmental statement from packaging</p>
+                <p className="text-sm font-semibold text-[#102019]">{t('verify.ocrScanning') || 'Extracting text via OCR scan...'}</p>
+                <p className="text-xs font-mono text-[#718078]">Progress: {ocrProgress}%</p>
               </div>
-            ) : fileName ? (
-              <div className="flex items-center justify-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-[#12382A] text-[#63D6A2] flex items-center justify-center">
-                  <CheckCircle2 size={18} />
+            ) : filePreview ? (
+              <div className="space-y-4">
+                <div className="relative max-w-xs mx-auto">
+                  <img
+                    src={filePreview}
+                    alt="Uploaded packaging"
+                    className="w-full h-auto max-h-48 rounded-lg border border-[#C8CEC5] object-contain"
+                  />
+                  <button
+                    onClick={(e) => { e.stopPropagation(); removeFile(); }}
+                    className="absolute top-2 right-2 p-1.5 rounded-full bg-black/60 text-white hover:bg-black/80 transition-colors"
+                    aria-label="Remove image"
+                  >
+                    <X size={14} />
+                  </button>
                 </div>
                 <div className="text-left">
                   <p className="text-sm font-semibold text-[#102019]">{fileName}</p>
-                  <p className="text-xs font-mono text-[#4FAF78] font-semibold">
-                    ✓ OCR parsed: &ldquo;100% Recyclable &amp; Carbon Neutral Packaging&rdquo;
-                  </p>
+                  {claim && (
+                    <p className="text-xs font-mono text-[#4FAF78] font-semibold mt-1">
+                      ✓ OCR extracted: &ldquo;{claim.length > 80 ? claim.substring(0, 80) + '…' : claim}&rdquo;
+                    </p>
+                  )}
                 </div>
+                <button
+                  onClick={removeFile}
+                  className="px-4 py-2 text-xs font-mono text-[#12382A] border border-[#C8CEC5] rounded-lg hover:bg-[#E9E6DC] hover:border-[#12382A] transition-colors cursor-pointer w-full"
+                >
+                  <X size={12} className="inline mr-1" /> Remove & Replace Image
+                </button>
               </div>
             ) : (
               <div>
                 <Upload size={24} className="text-[#12382A] mx-auto mb-2 opacity-70" />
                 <p className="text-sm font-medium text-[#102019] mb-1">
-                  Upload Product Image or Package Photo
+                  {t('verify.dragDropTitle')}
                 </p>
                 <p className="text-xs font-mono text-[#718078]">
-                  Drag &amp; drop or click · JPG, PNG, WEBP · OCR will isolate environmental claims
+                  {t('verify.dragDropSubtitle')}
                 </p>
               </div>
             )}
@@ -312,7 +450,7 @@ function VerifyFormContent() {
             onClick={() => setQrModalOpen(true)}
           >
             <Camera size={15} />
-            Scan Product QR / Barcode
+            {t('verify.scanProductCode')}
           </button>
 
           {/* Primary submit */}
@@ -321,14 +459,14 @@ function VerifyFormContent() {
             onClick={handleVerify}
             disabled={!claim.trim()}
             className={cn(
-              'w-full py-4 rounded-xl font-semibold text-base flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer',
+              'w-full py-4 rounded-xl font-semibold text-base flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer uppercase tracking-wider',
               claim.trim()
                 ? 'btn-mint py-4'
                 : 'bg-[#C8CEC5] text-[#718078] cursor-not-allowed border-none shadow-none'
             )}
             aria-disabled={!claim.trim()}
           >
-            VERIFY CLAIM NOW
+            {t('verify.verifyClaimNow')}
             <ArrowRight size={18} className={claim.trim() ? '' : 'opacity-40'} />
           </button>
         </div>

@@ -1,21 +1,28 @@
 // ============================================================
 // POST /api/verify
 // ============================================================
-// Main verification endpoint. Runs the full 7-step pipeline
-// server-side, then persists the result to Supabase.
+// Main verification endpoint. Supports 8 multilingual inputs.
+// Runs the full 7-step pipeline server-side on normalized claim semantics,
+// then persists the result to Supabase.
 // ============================================================
 
 import { NextRequest, NextResponse } from 'next/server';
-import { classifyEnvironmentalClaim } from '@/lib/claim-classifier';
+import {
+  analyzeMultilingualClaim,
+  LOCALIZED_VERDICT_EXPLANATIONS,
+} from '@/lib/multilingual-nlp';
 import { runVerification } from '@/lib/verification-engine';
 import { supabaseAdmin, isSupabaseConfigured } from '@/lib/supabase';
 import { MOCK_RESULTS, DEMO_CLAIMS } from '@/lib/mock-data';
+import { isValidLanguage, SupportedLanguage } from '@/lib/locales/registry';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json().catch(() => ({}));
     const claimText: string = (body.claimText || body.claim || '').trim();
     const demoId: string = (body.demoId || '').trim();
+    const languageHint: SupportedLanguage | undefined =
+      body.language && isValidLanguage(body.language) ? body.language : undefined;
 
     if (!claimText) {
       return NextResponse.json(
@@ -40,24 +47,34 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // ── Relevance gate ───────────────────────────────────────────
-    const classification = classifyEnvironmentalClaim(claimText);
-    if (!classification.isEnvironmentalClaim) {
+    // ── Multilingual Relevance & Normalization Gate ──────────────
+    const analysis = analyzeMultilingualClaim(claimText, languageHint);
+    if (!analysis.isEnvironmentalClaim) {
       return NextResponse.json(
         {
           error: 'NOT_ENVIRONMENTAL_CLAIM',
-          message:
-            classification.message ||
-            'GreenLedger verifies environmental and sustainability claims only.',
-          suggestion: classification.suggestion,
-          reason: classification.reason,
+          message: analysis.message || 'GreenLedger verifies environmental and sustainability claims only.',
+          suggestion: analysis.suggestion,
+          language: analysis.language,
         },
         { status: 422 }
       );
     }
 
-    // ── Run full verification pipeline ───────────────────────────
-    const result = await runVerification(claimText);
+    // ── Run full verification pipeline on Normalized Claim ───────
+    const result = await runVerification(analysis.normalizedClaim);
+
+    // Keep user's original claim text on the result object for display
+    result.claim_text = analysis.originalClaim;
+
+    // Attach localized explanation
+    const localizedExplanation =
+      LOCALIZED_VERDICT_EXPLANATIONS[analysis.language]?.[result.status] ||
+      LOCALIZED_VERDICT_EXPLANATIONS.en[result.status];
+    (result as any).explanation_localized = localizedExplanation;
+    (result as any).claim_language = analysis.language;
+    (result as any).original_claim_text = analysis.originalClaim;
+    (result as any).normalized_claim = analysis.normalizedClaim;
 
     // ── Persist to Supabase (fire-and-forget if DB unavailable) ──
     if (isSupabaseConfigured) {
@@ -66,9 +83,12 @@ export async function POST(request: NextRequest) {
         const { data: claimRow } = await supabaseAdmin
           .from('claims')
           .insert({
-            claim_text: claimText,
-            claim_type: result.audit_trail?.claim?.environmentalAttribute || 'OTHER',
-            is_measurable: !!result.structured_claim?.percentage,
+            claim_text: analysis.originalClaim,
+            original_claim_text: analysis.originalClaim,
+            claim_language: analysis.language,
+            normalized_claim: analysis.normalizedClaim,
+            claim_type: analysis.claimType || result.audit_trail?.claim?.environmentalAttribute || 'OTHER',
+            is_measurable: !!analysis.attributes?.percentage || !!result.structured_claim?.percentage,
             specificity_level: result.scores.claim_specificity >= 3 ? 'HIGH' : result.scores.claim_specificity >= 2 ? 'MEDIUM' : 'LOW',
             keywords: result.audit_trail?.claim ? Object.values(result.audit_trail.claim).filter(Boolean) : [],
           })
@@ -79,7 +99,11 @@ export async function POST(request: NextRequest) {
         await supabaseAdmin.from('verifications').insert({
           id: result.id.startsWith('result-') ? undefined : result.id,
           claim_id: claimRow?.id || null,
-          claim_text: result.claim_text,
+          claim_text: analysis.originalClaim,
+          original_claim_text: analysis.originalClaim,
+          claim_language: analysis.language,
+          normalized_claim: analysis.normalizedClaim,
+          explanation_localized: localizedExplanation,
           product_name: result.product_name || null,
           brand: result.brand || null,
           category: result.category || null,
@@ -95,7 +119,6 @@ export async function POST(request: NextRequest) {
           is_public: true,
         });
       } catch (dbErr) {
-        // Non-fatal: pipeline result is still returned
         console.warn('[GreenLedger] DB persist failed (non-fatal):', dbErr);
       }
     }
@@ -104,7 +127,6 @@ export async function POST(request: NextRequest) {
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : 'Verification failed';
 
-    // If the pipeline threw because of non-environmental input
     if (msg.includes('environmental')) {
       return NextResponse.json({ error: 'NOT_ENVIRONMENTAL_CLAIM', message: msg }, { status: 422 });
     }

@@ -1,5 +1,8 @@
+'use client';
+
 import { cn, getStatusLabel } from '@/lib/utils';
 import type { VerificationStatus, EvidenceStrength } from '@/lib/types';
+import { useTranslation } from '@/lib/i18n-context';
 
 interface StatusBadgeProps {
   status: VerificationStatus;
@@ -10,6 +13,9 @@ interface StatusBadgeProps {
 }
 
 export function StatusBadge({ status, size = 'md', showIcon = true, className, theme = 'light' }: StatusBadgeProps) {
+  const { t } = useTranslation();
+  const label = t(`verdict.${status}`) || getStatusLabel(status);
+
   const configsLight = {
     VERIFIED: {
       base: 'bg-[#4FAF78]/15 border border-[#4FAF78]/40 text-[#12382A]',
@@ -60,12 +66,12 @@ export function StatusBadge({ status, size = 'md', showIcon = true, className, t
     <span
       className={cn('inline-flex items-center font-mono', sizeStyles[size], cfg.base, className)}
       role="status"
-      aria-label={`Verification status: ${getStatusLabel(status)}`}
+      aria-label={`Verification status: ${label}`}
     >
       {showIcon && (
         <span className={cn('rounded-full flex-shrink-0', dotSizes[size], cfg.dot)} aria-hidden="true" />
       )}
-      {getStatusLabel(status)}
+      {label}
     </span>
   );
 }
@@ -78,6 +84,10 @@ interface StatusHeroProps {
 }
 
 export function StatusHero({ status, className, isDarkTheme = false }: StatusHeroProps) {
+  const { t } = useTranslation();
+  const label = t(`verdict.${status}`) || getStatusLabel(status);
+  const description = t(`verdict.desc_${status}`);
+
   const configs = {
     VERIFIED: {
       wrapper: isDarkTheme
@@ -85,8 +95,7 @@ export function StatusHero({ status, className, isDarkTheme = false }: StatusHer
         : 'bg-[#4FAF78]/10 border-2 border-[#4FAF78]/40 text-[#0B241A]',
       icon: '✓',
       iconBg: 'bg-[#4FAF78] text-[#0B241A]',
-      label: 'Verified',
-      description: 'Available reliable public evidence sufficiently supports this claim.',
+      defaultDesc: 'Available reliable public evidence sufficiently supports this claim.',
       textColor: isDarkTheme ? 'text-[#F3F0E8]' : 'text-[#0B241A]',
       labelColor: isDarkTheme ? 'text-[#86efac]' : 'text-[#12382A]',
     },
@@ -96,8 +105,7 @@ export function StatusHero({ status, className, isDarkTheme = false }: StatusHer
         : 'bg-[#D3A54A]/10 border-2 border-[#D3A54A]/40 text-[#102019]',
       icon: '⚠',
       iconBg: 'bg-[#D3A54A] text-[#0B241A]',
-      label: 'Insufficient Evidence',
-      description: 'There is not enough reliable public evidence to confidently verify this claim.',
+      defaultDesc: 'There is not enough reliable public evidence to confidently verify this claim.',
       textColor: isDarkTheme ? 'text-[#F3F0E8]' : 'text-[#102019]',
       labelColor: isDarkTheme ? 'text-[#fde047]' : 'text-[#8B6414]',
     },
@@ -107,8 +115,7 @@ export function StatusHero({ status, className, isDarkTheme = false }: StatusHer
         : 'bg-[#C95C5C]/10 border-2 border-[#C95C5C]/40 text-[#102019]',
       icon: '✕',
       iconBg: 'bg-[#C95C5C] text-white',
-      label: 'Potential Greenwashing',
-      description: 'The claim appears vague, unsupported, or inconsistent with available evidence.',
+      defaultDesc: 'The claim appears vague, unsupported, or inconsistent with available evidence.',
       textColor: isDarkTheme ? 'text-[#F3F0E8]' : 'text-[#102019]',
       labelColor: isDarkTheme ? 'text-[#fca5a5]' : 'text-[#962A2A]',
     },
@@ -118,25 +125,29 @@ export function StatusHero({ status, className, isDarkTheme = false }: StatusHer
 
   return (
     <div className={cn('rounded-xl p-6 sm:p-8 transition-all', cfg.wrapper, className)}>
-      <div className="flex items-start gap-4 sm:gap-5">
+      <div className="flex items-start gap-4">
         <div
           className={cn(
-            'w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center text-xl font-bold flex-shrink-0 shadow-sm',
+            'w-12 h-12 rounded-xl flex items-center justify-center font-bold text-xl flex-shrink-0 shadow-sm',
             cfg.iconBg
           )}
           aria-hidden="true"
         >
           {cfg.icon}
         </div>
-        <div>
-          <p className={cn('text-xs font-mono font-semibold tracking-widest uppercase mb-1', cfg.labelColor)}>
-            Verification Result
-          </p>
-          <h2 className={cn('text-2xl sm:text-3xl font-bold mb-2', cfg.textColor, 'font-serif')}>
-            {cfg.label}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <span className={cn('text-xs font-mono font-bold tracking-widest uppercase', cfg.labelColor)}>
+              Verdict
+            </span>
+            <span className="text-xs text-[#718078]">•</span>
+            <span className="text-xs font-mono text-[#718078]">Audit Status</span>
+          </div>
+          <h2 className={cn('text-2xl sm:text-3xl font-serif font-bold tracking-tight mt-1 mb-2', cfg.textColor)}>
+            {label}
           </h2>
-          <p className={cn('text-sm sm:text-base leading-relaxed opacity-90', cfg.textColor)}>
-            {cfg.description}
+          <p className={cn('text-sm sm:text-base leading-relaxed', isDarkTheme ? 'text-[#C8CEC5]' : 'text-[#4A5550]')}>
+            {description || cfg.defaultDesc}
           </p>
         </div>
       </div>
@@ -144,44 +155,58 @@ export function StatusHero({ status, className, isDarkTheme = false }: StatusHer
   );
 }
 
-// ── Evidence Strength Bar ──────────────────────────────────
+// ── Evidence Strength Meter ──────────────────────────────────
 interface EvidenceStrengthBarProps {
   strength: EvidenceStrength;
   className?: string;
-  theme?: 'light' | 'dark';
+  isDarkTheme?: boolean;
 }
 
-export function EvidenceStrengthBar({ strength, className, theme = 'light' }: EvidenceStrengthBarProps) {
-  const configs: Record<EvidenceStrength, { width: string; color: string; label: string }> = {
-    STRONG: { width: 'w-full', color: 'bg-[#4FAF78]', label: 'Strong' },
-    MODERATE: { width: 'w-2/3', color: 'bg-[#D3A54A]', label: 'Moderate' },
-    WEAK: { width: 'w-1/3', color: 'bg-[#C95C5C]', label: 'Weak' },
-    NONE: { width: 'w-0', color: 'bg-stone-300', label: 'None' },
+export function EvidenceStrengthBar({ strength, className, isDarkTheme = false }: EvidenceStrengthBarProps) {
+  const configs: Record<EvidenceStrength, { percentage: number; label: string; color: string; desc: string }> = {
+    STRONG: {
+      percentage: 85,
+      label: 'Strong Evidence',
+      color: 'bg-[#4FAF78]',
+      desc: 'Multiple verified independent sources, public databases, or accredited certifications.',
+    },
+    MODERATE: {
+      percentage: 55,
+      label: 'Moderate Evidence',
+      color: 'bg-[#D3A54A]',
+      desc: 'Some verified data, but relying partly on self-reported corporate disclosures.',
+    },
+    WEAK: {
+      percentage: 20,
+      label: 'Weak Evidence',
+      color: 'bg-[#C95C5C]',
+      desc: 'Unsubstantiated claim, vague terminology, or contradictory public findings.',
+    },
+    NONE: {
+      percentage: 5,
+      label: 'No Evidence',
+      color: 'bg-[#718078]',
+      desc: 'No public records, certifications, or corroborating disclosures found.',
+    },
   };
 
-  const cfg = configs[strength];
-  const isDark = theme === 'dark';
+  const cfg = configs[strength] || configs.NONE;
 
   return (
-    <div className={cn('space-y-1.5', className)}>
-      <div className="flex items-center justify-between text-xs">
-        <span className={isDark ? 'text-[#F3F0E8]/70' : 'text-[#718078] font-medium'}>
-          Evidence Strength
-        </span>
-        <span className={cn('font-semibold font-mono', isDark ? 'text-[#63D6A2]' : 'text-[#102019]')}>
-          {cfg.label}
-        </span>
+    <div className={cn('space-y-2', className)}>
+      <div className="flex items-center justify-between text-xs font-mono">
+        <span className={isDarkTheme ? 'text-[#C8CEC5]' : 'text-[#718078]'}>Evidence Quality</span>
+        <span className={cn('font-bold', isDarkTheme ? 'text-[#F3F0E8]' : 'text-[#102019]')}>{cfg.label}</span>
       </div>
-      <div
-        className={cn(
-          'h-2 rounded-full overflow-hidden',
-          isDark ? 'bg-[#071710] border border-white/5' : 'bg-[#E9E6DC]'
-        )}
-        role="progressbar"
-        aria-label={`Evidence strength: ${cfg.label}`}
-      >
-        <div className={cn('h-full rounded-full transition-all duration-700', cfg.width, cfg.color)} />
+      <div className={cn('h-2 rounded-full overflow-hidden', isDarkTheme ? 'bg-white/10' : 'bg-[#C8CEC5]/40')}>
+        <div
+          className={cn('h-full transition-all duration-700 ease-out rounded-full', cfg.color)}
+          style={{ width: `${cfg.percentage}%` }}
+        />
       </div>
+      <p className={cn('text-[11px] leading-relaxed', isDarkTheme ? 'text-[#C8CEC5]/80' : 'text-[#718078]')}>
+        {cfg.desc}
+      </p>
     </div>
   );
 }

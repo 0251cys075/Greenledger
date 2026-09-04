@@ -3,7 +3,8 @@
 import { useEffect, useState, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { CheckCircle2, Circle, Loader2, ShieldCheck, Database, Search, FileText } from 'lucide-react';
-import { classifyEnvironmentalClaim } from '@/lib/claim-classifier';
+import { analyzeMultilingualClaim } from '@/lib/multilingual-nlp';
+import { useTranslation } from '@/lib/i18n-context';
 import { MOCK_RESULTS, DEMO_CLAIMS } from '@/lib/mock-data';
 import { cn } from '@/lib/utils';
 
@@ -30,6 +31,7 @@ function AnalysisContent() {
   const router = useRouter();
   const params = useSearchParams();
   const resultId = params.get('id') || 'demo-1';
+  const { t, language } = useTranslation();
 
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [activeStep, setActiveStep] = useState<number>(1);
@@ -78,6 +80,7 @@ function AnalysisContent() {
 
     const storedClaim = sessionStorage.getItem('gl_claim');
     const storedDemoId = sessionStorage.getItem('gl_demo_id');
+    const storedLang = sessionStorage.getItem('gl_language') || language;
 
     if (!storedClaim) {
       router.replace('/verify');
@@ -86,9 +89,9 @@ function AnalysisContent() {
 
     setClaim(storedClaim);
 
-    // Guard: non-environmental input
-    const classification = classifyEnvironmentalClaim(storedClaim);
-    if (!classification.isEnvironmentalClaim) {
+    // Guard: non-environmental input across all 8 languages
+    const analysis = analyzeMultilingualClaim(storedClaim, storedLang as any);
+    if (!analysis.isEnvironmentalClaim) {
       router.replace('/verify');
       return;
     }
@@ -106,13 +109,13 @@ function AnalysisContent() {
       return;
     }
 
-    // Custom claim: call POST /api/verify
+    // Custom claim: call POST /api/verify with language
     (async () => {
       try {
         const response = await fetch('/api/verify', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ claimText: storedClaim }),
+          body: JSON.stringify({ claimText: storedClaim, language: storedLang }),
         });
 
         if (!response.ok) {
@@ -174,7 +177,7 @@ function AnalysisContent() {
             </span>
           </div>
           <h1 className="font-serif text-3xl sm:text-4xl text-[#F3F0E8] mb-3">
-            Cross-Referencing Evidence
+            {t('analysis.title')}
           </h1>
           {claim && (
             <p className="text-[#F3F0E8]/70 text-sm max-w-md mx-auto truncate font-light">
@@ -189,6 +192,8 @@ function AnalysisContent() {
             {PIPELINE_STEPS.map((step, idx) => {
               const isDone = completedSteps.includes(step.id);
               const isActive = activeStep === step.id && !isDone;
+              const stepLabel = t(`analysis.step${step.id}`) || step.label;
+              const stepDesc = t(`analysis.step${step.id}Desc`) || step.description;
 
               return (
                 <div key={step.id}>
@@ -229,11 +234,11 @@ function AnalysisContent() {
                             : 'text-[#F3F0E8]/50'
                         )}
                       >
-                        {step.label}
+                        {stepLabel}
                       </p>
                       {(isActive || isDone) && (
                         <p className="text-xs text-[#F3F0E8]/70 mt-0.5 animate-fade-in font-light">
-                          {step.description}
+                          {stepDesc}
                         </p>
                       )}
                     </div>

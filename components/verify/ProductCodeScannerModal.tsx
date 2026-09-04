@@ -22,6 +22,7 @@ import {
   type BarcodeLookupResult,
 } from '@/lib/barcode-registry';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/lib/i18n-context';
 
 interface ProductCodeScannerModalProps {
   isOpen: boolean;
@@ -34,6 +35,7 @@ export default function ProductCodeScannerModal({
   onClose,
   onSelectClaim,
 }: ProductCodeScannerModalProps) {
+  const { t } = useTranslation();
   const [cameraActive, setCameraActive] = useState(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
   const [isScanning, setIsScanning] = useState(false);
@@ -231,10 +233,10 @@ export default function ProductCodeScannerModal({
             <span>Unified Code Scanner</span>
           </div>
           <h2 id="scanner-modal-title" className="font-serif text-2xl text-[#102019]">
-            Scan Product Code
+            {t('scanner.modalTitle')}
           </h2>
           <p className="text-xs text-[#718078] font-light mt-1 max-w-sm mx-auto">
-            Scan packaging QR code or 1D barcode (EAN-13, EAN-8, UPC, Code 128)
+            {t('scanner.modalSubtitle')}
           </p>
         </div>
 
@@ -346,7 +348,7 @@ export default function ProductCodeScannerModal({
                   className="btn-mint w-full justify-center text-xs py-2.5 font-semibold cursor-pointer"
                 >
                   <CheckCircle2 size={15} />
-                  Apply Claim &amp; Run Verification Audit
+                  {t('scanner.applyClaim')}
                 </button>
               </div>
             ) : (
@@ -404,7 +406,7 @@ export default function ProductCodeScannerModal({
         <div>
           <p className="text-xs font-mono font-semibold text-[#718078] uppercase tracking-wider mb-2 flex items-center gap-1.5">
             <Sparkles size={13} className="text-[#12382A]" />
-            Demo Product Codes (Simulate Scan)
+            {t('scanner.simulatedTitle')}
           </p>
           <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
             {DEMO_SCAN_PRODUCTS.map((demo) => (

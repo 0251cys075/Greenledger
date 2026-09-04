@@ -1,38 +1,43 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { classifyEnvironmentalClaim } from '@/lib/claim-classifier';
+import { analyzeMultilingualClaim } from '@/lib/multilingual-nlp';
 import { extractClaim } from '@/lib/verification-engine';
+import { isValidLanguage, SupportedLanguage } from '@/lib/locales/registry';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json().catch(() => ({}));
     const rawClaim = (body.claim || body.claimText || '').trim();
+    const languageHint: SupportedLanguage | undefined =
+      body.language && isValidLanguage(body.language) ? body.language : undefined;
 
-    const classification = classifyEnvironmentalClaim(rawClaim);
+    const analysis = analyzeMultilingualClaim(rawClaim, languageHint);
 
-    if (!classification.isEnvironmentalClaim) {
+    if (!analysis.isEnvironmentalClaim) {
       return NextResponse.json(
         {
           valid: false,
           isEnvironmentalClaim: false,
-          errorType: classification.errorType || 'NON_ENVIRONMENTAL_CLAIM',
-          message: classification.message || 'GreenLedger verifies environmental and sustainability claims only.',
-          suggestion:
-            classification.suggestion ||
-            'Try a claim about recycled content, recyclability, carbon emissions, renewable materials, sustainable packaging, certifications, or similar environmental attributes.',
-          reason: classification.reason,
+          language: analysis.language,
+          errorType: analysis.errorType || 'NON_ENVIRONMENTAL_CLAIM',
+          message: analysis.message || 'GreenLedger verifies environmental and sustainability claims only.',
+          suggestion: analysis.suggestion,
         },
         { status: 200 }
       );
     }
 
-    const structuredClaim = extractClaim(rawClaim);
+    const structuredClaim = extractClaim(analysis.normalizedClaim);
 
     return NextResponse.json({
       valid: true,
       isEnvironmentalClaim: true,
-      claimCategory: classification.claimCategory,
-      confidence: classification.confidence,
+      language: analysis.language,
+      originalClaim: analysis.originalClaim,
+      normalizedClaim: analysis.normalizedClaim,
+      claimCategory: analysis.claimType,
+      confidence: analysis.detectedConfidence,
       claim: structuredClaim,
+      attributes: analysis.attributes,
       nextStep: 'VERIFY',
     });
   } catch (error) {
@@ -52,33 +57,38 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const rawClaim = (searchParams.get('claim') || searchParams.get('q') || '').trim();
+    const langParam = searchParams.get('lang') || undefined;
+    const languageHint: SupportedLanguage | undefined =
+      langParam && isValidLanguage(langParam) ? (langParam as SupportedLanguage) : undefined;
 
-    const classification = classifyEnvironmentalClaim(rawClaim);
+    const analysis = analyzeMultilingualClaim(rawClaim, languageHint);
 
-    if (!classification.isEnvironmentalClaim) {
+    if (!analysis.isEnvironmentalClaim) {
       return NextResponse.json(
         {
           valid: false,
           isEnvironmentalClaim: false,
-          errorType: classification.errorType || 'NON_ENVIRONMENTAL_CLAIM',
-          message: classification.message || 'GreenLedger verifies environmental and sustainability claims only.',
-          suggestion:
-            classification.suggestion ||
-            'Try a claim about recycled content, recyclability, carbon emissions, renewable materials, sustainable packaging, certifications, or similar environmental attributes.',
-          reason: classification.reason,
+          language: analysis.language,
+          errorType: analysis.errorType || 'NON_ENVIRONMENTAL_CLAIM',
+          message: analysis.message || 'GreenLedger verifies environmental and sustainability claims only.',
+          suggestion: analysis.suggestion,
         },
         { status: 200 }
       );
     }
 
-    const structuredClaim = extractClaim(rawClaim);
+    const structuredClaim = extractClaim(analysis.normalizedClaim);
 
     return NextResponse.json({
       valid: true,
       isEnvironmentalClaim: true,
-      claimCategory: classification.claimCategory,
-      confidence: classification.confidence,
+      language: analysis.language,
+      originalClaim: analysis.originalClaim,
+      normalizedClaim: analysis.normalizedClaim,
+      claimCategory: analysis.claimType,
+      confidence: analysis.detectedConfidence,
       claim: structuredClaim,
+      attributes: analysis.attributes,
       nextStep: 'VERIFY',
     });
   } catch (error) {

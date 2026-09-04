@@ -3,22 +3,27 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Search, Menu, X, ShieldCheck } from 'lucide-react';
+import { Search, Menu, X, ShieldCheck, Building2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-const navLinks = [
-  { href: '/', label: 'Home' },
-  { href: '/verify', label: 'Verify' },
-  { href: '/explore', label: 'Explore' },
-  { href: '/ledger', label: 'Ledger' },
-  { href: '/about', label: 'How It Works' },
-  { href: '/about#about', label: 'About' },
-];
+import { useTranslation } from '@/lib/i18n-context';
+import LanguageSelector from './LanguageSelector';
 
 export default function Navbar() {
+  const { t } = useTranslation();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
+
+  const navLinks = [
+    { href: '/', label: t('navbar.home') },
+    { href: '/verify', label: t('navbar.verify') },
+    { href: '/explore', label: t('navbar.explore') },
+    { href: '/ledger', label: t('navbar.ledger') },
+    { href: '/about', label: t('navbar.howItWorks') },
+    { href: '/about#about', label: t('navbar.about') },
+  ];
+
+  const businessLink = { href: '/business', label: 'Business' };
 
   const isHero = pathname === '/';
 
@@ -84,31 +89,47 @@ export default function Navbar() {
           </nav>
 
           {/* Right controls */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-2.5">
+            <LanguageSelector isDarkNavbar={isSolid} />
             <Link
               href="/explore"
-              aria-label="Search ledger"
+              aria-label={t('navbar.search')}
               className="p-2 rounded-lg text-[#F3F0E8]/70 hover:text-[#63D6A2] hover:bg-white/5 transition-colors"
             >
               <Search size={18} />
             </Link>
             <Link
+              href={businessLink.href}
+              className={cn(
+                'flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-sm font-medium transition-all duration-200 border',
+                pathname.startsWith('/business')
+                  ? 'text-[#63D6A2] bg-[#12382A] border-[#63D6A2]/30'
+                  : 'text-[#F3F0E8]/70 hover:text-[#63D6A2] hover:bg-white/5 border-transparent'
+              )}
+            >
+              <Building2 size={14} />
+              {businessLink.label}
+            </Link>
+            <Link
               href="/verify"
               className="bg-[#63D6A2] text-[#0B241A] hover:bg-[#7eedb8] px-4 py-2 rounded-lg text-sm font-semibold transition-all hover:shadow-md hover:-translate-y-0.5"
             >
-              Verify a Claim
+              {t('navbar.verifyClaim')}
             </Link>
           </div>
 
           {/* Mobile menu button */}
-          <button
-            className="md:hidden p-2 rounded-lg text-[#F3F0E8] hover:text-[#63D6A2] transition-colors"
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-            aria-expanded={menuOpen}
-          >
-            {menuOpen ? <X size={22} /> : <Menu size={22} />}
-          </button>
+          <div className="flex items-center gap-2 md:hidden">
+            <LanguageSelector isDarkNavbar={true} />
+            <button
+              className="p-2 rounded-lg text-[#F3F0E8] hover:text-[#63D6A2] transition-colors"
+              onClick={() => setMenuOpen(!menuOpen)}
+              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={menuOpen}
+            >
+              {menuOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -131,13 +152,25 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
+            <Link
+              href={businessLink.href}
+              onClick={() => setMenuOpen(false)}
+              className={cn(
+                'px-4 py-3 rounded-lg text-sm font-medium transition-all flex items-center gap-2',
+                pathname.startsWith('/business')
+                  ? 'text-[#63D6A2] bg-[#12382A]'
+                  : 'text-[#F3F0E8]/85 hover:text-[#63D6A2] hover:bg-white/5'
+              )}
+            >
+              <Building2 size={14} /> {businessLink.label}
+            </Link>
             <div className="pt-4 border-t border-[#63D6A2]/20 mt-2">
               <Link
                 href="/verify"
                 onClick={() => setMenuOpen(false)}
                 className="btn-mint w-full justify-center text-center block font-semibold"
               >
-                Verify a Claim →
+                {t('navbar.verifyClaim')} →
               </Link>
             </div>
           </div>

@@ -3,11 +3,12 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, ArrowRight, BookOpen, Download, Flag, ExternalLink, ShieldCheck, CheckCircle2, AlertCircle, Share2, Check } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BookOpen, Download, Flag, ExternalLink, ShieldCheck, CheckCircle2, AlertCircle, Share2, Check, Volume2 } from 'lucide-react';
 import { MOCK_RESULTS } from '@/lib/mock-data';
 import type { VerificationResult } from '@/lib/types';
 import { StatusHero, EvidenceStrengthBar, StatusBadge } from '@/components/shared/StatusBadge';
 import { getAssessmentIcon, formatDate, cn } from '@/lib/utils';
+import { useTranslation, useLanguage } from '@/lib/i18n-context';
 
 function SourceTypeBadge({ type }: { type: string }) {
   const norm = type.toLowerCase();
@@ -95,15 +96,35 @@ export default function ResultPage() {
   const router = useRouter();
   const params = useParams();
   const id = (params?.id as string) || 'demo-1';
+  const { t, language } = useTranslation();
+  const { meta } = useLanguage();
+
   const [result, setResult] = useState<VerificationResult>(() => MOCK_RESULTS[id] || MOCK_RESULTS['demo-1']);
   const [saved, setSaved] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [speaking, setSpeaking] = useState(false);
 
   function handleShare() {
     if (typeof window !== 'undefined') {
       navigator.clipboard.writeText(window.location.href);
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
+    }
+  }
+
+  function handleSpeak(text: string) {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+    try {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = meta?.speechCode || 'en-US';
+      utterance.rate = 0.95;
+      utterance.onend = () => setSpeaking(false);
+      utterance.onerror = () => setSpeaking(false);
+      setSpeaking(true);
+      window.speechSynthesis.speak(utterance);
+    } catch {
+      setSpeaking(false);
     }
   }
 
@@ -182,10 +203,10 @@ export default function ResultPage() {
             className="inline-flex items-center gap-2 text-xs font-mono font-semibold text-[#12382A] hover:text-[#0B241A] transition-colors"
           >
             <ArrowLeft size={14} />
-            BACK TO VERIFY TERMINAL
+            {t('result.backToVerify')}
           </Link>
           <div className="flex items-center gap-2 text-xs font-mono text-[#718078]">
-            <span>Verification Record ID:</span>
+            <span>{t('result.recordId')}</span>
             <span className="font-semibold text-[#102019] uppercase bg-[#FAF8F3] px-2 py-0.5 rounded border border-[#C8CEC5]">
               GL-{result.id.toUpperCase()}-2024
             </span>
@@ -200,26 +221,26 @@ export default function ResultPage() {
           <div className="lg:col-span-4 space-y-6">
             <div className="card-cream p-7 border-2 border-[#C8CEC5] shadow-sm">
               <span className="text-[11px] font-mono font-semibold uppercase tracking-wider text-[#12382A] bg-[#E9E6DC] px-2 py-1 rounded inline-block mb-4">
-                Verified Statement
+                {t('result.verifiedStatement')}
               </span>
               <blockquote className="font-serif text-2xl sm:text-3xl text-[#102019] italic leading-snug mb-4">
                 &ldquo;{result.claim_text}&rdquo;
               </blockquote>
               <div className="space-y-2 pt-4 border-t border-[#C8CEC5] text-xs font-mono text-[#718078]">
                 <div className="flex justify-between">
-                  <span>Product:</span>
+                  <span>{t('result.product')}</span>
                   <span className="font-semibold text-[#102019]">{result.product_name || 'Verified Consumer Item'}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Brand:</span>
+                  <span>{t('result.brand')}</span>
                   <span className="font-semibold text-[#102019]">{result.brand || 'EcoHome Co.'}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Category:</span>
+                  <span>{t('result.category')}</span>
                   <span className="font-semibold text-[#102019]">{result.category || 'Household & Packaging'}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Verified On:</span>
+                  <span>{t('result.verifiedOn')}</span>
                   <span className="font-semibold text-[#102019]">{formatDate(result.verified_at)}</span>
                 </div>
               </div>
@@ -230,44 +251,44 @@ export default function ResultPage() {
               <div className="card-cream p-5 border border-[#C8CEC5] space-y-2.5">
                 <div className="flex items-center justify-between pb-2 border-b border-[#C8CEC5]">
                   <span className="text-[10px] font-mono font-semibold uppercase tracking-wider text-[#12382A]">
-                    Structured Claim Dimensions
+                    {t('result.dimensionsTitle')}
                   </span>
                   <span className="text-[10px] font-mono text-[#718078]">Claim Extraction</span>
                 </div>
                 <div className="space-y-1.5 text-xs font-mono">
                   {result.structured_claim.material && (
                     <div className="flex justify-between">
-                      <span className="text-[#718078]">Material:</span>
+                      <span className="text-[#718078]">{t('result.material')}</span>
                       <span className="font-semibold text-[#102019] capitalize">{result.structured_claim.material}</span>
                     </div>
                   )}
                   {result.structured_claim.percentage !== undefined && (
                     <div className="flex justify-between">
-                      <span className="text-[#718078]">Percentage:</span>
+                      <span className="text-[#718078]">{t('result.percentage')}</span>
                       <span className="font-semibold text-[#12382A]">{result.structured_claim.percentage}%</span>
                     </div>
                   )}
                   {result.structured_claim.environmentalAttribute && (
                     <div className="flex justify-between">
-                      <span className="text-[#718078]">Attribute:</span>
+                      <span className="text-[#718078]">{t('result.attribute')}</span>
                       <span className="font-semibold text-[#102019] capitalize">{result.structured_claim.environmentalAttribute}</span>
                     </div>
                   )}
                   {result.structured_claim.scope && (
                     <div className="flex justify-between">
-                      <span className="text-[#718078]">Scope:</span>
+                      <span className="text-[#718078]">{t('result.scope')}</span>
                       <span className="font-semibold text-[#102019] capitalize">{result.structured_claim.scope}</span>
                     </div>
                   )}
                   {result.structured_claim.certificationMentioned && (
                     <div className="flex justify-between">
-                      <span className="text-[#718078]">Certification:</span>
+                      <span className="text-[#718078]">{t('result.certification')}</span>
                       <span className="font-semibold text-[#102019]">{result.structured_claim.certificationMentioned}</span>
                     </div>
                   )}
                   {result.structured_claim.measurableMetric && (
                     <div className="flex justify-between">
-                      <span className="text-[#718078]">Measurable Metric:</span>
+                      <span className="text-[#718078]">{t('result.measurableMetric')}</span>
                       <span className="font-semibold text-[#12382A]">{result.structured_claim.measurableMetric}</span>
                     </div>
                   )}
@@ -284,22 +305,22 @@ export default function ResultPage() {
             <div className="card-cream p-6 border border-[#C8CEC5] space-y-3">
               <Link href={`/evidence/${id}`} className="btn-primary w-full justify-center">
                 <BookOpen size={16} />
-                View Detailed ESG Evidence
+                {t('result.viewEsgEvidence')}
               </Link>
               <button onClick={handleSave} className="btn-secondary w-full justify-center">
                 <Download size={16} />
-                {saved ? 'Audit Record Saved!' : 'Save Verification PDF'}
+                {saved ? 'Audit Record Saved!' : t('result.savePdf')}
               </button>
               <button onClick={handleShare} className="btn-secondary w-full justify-center">
                 {copied ? <Check size={16} className="text-[#4FAF78]" /> : <Share2 size={16} />}
-                {copied ? 'Verification Link Copied!' : 'Share Audit Record'}
+                {copied ? 'Verification Link Copied!' : t('result.share')}
               </button>
               <Link
                 href={`/report?claim=${encodeURIComponent(result.claim_text)}&brand=${encodeURIComponent(result.brand || result.product_name || '')}`}
                 className="btn-ghost w-full justify-center text-xs"
               >
                 <Flag size={14} />
-                Report Inaccuracy to Governance
+                {t('result.reportInaccuracy')}
               </Link>
             </div>
           </div>
@@ -403,27 +424,52 @@ export default function ResultPage() {
             )}
 
             {/* Why this result & What is missing */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="p-6 rounded-xl bg-[#FAF8F3] border border-[#C8CEC5]">
-                <h3 className="font-serif text-lg text-[#102019] mb-2 flex items-center gap-2">
-                  <ShieldCheck size={18} className="text-[#12382A]" />
-                  Why GreenLedger Gave This Result
-                </h3>
-                <p className="text-xs sm:text-sm text-[#102019]/85 leading-relaxed font-light">
-                  {result.reason}
-                </p>
-              </div>
+            {(() => {
+              const localizedExplanation =
+                (result as any).explanation_localized ||
+                t(`verdict.explanation_${result.status}`) ||
+                result.reason;
 
-              <div className="p-6 rounded-xl bg-[#FAF8F3] border border-[#C8CEC5]">
-                <h3 className="font-serif text-lg text-[#102019] mb-2 flex items-center gap-2">
-                  <AlertCircle size={18} className="text-[#D3A54A]" />
-                  What Would Change This?
-                </h3>
-                <p className="text-xs sm:text-sm text-[#102019]/85 leading-relaxed font-light">
-                  {result.what_is_missing}
-                </p>
-              </div>
-            </div>
+              return (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="p-6 rounded-xl bg-[#FAF8F3] border border-[#C8CEC5]">
+                    <div className="flex items-center justify-between mb-2 gap-2 flex-wrap">
+                      <h3 className="font-serif text-lg text-[#102019] flex items-center gap-2">
+                        <ShieldCheck size={18} className="text-[#12382A]" />
+                        Why GreenLedger Gave This Result
+                      </h3>
+                      <button
+                        type="button"
+                        onClick={() => handleSpeak(localizedExplanation)}
+                        className="inline-flex items-center gap-1.5 text-xs font-mono text-[#12382A] hover:text-[#0B241A] font-semibold bg-[#E9E6DC] px-2.5 py-1 rounded-lg border border-[#C8CEC5] transition-colors cursor-pointer"
+                        title="Listen to localized explanation"
+                      >
+                        <Volume2 size={13} className={cn("text-[#12382A]", speaking && "animate-pulse text-[#4FAF78]")} />
+                        {t('result.listenAudio')}
+                      </button>
+                    </div>
+                    <p className="text-xs sm:text-sm text-[#102019]/90 leading-relaxed font-light">
+                      {localizedExplanation}
+                    </p>
+                    {result.reason && result.reason !== localizedExplanation && (
+                      <p className="text-[11px] text-[#718078] mt-3 pt-2.5 border-t border-[#C8CEC5]/50 italic">
+                        Original audit rationale: {result.reason}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="p-6 rounded-xl bg-[#FAF8F3] border border-[#C8CEC5]">
+                    <h3 className="font-serif text-lg text-[#102019] mb-2 flex items-center gap-2">
+                      <AlertCircle size={18} className="text-[#D3A54A]" />
+                      What Would Change This?
+                    </h3>
+                    <p className="text-xs sm:text-sm text-[#102019]/85 leading-relaxed font-light">
+                      {result.what_is_missing}
+                    </p>
+                  </div>
+                </div>
+              );
+            })()}
 
             {/* Sources Consulted */}
             {(evidenceRecords.length > 0 || result.sources.length > 0) && (
@@ -471,7 +517,7 @@ export default function ResultPage() {
                                 rel="noopener noreferrer"
                                 className="text-xs text-[#12382A] hover:text-[#0B241A] font-semibold flex items-center gap-1 underline"
                               >
-                                View Source <ExternalLink size={11} />
+                                {t('result.viewOriginalSource')} <ExternalLink size={11} />
                               </a>
                             )}
                           </div>

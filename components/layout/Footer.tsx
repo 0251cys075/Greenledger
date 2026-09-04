@@ -1,7 +1,12 @@
+'use client';
+
 import Link from 'next/link';
 import { ShieldCheck, ArrowRight } from 'lucide-react';
+import { useTranslation } from '@/lib/i18n-context';
 
 export default function Footer() {
+  const { t } = useTranslation();
+
   return (
     <footer className="bg-[#071710] text-[#F3F0E8]/80 pt-20 pb-12 border-t border-[#12382A]">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
@@ -21,7 +26,7 @@ export default function Footer() {
               Verify. Understand. Choose Better.
             </p>
             <p className="text-sm text-[#F3F0E8]/70 leading-relaxed max-w-sm mb-6">
-              GreenLedger is not making products green — it is making green claims transparent through verifiable evidence.
+              {t('footer.tagline', 'The open, evidence-backed environmental verification network.')}
             </p>
 
             {/* SDG badges */}
@@ -45,10 +50,10 @@ export default function Footer() {
             </h4>
             <ul className="space-y-3 text-sm">
               {[
-                { href: '/verify', label: 'Verify a Claim' },
-                { href: '/explore', label: 'Explore Verified Products' },
-                { href: '/ledger', label: 'Public Community Ledger' },
-                { href: '/report', label: 'Report Suspicious Claim' },
+                { href: '/verify', label: t('nav.verify', 'Verify a Claim') },
+                { href: '/explore', label: t('nav.explore', 'Explore Verified Products') },
+                { href: '/ledger', label: t('nav.ledger', 'Public Community Ledger') },
+                { href: '/report', label: t('report.title', 'Report Suspicious Claim') },
               ].map(({ href, label }) => (
                 <li key={href}>
                   <Link href={href} className="text-[#F3F0E8]/70 hover:text-[#63D6A2] transition-colors flex items-center gap-1.5 group">

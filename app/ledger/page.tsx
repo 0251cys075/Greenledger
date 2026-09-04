@@ -7,19 +7,21 @@ import { COMMUNITY_LEDGER, getResultIdForStatus } from '@/lib/mock-data';
 import { StatusBadge } from '@/components/shared/StatusBadge';
 import type { LedgerEntry, VerificationStatus } from '@/lib/types';
 import { formatRelativeDate, formatDate, cn } from '@/lib/utils';
-
-const STATUS_FILTERS: { label: string; value: VerificationStatus | 'ALL' }[] = [
-  { label: 'All Audits', value: 'ALL' },
-  { label: 'Verified', value: 'VERIFIED' },
-  { label: 'Insufficient Evidence', value: 'INSUFFICIENT_EVIDENCE' },
-  { label: 'Potential Greenwashing', value: 'POTENTIAL_GREENWASHING' },
-];
+import { useTranslation } from '@/lib/i18n-context';
 
 export default function LedgerPage() {
+  const { t } = useTranslation();
   const [filter, setFilter] = useState<VerificationStatus | 'ALL'>('ALL');
   const [search, setSearch] = useState('');
   const [entries, setEntries] = useState<LedgerEntry[]>(COMMUNITY_LEDGER);
   const [loading, setLoading] = useState(true);
+
+  const statusFilterOptions: { label: string; value: VerificationStatus | 'ALL' }[] = [
+    { label: t('ledger.filterAll'), value: 'ALL' },
+    { label: t('ledger.filterVerified'), value: 'VERIFIED' },
+    { label: t('ledger.filterInsufficient'), value: 'INSUFFICIENT_EVIDENCE' },
+    { label: t('ledger.filterGreenwashing'), value: 'POTENTIAL_GREENWASHING' },
+  ];
 
   // ── Fetch ledger from API ──────────────────────────────────
   useEffect(() => {
@@ -54,13 +56,13 @@ export default function LedgerPage() {
         <div className="max-w-7xl mx-auto">
           <div className="max-w-3xl">
             <span className="text-xs font-mono font-semibold text-[#63D6A2] uppercase tracking-widest px-3 py-1 rounded bg-[#12382A] border border-[#63D6A2]/25 mb-4 inline-block">
-              Immutable Transparency Record
+              {t('ledger.badge')}
             </span>
             <h1 className="font-serif text-3xl sm:text-5xl text-[#F3F0E8] mb-3">
-              Community Ledger
+              {t('ledger.title')}
             </h1>
             <p className="text-base sm:text-lg text-[#F3F0E8]/75 font-light">
-              Transparency works better when it&apos;s shared. An auditable, open record of all environmental claim evaluations.
+              {t('ledger.subtitle')}
             </p>
           </div>
         </div>
@@ -75,14 +77,14 @@ export default function LedgerPage() {
               type="search"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by product, brand, or claim phrase..."
+              placeholder={t('ledger.searchPlaceholder')}
               className="w-full pl-11 pr-4 py-2.5 text-sm bg-[#FAF8F3] border border-[#C8CEC5] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#12382A] text-[#102019]"
               aria-label="Search ledger entries"
             />
           </div>
 
           <div className="flex flex-wrap gap-2 w-full sm:w-auto">
-            {STATUS_FILTERS.map((f) => (
+            {statusFilterOptions.map((f) => (
               <button
                 key={f.value}
                 onClick={() => setFilter(f.value)}
@@ -103,11 +105,11 @@ export default function LedgerPage() {
         <div className="card-cream rounded-2xl border border-[#C8CEC5] shadow-md overflow-hidden">
           {/* Table Header (Desktop) */}
           <div className="hidden md:grid grid-cols-[2.5fr_3fr_2fr_1.5fr_1fr] gap-4 px-6 py-4 bg-[#E9E6DC] text-xs font-mono font-semibold text-[#12382A] uppercase tracking-wider border-b border-[#C8CEC5]">
-            <span>Product &amp; Brand</span>
-            <span>Claim Under Verification</span>
-            <span>Verdict</span>
-            <span>Verification Date</span>
-            <span className="text-right">Action</span>
+            <span>{t('ledger.tableProduct')}</span>
+            <span>{t('ledger.tableClaim')}</span>
+            <span>{t('ledger.tableStatus')}</span>
+            <span>{t('ledger.tableDate')}</span>
+            <span className="text-right">{t('ledger.tableAction')}</span>
           </div>
 
           {/* Loading skeleton */}
@@ -122,7 +124,7 @@ export default function LedgerPage() {
           {!loading && filtered.length === 0 ? (
             <div className="text-center py-16">
               <Database size={32} className="text-[#718078] mx-auto mb-2 opacity-50" />
-              <p className="font-serif text-lg text-[#102019] mb-1">No matching audit records</p>
+              <p className="font-serif text-lg text-[#102019] mb-1">{t('ledger.noEntries')}</p>
               <p className="text-xs font-mono text-[#718078] mb-4">Try another search term or reset filter.</p>
               <button
                 onClick={() => {
@@ -180,7 +182,7 @@ export default function LedgerPage() {
                       href={`/result/${getResultIdForStatus(entry.status)}`}
                       className="inline-flex items-center gap-1 text-xs font-semibold text-[#12382A] hover:text-[#0B241A] group"
                     >
-                      Audit Record <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
+                      {t('ledger.viewRecord')} <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
                     </Link>
                   </div>
                 </div>

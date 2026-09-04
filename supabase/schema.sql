@@ -34,23 +34,27 @@ CREATE TABLE IF NOT EXISTS claims (
 -- ── Verifications ───────────────────────────────────────────
 -- Stores the full VerificationResult for every non-demo claim.
 CREATE TABLE IF NOT EXISTS verifications (
-  id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  claim_id            UUID REFERENCES claims(id) ON DELETE SET NULL,
-  claim_text          TEXT NOT NULL,
-  product_name        TEXT,
-  brand               TEXT,
-  category            TEXT,
-  status              TEXT NOT NULL CHECK (status IN ('VERIFIED','INSUFFICIENT_EVIDENCE','POTENTIAL_GREENWASHING')),
-  evidence_strength   TEXT NOT NULL CHECK (evidence_strength IN ('STRONG','MODERATE','WEAK','NONE')),
-  scores              JSONB NOT NULL DEFAULT '{}',
-  reason              TEXT NOT NULL,
-  what_is_missing     TEXT NOT NULL,
-  evidence_assessment JSONB DEFAULT '[]',
-  evidence_records    JSONB DEFAULT '[]',
-  audit_trail         JSONB DEFAULT '{}',
-  is_demo             BOOLEAN DEFAULT FALSE,
-  is_public           BOOLEAN DEFAULT TRUE,
-  verified_at         TIMESTAMPTZ DEFAULT NOW()
+  id                    UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  claim_id              UUID REFERENCES claims(id) ON DELETE SET NULL,
+  claim_text            TEXT NOT NULL,
+  original_claim_text   TEXT,
+  claim_language        TEXT DEFAULT 'en',
+  normalized_claim      TEXT,
+  explanation_localized TEXT,
+  product_name          TEXT,
+  brand                 TEXT,
+  category              TEXT,
+  status                TEXT NOT NULL CHECK (status IN ('VERIFIED','INSUFFICIENT_EVIDENCE','POTENTIAL_GREENWASHING')),
+  evidence_strength     TEXT NOT NULL CHECK (evidence_strength IN ('STRONG','MODERATE','WEAK','NONE')),
+  scores                JSONB NOT NULL DEFAULT '{}',
+  reason                TEXT NOT NULL,
+  what_is_missing       TEXT NOT NULL,
+  evidence_assessment   JSONB DEFAULT '[]',
+  evidence_records      JSONB DEFAULT '[]',
+  audit_trail           JSONB DEFAULT '{}',
+  is_demo               BOOLEAN DEFAULT FALSE,
+  is_public             BOOLEAN DEFAULT TRUE,
+  verified_at           TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- ── Reports ─────────────────────────────────────────────────

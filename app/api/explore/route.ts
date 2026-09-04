@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const q = (searchParams.get('q') || '').toLowerCase().trim();
   const category = (searchParams.get('category') || '').trim();
-  const status = (searchParams.get('status') || '') as VerificationStatus | '';
+  const status = (searchParams.get('status') || '') as VerificationStatus | 'ALL' | '';
 
   if (isSupabaseConfigured) {
     try {
@@ -56,15 +56,25 @@ export async function GET(request: NextRequest) {
             (p) =>
               p.product_name.toLowerCase().includes(q) ||
               p.brand.toLowerCase().includes(q) ||
+              p.category.toLowerCase().includes(q) ||
               p.claim_text.toLowerCase().includes(q)
           );
         }
 
         // Merge with mock data
         const mockFiltered = EXPLORE_PRODUCTS.filter((p) => {
-          const matchQ = !q || p.product_name.toLowerCase().includes(q) || p.brand.toLowerCase().includes(q) || p.claim_text.toLowerCase().includes(q);
-          const matchCat = !category || category === 'All' || p.category === category;
-          const matchStatus = !status || p.status === status;
+          const matchQ =
+            !q ||
+            p.product_name.toLowerCase().includes(q) ||
+            p.brand.toLowerCase().includes(q) ||
+            p.category.toLowerCase().includes(q) ||
+            p.claim_text.toLowerCase().includes(q);
+          const matchCat =
+            !category ||
+            category === 'All' ||
+            p.category.toLowerCase() === category.toLowerCase() ||
+            p.category.toLowerCase().includes(category.toLowerCase());
+          const matchStatus = !status || status === 'ALL' || p.status === status;
           return matchQ && matchCat && matchStatus;
         });
 
@@ -78,9 +88,18 @@ export async function GET(request: NextRequest) {
 
   // ── Fallback: filter mock data ────────────────────────────
   const filtered = EXPLORE_PRODUCTS.filter((p) => {
-    const matchQ = !q || p.product_name.toLowerCase().includes(q) || p.brand.toLowerCase().includes(q) || p.claim_text.toLowerCase().includes(q);
-    const matchCat = !category || category === 'All' || p.category === category;
-    const matchStatus = !status || p.status === status;
+    const matchQ =
+      !q ||
+      p.product_name.toLowerCase().includes(q) ||
+      p.brand.toLowerCase().includes(q) ||
+      p.category.toLowerCase().includes(q) ||
+      p.claim_text.toLowerCase().includes(q);
+    const matchCat =
+      !category ||
+      category === 'All' ||
+      p.category.toLowerCase() === category.toLowerCase() ||
+      p.category.toLowerCase().includes(category.toLowerCase());
+    const matchStatus = !status || status === 'ALL' || p.status === status;
     return matchQ && matchCat && matchStatus;
   });
 

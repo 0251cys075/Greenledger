@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Upload, CheckCircle2, AlertCircle, ArrowLeft, ArrowRight, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/lib/i18n-context';
 
 const REASONS = [
   'Claim is vague, generic, or lacks measurable metrics',
@@ -16,6 +17,7 @@ const REASONS = [
 ];
 
 function ReportFormContent() {
+  const { t } = useTranslation();
   const searchParams = useSearchParams();
   const [form, setForm] = useState({
     brand: '',
@@ -30,13 +32,24 @@ function ReportFormContent() {
   const [fileName, setFileName] = useState<string | null>(null);
 
   useEffect(() => {
-    const claimParam = searchParams.get('claim') || '';
+    const claimParam = searchParams.get('claim') || searchParams.get('claimText') || '';
     const brandParam = searchParams.get('brand') || '';
-    if (claimParam || brandParam) {
+    const productParam = searchParams.get('product') || searchParams.get('productName') || '';
+
+    let combinedBrand = brandParam;
+    if (brandParam && productParam) {
+      if (!brandParam.toLowerCase().includes(productParam.toLowerCase())) {
+        combinedBrand = `${brandParam} — ${productParam}`;
+      }
+    } else if (productParam) {
+      combinedBrand = productParam;
+    }
+
+    if (claimParam || combinedBrand) {
       setForm((prev) => ({
         ...prev,
         claim: claimParam || prev.claim,
-        brand: brandParam || prev.brand,
+        brand: combinedBrand || prev.brand,
       }));
     }
   }, [searchParams]);
@@ -79,18 +92,18 @@ function ReportFormContent() {
             <CheckCircle2 size={32} />
           </div>
           <h2 className="font-serif text-2xl sm:text-3xl text-[#102019] mb-3">
-            Report Submitted to Review
+            {t('report.submittedTitle', 'Report Submitted to Review')}
           </h2>
           <p className="text-xs sm:text-sm text-[#718078] leading-relaxed mb-6">
-            Thank you for strengthening environmental transparency. Your report has been added to our public audit queue.
+            {t('report.submittedDesc', 'Thank you for strengthening environmental transparency. Your report has been added to our public audit queue.')}
           </p>
           <div className="p-3.5 rounded-xl bg-[#E9E6DC] text-xs font-mono text-[#102019] mb-8 text-left">
-            <p><strong>Tracking Ticket:</strong> {ticketId}</p>
+            <p><strong>{t('report.ticketIdLabel', 'Tracking Ticket')}:</strong> {ticketId}</p>
             <p className="mt-1 text-[#718078]">Audit review timeline: 3–5 business days</p>
           </div>
           <div className="flex flex-col gap-2.5">
             <Link href="/ledger" className="btn-primary w-full justify-center">
-              View Community Ledger <ArrowRight size={14} />
+              {t('ledger.title', 'Community Ledger')} <ArrowRight size={14} />
             </Link>
             <Link href="/" className="btn-ghost w-full justify-center text-xs">
               Return to Home
@@ -113,10 +126,10 @@ function ReportFormContent() {
             <ArrowLeft size={13} /> BACK TO LEDGER
           </Link>
           <h1 className="font-serif text-3xl sm:text-5xl text-[#F3F0E8] mb-3">
-            Report a Suspicious Claim
+            {t('report.title', 'Report a Suspicious Claim')}
           </h1>
           <p className="text-base sm:text-lg text-[#F3F0E8]/75 font-light">
-            Help verify the marketplace. Flag vague or unsubstantiated environmental marketing claims for structured review.
+            {t('report.subtitle', 'Help verify the marketplace. Flag vague or unsubstantiated environmental marketing claims for structured review.')}
           </p>
         </div>
       </div>
@@ -126,7 +139,7 @@ function ReportFormContent() {
           {/* Brand/Product */}
           <div>
             <label htmlFor="brand" className="block text-xs font-mono font-semibold text-[#12382A] uppercase tracking-wider mb-2">
-              Product &amp; Brand Name <span className="text-[#C95C5C]">*</span>
+              {t('report.productName', 'Product & Brand Name')} <span className="text-[#C95C5C]">*</span>
             </label>
             <input
               id="brand"
@@ -142,7 +155,7 @@ function ReportFormContent() {
           {/* Claim */}
           <div>
             <label htmlFor="claim" className="block text-xs font-mono font-semibold text-[#12382A] uppercase tracking-wider mb-2">
-              Exact Environmental Claim Phrase <span className="text-[#C95C5C]">*</span>
+              {t('report.claimText', 'Exact Environmental Claim Phrase')} <span className="text-[#C95C5C]">*</span>
             </label>
             <textarea
               id="claim"
@@ -209,7 +222,7 @@ function ReportFormContent() {
           {/* Additional context */}
           <div>
             <label htmlFor="additional" className="block text-xs font-mono font-semibold text-[#12382A] uppercase tracking-wider mb-2">
-              Additional Context or Link (Optional)
+              {t('report.additionalInfo', 'Additional Context or Link (Optional)')}
             </label>
             <textarea
               id="additional"
@@ -241,9 +254,9 @@ function ReportFormContent() {
             )}
           >
             {submitting ? (
-              <><Loader2 size={16} className="animate-spin" /> Submitting…</>
+              <><Loader2 size={16} className="animate-spin" /> {t('report.submitting', 'Submitting…')}</>
             ) : (
-              'SUBMIT CLAIM FOR VERIFICATION REVIEW'
+              t('report.submitBtn', 'SUBMIT CLAIM FOR VERIFICATION REVIEW')
             )}
           </button>
 

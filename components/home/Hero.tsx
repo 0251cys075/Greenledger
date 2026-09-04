@@ -2,8 +2,11 @@
 
 import Link from 'next/link';
 import { ArrowRight, ChevronDown } from 'lucide-react';
+import { useTranslation } from '@/lib/i18n-context';
 
 export default function Hero() {
+  const { t } = useTranslation();
+
   return (
     <section
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
@@ -34,7 +37,7 @@ export default function Hero() {
         <div className="inline-flex items-center gap-2.5 bg-[#12382A]/80 backdrop-blur-md border border-[#63D6A2]/30 rounded-full px-4 py-1.5 mb-8 animate-fade-in shadow-lg">
           <span className="w-2 h-2 rounded-full bg-[#63D6A2] animate-pulse" aria-hidden="true" />
           <span className="text-[#F3F0E8] text-xs font-mono font-medium tracking-wide uppercase">
-            Environmental Claim Verification
+            {t('hero.badge', 'Environmental Claim Verification')}
           </span>
         </div>
 
@@ -47,9 +50,9 @@ export default function Hero() {
             letterSpacing: '-0.02em',
           }}
         >
-          Can You Trust What a Product
+          {t('hero.titleLine1', 'Can You Trust What a Product')}
           <br />
-          <em className="not-italic text-[#63D6A2]">Says About the Planet?</em>
+          <em className="not-italic text-[#63D6A2]">{t('hero.titleLine2', 'Says About the Planet?')}</em>
         </h1>
 
         {/* Subheading */}
@@ -57,7 +60,7 @@ export default function Hero() {
           className="text-[#F3F0E8]/80 text-lg md:text-xl leading-relaxed max-w-2xl mx-auto mb-10 animate-fade-in-up delay-200"
           style={{ fontWeight: 300 }}
         >
-          Verify environmental claims with evidence — not marketing.
+          {t('hero.subtitle', 'Verify environmental claims with evidence — not marketing.')}
         </p>
 
         {/* CTAs */}
@@ -66,14 +69,14 @@ export default function Hero() {
             href="/verify"
             className="group flex items-center gap-2 bg-[#63D6A2] text-[#0B241A] px-8 py-3.5 rounded-lg font-semibold text-[15px] hover:bg-[#7eedb8] transition-all hover:shadow-xl hover:-translate-y-0.5"
           >
-            Verify a Claim
+            {t('hero.verifyCta', 'Verify a Claim')}
             <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
           </Link>
           <Link
             href="/explore"
             className="flex items-center gap-2 bg-[#0B241A]/60 backdrop-blur-sm border border-white/20 text-[#F3F0E8] px-8 py-3.5 rounded-lg font-medium text-[15px] hover:bg-[#12382A] hover:border-[#63D6A2]/50 transition-all"
           >
-            Explore Verified Products
+            {t('hero.exploreCta', 'Explore Verified Products')}
           </Link>
         </div>
 
