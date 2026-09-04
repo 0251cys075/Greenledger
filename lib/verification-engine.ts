@@ -14,6 +14,7 @@ import type {
   VerificationScores,
 } from './types';
 import { MOCK_RESULTS, DEMO_CLAIMS } from './mock-data';
+import { classifyEnvironmentalClaim } from './claim-classifier';
 
 // ── STEP 1: Claim Extraction ───────────────────────────────
 // In production: replace with OCR + LLM extraction API call
@@ -142,13 +143,29 @@ export function matchClaimToEvidence(claim: Partial<Claim>): {
 
 // ── STEP 4: Apply Verification Rules ──────────────────────
 // Structured logic — NOT an LLM decision
-export function applyVerificationRules(scores: VerificationScores): VerificationStatus {
+// ── STEP 4: Apply Verification Rules ──────────────────────
+// Structured logic — strictly controls status
+export function applyVerificationRules(scores: VerificationScores, claim: Partial<Claim>): VerificationStatus {
   const { total } = scores;
+  const lower = (claim.claim_text || '').toLowerCase();
 
-  // Score thresholds
-  if (total >= 9) return 'VERIFIED';
-  if (total >= 5) return 'INSUFFICIENT_EVIDENCE';
-  return 'POTENTIAL_GREENWASHING';
+  // Check for greenwashing red flags: vague buzzwords or absolute claims without qualification
+  const vagueBuzzwords = ['100% eco-friendly', 'eco-friendly', 'all-natural', 'planet friendly', 'pure green', '100% sustainable'];
+  const hasVagueBuzzword = vagueBuzzwords.some((bw) => lower.includes(bw));
+  const isAbsolute = lower.includes('100%') || lower.includes('completely') || lower.includes('zero impact');
+
+  // VERIFIED requires: specific/measurable claim + reliable supporting evidence + certification/audit alignment
+  if (total >= 9 && claim.specificity_level === 'HIGH' && (claim.is_measurable || lower.includes('certified') || lower.includes('fsc') || lower.includes('grs') || lower.includes('renewable'))) {
+    return 'VERIFIED';
+  }
+
+  // POTENTIAL GREENWASHING is ONLY assigned when the claim has active misleading/vague indicators
+  if (hasVagueBuzzword || (isAbsolute && !claim.is_measurable && scores.certification_status === 0)) {
+    return 'POTENTIAL_GREENWASHING';
+  }
+
+  // STEP 4 Standard: Environmental claim but insufficient/unconfirmed supporting evidence
+  return 'INSUFFICIENT_EVIDENCE';
 }
 
 // ── STEP 5: Calculate Evidence Strength ───────────────────
@@ -171,8 +188,8 @@ export function generateExplanation(
 
   const reasonTemplates: Record<VerificationStatus, string> = {
     VERIFIED: `This claim has been assessed against available evidence and found to be sufficiently supported. The claim "${claimText}" is specific, measurable, and backed by independent certification and third-party validation. Available sources are consistent with the stated claim, and no major contradictions were identified.`,
-    INSUFFICIENT_EVIDENCE: `While the claim "${claimText}" contains specific language, GreenLedger could not locate sufficient independent evidence to confirm it. The claim may be factually accurate, but it cannot currently be independently verified with available sources. This assessment reflects the state of available evidence, not necessarily the company's actual practices.`,
-    POTENTIAL_GREENWASHING: `The claim "${claimText}" uses broad environmental language without providing measurable criteria or specific evidence. Under ISO 14021 environmental claims standards, unqualified or vague environmental claims require substantiated, product-specific evidence. No independent certification or third-party validation was identified to support this claim. GreenLedger cannot confirm the claim's accuracy based on available evidence.`,
+    INSUFFICIENT_EVIDENCE: `The claim "${claimText}" is environmental in nature, but GreenLedger could not find sufficient reliable independent evidence to verify it. The statement may be truthful, but lack of publicly accessible third-party audit reports or certification registry records prevents verification at this time.`,
+    POTENTIAL_GREENWASHING: `The claim "${claimText}" uses broad or unqualified environmental language without providing measurable criteria or verifiable evidence. Under ISO 14021 environmental claims standards, unqualified statements of generic eco-friendliness are classified as potentially misleading without comprehensive life-cycle disclosures and independent certification.`,
   };
 
   const missingTemplates: Record<VerificationStatus, string> = {
@@ -210,6 +227,16 @@ export async function runVerification(
     }
   }
 
+  // MANDATORY GATE: Claim Relevance Classification
+  // Stop immediately if input is not an environmental claim
+  const classification = classifyEnvironmentalClaim(claimText);
+  if (!classification.isEnvironmentalClaim) {
+    throw new Error(
+      classification.message ||
+        'GreenLedger verifies environmental and sustainability claims only.'
+    );
+  }
+
   // LIVE MODE: run the modular pipeline
   const claim = extractClaim(claimText);
   const evidence = retrieveEvidence(claim);
@@ -226,7 +253,7 @@ export async function runVerification(
       matching.claim_evidence_match,
   };
 
-  const status = applyVerificationRules(scores);
+  const status = applyVerificationRules(scores, claim);
   const evidence_strength = calculateEvidenceStrength(scores);
   const { reason, what_is_missing } = generateExplanation(status, claim, scores);
 

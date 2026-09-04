@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft, ArrowRight, BookOpen, Download, Flag, ExternalLink, ShieldCheck, CheckCircle2, AlertCircle, Share2, Check } from 'lucide-react';
 import { MOCK_RESULTS } from '@/lib/mock-data';
 import { runVerification } from '@/lib/verification-engine';
@@ -43,6 +43,7 @@ function IndependentBadge({ isIndependent }: { isIndependent: boolean }) {
 }
 
 export default function ResultPage() {
+  const router = useRouter();
   const params = useParams();
   const id = (params?.id as string) || 'demo-1';
   const [result, setResult] = useState<VerificationResult>(() => MOCK_RESULTS[id] || MOCK_RESULTS['demo-1']);
@@ -63,18 +64,23 @@ export default function ResultPage() {
     } else {
       const claim = typeof window !== 'undefined' ? sessionStorage.getItem('gl_claim') : null;
       if (claim) {
-        runVerification(claim).then((res) => {
-          setResult({
-            ...res,
-            product_name: 'Custom Product Submission',
-            brand: 'Self-Submitted Claim',
-            category: 'General Consumer Good',
-            sources: res.sources.length > 0 ? res.sources : MOCK_RESULTS['demo-1'].sources,
+        runVerification(claim)
+          .then((res) => {
+            setResult({
+              ...res,
+              product_name: 'Custom Product Submission',
+              brand: 'Self-Submitted Claim',
+              category: 'General Consumer Good',
+              sources: res.sources.length > 0 ? res.sources : MOCK_RESULTS['demo-1'].sources,
+            });
+          })
+          .catch(() => {
+            // Non-environmental input or invalid claim: return to verify terminal
+            router.replace('/verify');
           });
-        });
       }
     }
-  }, [id]);
+  }, [id, router]);
 
   function handleSave() {
     setSaved(true);

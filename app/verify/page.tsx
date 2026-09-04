@@ -11,8 +11,10 @@ import {
   ShieldCheck,
   CheckCircle2,
   Loader2,
+  AlertCircle,
 } from 'lucide-react';
 import { DEMO_CLAIMS } from '@/lib/mock-data';
+import { classifyEnvironmentalClaim } from '@/lib/claim-classifier';
 import ProductCodeScannerModal from '@/components/verify/ProductCodeScannerModal';
 import { cn } from '@/lib/utils';
 
@@ -26,6 +28,11 @@ function VerifyFormContent() {
   const [fileName, setFileName] = useState<string | null>(null);
   const [isScanningOCR, setIsScanningOCR] = useState(false);
   const [qrModalOpen, setQrModalOpen] = useState(false);
+  const [validationError, setValidationError] = useState<{
+    message: string;
+    suggestion?: string;
+    reason?: string;
+  } | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   // Read URL search parameter if user arrived from clicking a sample claim
@@ -33,6 +40,7 @@ function VerifyFormContent() {
     const claimParam = searchParams.get('claim');
     if (claimParam) {
       setClaim(claimParam);
+      setValidationError(null);
       const matched = DEMO_CLAIMS.find(
         (d) => d.claim_text.toLowerCase() === claimParam.toLowerCase().trim()
       );
@@ -45,16 +53,34 @@ function VerifyFormContent() {
   function handleDemoClick(demoId: string, claimText: string) {
     setActiveDemo(demoId);
     setClaim(claimText);
+    setValidationError(null);
   }
 
   function handleVerify() {
-    if (!claim.trim()) return;
+    const trimmed = claim.trim();
+    if (!trimmed) return;
+
+    // STEP 1 & 2: Mandatory Environmental Claim Relevance Check
+    // Prevent non-environmental text from entering the verification pipeline
+    const classification = classifyEnvironmentalClaim(trimmed);
+
+    if (!classification.isEnvironmentalClaim) {
+      setValidationError({
+        message: classification.message || 'GreenLedger verifies environmental and sustainability claims only.',
+        suggestion: classification.suggestion,
+        reason: classification.reason,
+      });
+      return;
+    }
+
+    setValidationError(null);
+
     const matchedDemo = DEMO_CLAIMS.find(
-      (d) => d.claim_text.toLowerCase() === claim.toLowerCase().trim()
+      (d) => d.claim_text.toLowerCase() === trimmed.toLowerCase()
     );
     const resultId = matchedDemo ? matchedDemo.id : 'custom';
     if (typeof window !== 'undefined') {
-      sessionStorage.setItem('gl_claim', claim);
+      sessionStorage.setItem('gl_claim', trimmed);
       sessionStorage.setItem('gl_demo_id', matchedDemo?.id || '');
     }
     router.push(`/analysis?id=${resultId}`);
@@ -151,6 +177,7 @@ function VerifyFormContent() {
               onChange={(e) => {
                 setClaim(e.target.value);
                 setActiveDemo(null);
+                if (validationError) setValidationError(null);
               }}
               placeholder="Paste an environmental claim from product packaging, advertisements, or e-commerce listing (e.g. &quot;100% Eco-Friendly&quot; or &quot;Made with 70% recycled ocean plastic&quot;)..."
               rows={4}
@@ -161,6 +188,7 @@ function VerifyFormContent() {
                   setClaim('');
                   setActiveDemo(null);
                   setFileName(null);
+                  setValidationError(null);
                 }}
                 className="absolute top-3.5 right-3.5 p-1.5 rounded-lg bg-[#E9E6DC] text-[#718078] hover:text-[#102019] hover:bg-[#C8CEC5] transition-colors"
                 aria-label="Clear claim"
@@ -170,6 +198,46 @@ function VerifyFormContent() {
               </button>
             )}
           </div>
+
+          {/* Non-environmental claim rejection banner */}
+          {validationError && (
+            <div className="mb-6 p-4 rounded-xl bg-[#C95C5C]/10 border-2 border-[#C95C5C]/40 text-[#102019] animate-fade-in">
+              <div className="flex items-start gap-3 mb-2">
+                <AlertCircle size={20} className="text-[#C95C5C] flex-shrink-0 mt-0.5" />
+                <div>
+                  <h3 className="font-semibold text-sm text-[#962A2A]">
+                    ⚠️ This doesn&apos;t appear to be an environmental claim.
+                  </h3>
+                  <p className="text-xs text-[#102019]/90 mt-1 leading-relaxed">
+                    GreenLedger verifies sustainability and environmental claims such as recycled content, recyclability, carbon emissions, renewable materials, certifications, and sustainable packaging.
+                  </p>
+                  {validationError.reason && (
+                    <p className="text-[11px] font-mono text-[#718078] mt-1.5">
+                      Notice: {validationError.reason}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-3 pt-3 border-t border-[#C95C5C]/20 flex items-center justify-between flex-wrap gap-2">
+                <p className="text-[11px] text-[#718078] italic">
+                  Tip: {validationError.suggestion || 'Provide a statement regarding materials, recyclability, or emissions.'}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setClaim('');
+                    setValidationError(null);
+                    const textarea = document.getElementById('claim-input');
+                    textarea?.focus();
+                  }}
+                  className="px-3 py-1.5 rounded-lg bg-[#12382A] text-[#F3F0E8] text-xs font-mono font-semibold hover:bg-[#1B4D3A] transition-colors cursor-pointer"
+                >
+                  Try Another Claim
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Divider */}
           <div className="flex items-center gap-4 mb-6">

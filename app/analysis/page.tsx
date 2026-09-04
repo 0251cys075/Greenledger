@@ -3,6 +3,7 @@
 import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { CheckCircle2, Circle, Loader2, ShieldCheck, Database, Search, FileText } from 'lucide-react';
+import { classifyEnvironmentalClaim } from '@/lib/claim-classifier';
 import { cn } from '@/lib/utils';
 
 interface PipelineStep {
@@ -33,9 +34,17 @@ function AnalysisContent() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      setClaim(sessionStorage.getItem('gl_claim') || '"100% Eco-Friendly"');
+      const storedClaim = sessionStorage.getItem('gl_claim');
+      if (resultId === 'custom' && storedClaim) {
+        const classification = classifyEnvironmentalClaim(storedClaim);
+        if (!classification.isEnvironmentalClaim) {
+          router.replace('/verify');
+          return;
+        }
+      }
+      setClaim(storedClaim || '"100% Eco-Friendly"');
     }
-  }, []);
+  }, [resultId, router]);
 
   useEffect(() => {
     let cumulative = 0;
