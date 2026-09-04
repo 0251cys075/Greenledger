@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Info, ShieldCheck, ExternalLink } from 'lucide-react';
 import { MOCK_RESULTS } from '@/lib/mock-data';
+import { runVerification } from '@/lib/verification-engine';
 import type { VerificationResult } from '@/lib/types';
 import { StatusBadge } from '@/components/shared/StatusBadge';
 import { formatDate, cn } from '@/lib/utils';
@@ -44,6 +45,18 @@ export default function EvidencePage() {
   useEffect(() => {
     if (id && MOCK_RESULTS[id]) {
       setResult(MOCK_RESULTS[id]);
+    } else if (id === 'custom') {
+      const claim = typeof window !== 'undefined' ? sessionStorage.getItem('gl_claim') : null;
+      if (claim) {
+        runVerification(claim).then((res) => {
+          setResult({
+            ...res,
+            product_name: 'Custom Product Submission',
+            brand: 'Verified Consumer Submission',
+            category: 'General Consumer Goods',
+          });
+        });
+      }
     }
   }, [id]);
 

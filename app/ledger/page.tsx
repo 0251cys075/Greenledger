@@ -96,8 +96,17 @@ export default function LedgerPage() {
           {filtered.length === 0 ? (
             <div className="text-center py-16">
               <Database size={32} className="text-[#718078] mx-auto mb-2 opacity-50" />
-              <p className="font-serif text-lg text-[#102019]">No matching audit records</p>
-              <p className="text-xs font-mono text-[#718078]">Try another search term or reset filter.</p>
+              <p className="font-serif text-lg text-[#102019] mb-1">No matching audit records</p>
+              <p className="text-xs font-mono text-[#718078] mb-4">Try another search term or reset filter.</p>
+              <button
+                onClick={() => {
+                  setFilter('ALL');
+                  setSearch('');
+                }}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#12382A] text-[#F3F0E8] text-xs font-mono hover:bg-[#1B4D3A] transition-colors"
+              >
+                Reset all filters
+              </button>
             </div>
           ) : (
             <div className="divide-y divide-[#C8CEC5]">

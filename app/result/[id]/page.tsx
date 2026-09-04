@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { ArrowLeft, ArrowRight, BookOpen, Download, Flag, ExternalLink, ShieldCheck, CheckCircle2, AlertCircle } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BookOpen, Download, Flag, ExternalLink, ShieldCheck, CheckCircle2, AlertCircle, Share2, Check } from 'lucide-react';
 import { MOCK_RESULTS } from '@/lib/mock-data';
 import { runVerification } from '@/lib/verification-engine';
 import type { VerificationResult } from '@/lib/types';
@@ -47,6 +47,15 @@ export default function ResultPage() {
   const id = (params?.id as string) || 'demo-1';
   const [result, setResult] = useState<VerificationResult>(() => MOCK_RESULTS[id] || MOCK_RESULTS['demo-1']);
   const [saved, setSaved] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  function handleShare() {
+    if (typeof window !== 'undefined') {
+      navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    }
+  }
 
   useEffect(() => {
     if (id && MOCK_RESULTS[id]) {
@@ -142,6 +151,10 @@ export default function ResultPage() {
               <button onClick={handleSave} className="btn-secondary w-full justify-center">
                 <Download size={16} />
                 {saved ? 'Audit Record Saved!' : 'Save Verification PDF'}
+              </button>
+              <button onClick={handleShare} className="btn-secondary w-full justify-center">
+                {copied ? <Check size={16} className="text-[#4FAF78]" /> : <Share2 size={16} />}
+                {copied ? 'Verification Link Copied!' : 'Share Audit Record'}
               </button>
               <Link
                 href={`/report?claim=${encodeURIComponent(result.claim_text)}&brand=${encodeURIComponent(result.brand || result.product_name || '')}`}
