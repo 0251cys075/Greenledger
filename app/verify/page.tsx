@@ -11,10 +11,9 @@ import {
   ShieldCheck,
   CheckCircle2,
   Loader2,
-  QrCode,
-  ScanLine,
 } from 'lucide-react';
 import { DEMO_CLAIMS } from '@/lib/mock-data';
+import ProductCodeScannerModal from '@/components/verify/ProductCodeScannerModal';
 import { cn } from '@/lib/utils';
 
 function VerifyFormContent() {
@@ -27,7 +26,6 @@ function VerifyFormContent() {
   const [fileName, setFileName] = useState<string | null>(null);
   const [isScanningOCR, setIsScanningOCR] = useState(false);
   const [qrModalOpen, setQrModalOpen] = useState(false);
-  const [qrScanningActive, setQrScanningActive] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   // Read URL search parameter if user arrived from clicking a sample claim
@@ -88,15 +86,7 @@ function VerifyFormContent() {
     }
   }
 
-  function handleSimulateQRScan(scannedClaim: string, demoId: string) {
-    setQrScanningActive(true);
-    setTimeout(() => {
-      setQrScanningActive(false);
-      setQrModalOpen(false);
-      setClaim(scannedClaim);
-      setActiveDemo(demoId);
-    }, 600);
-  }
+
 
   return (
     <div className="min-h-screen bg-[#F3F0E8] pt-24 pb-20">
@@ -247,14 +237,14 @@ function VerifyFormContent() {
             )}
           </div>
 
-          {/* QR Scanner Trigger */}
+          {/* Unified Scanner Trigger */}
           <button
             type="button"
             className="w-full flex items-center justify-center gap-2 py-3 text-xs font-mono font-semibold text-[#12382A] border border-[#C8CEC5] rounded-xl hover:bg-[#E9E6DC] hover:border-[#12382A] transition-all mb-8 cursor-pointer"
             onClick={() => setQrModalOpen(true)}
           >
             <Camera size={15} />
-            Scan QR Code on Packaging for Digital Traceability
+            Scan Product QR / Barcode
           </button>
 
           {/* Primary submit */}
@@ -286,102 +276,18 @@ function VerifyFormContent() {
         </div>
       </div>
 
-      {/* QR Scanner Modal */}
-      {qrModalOpen && (
-        <div
-          className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="qr-modal-title"
-        >
-          <div className="card-cream max-w-md w-full p-6 sm:p-7 rounded-2xl border-2 border-[#12382A]/30 shadow-2xl relative">
-            <button
-              onClick={() => setQrModalOpen(false)}
-              className="absolute top-4 right-4 p-1.5 rounded-lg bg-[#E9E6DC] text-[#718078] hover:text-[#102019] transition-colors"
-              aria-label="Close QR scanner"
-            >
-              <X size={18} />
-            </button>
-
-            <div className="text-center mb-6">
-              <div className="w-12 h-12 rounded-xl bg-[#0B241A] text-[#63D6A2] flex items-center justify-center mx-auto mb-3">
-                <QrCode size={24} />
-              </div>
-              <h2 id="qr-modal-title" className="font-serif text-2xl text-[#102019]">
-                Package QR Traceability
-              </h2>
-              <p className="text-xs text-[#718078] font-light mt-1">
-                Scan on-package QR code or select a demo registered product
-              </p>
-            </div>
-
-            {/* Simulated Viewfinder */}
-            <div className="relative w-48 h-48 mx-auto mb-6 bg-[#0B241A] rounded-2xl border-2 border-[#63D6A2]/40 overflow-hidden flex items-center justify-center shadow-inner">
-              <div className="absolute inset-2 border border-dashed border-[#63D6A2]/40 rounded-xl" />
-              {qrScanningActive ? (
-                <div className="text-center z-10">
-                  <Loader2 size={32} className="text-[#63D6A2] animate-spin mx-auto mb-2" />
-                  <span className="text-[11px] font-mono text-[#63D6A2]">Reading QR Payload...</span>
-                </div>
-              ) : (
-                <div className="text-center z-10">
-                  <ScanLine size={40} className="text-[#63D6A2] animate-pulse mx-auto mb-2" />
-                  <span className="text-[10px] font-mono text-[#F3F0E8]/70">Position QR within frame</span>
-                </div>
-              )}
-              {/* Laser line animation */}
-              <div className="absolute top-0 left-0 right-0 h-0.5 bg-[#63D6A2] shadow-[0_0_8px_#63D6A2] animate-bounce" />
-            </div>
-
-            <p className="text-xs font-mono uppercase text-[#12382A] font-semibold tracking-wider mb-2 text-center">
-              Select Sample Packaging QR to Scan
-            </p>
-            <div className="space-y-2 mb-4">
-              <button
-                type="button"
-                onClick={() =>
-                  handleSimulateQRScan('Product packaging contains 80% recycled paper', 'demo-3')
-                }
-                className="w-full text-left p-3 rounded-xl bg-[#FAF8F3] border border-[#C8CEC5] hover:border-[#12382A] hover:bg-[#E9E6DC] transition-all text-xs flex items-center justify-between group"
-              >
-                <div>
-                  <p className="font-semibold text-[#102019]">EcoPack Mailer Box (FSC Certified)</p>
-                  <p className="text-[11px] text-[#718078] font-mono">Payload: greenledger.io/v/DEMO-3</p>
-                </div>
-                <span className="text-[11px] font-mono text-[#12382A] font-semibold group-hover:translate-x-0.5 transition-transform">
-                  Scan →
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() =>
-                  handleSimulateQRScan('Made with 70% recycled material', 'demo-2')
-                }
-                className="w-full text-left p-3 rounded-xl bg-[#FAF8F3] border border-[#C8CEC5] hover:border-[#12382A] hover:bg-[#E9E6DC] transition-all text-xs flex items-center justify-between group"
-              >
-                <div>
-                  <p className="font-semibold text-[#102019]">Recycled Bubble Wrap (PackRight)</p>
-                  <p className="text-[11px] text-[#718078] font-mono">Payload: greenledger.io/v/DEMO-2</p>
-                </div>
-                <span className="text-[11px] font-mono text-[#12382A] font-semibold group-hover:translate-x-0.5 transition-transform">
-                  Scan →
-                </span>
-              </button>
-            </div>
-
-            <div className="text-center pt-2">
-              <a
-                href="/about#qr"
-                target="_blank"
-                className="text-[11px] font-mono text-[#718078] hover:text-[#12382A] underline"
-              >
-                Learn how GreenLedger on-package QR architecture works ↗
-              </a>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Unified Product Code Scanner Modal (QR & 1D Barcodes) */}
+      <ProductCodeScannerModal
+        isOpen={qrModalOpen}
+        onClose={() => setQrModalOpen(false)}
+        onSelectClaim={(scannedClaim, resultId) => {
+          setClaim(scannedClaim);
+          if (resultId) {
+            setActiveDemo(resultId);
+          }
+          setQrModalOpen(false);
+        }}
+      />
     </div>
   );
 }
