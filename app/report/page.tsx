@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { Upload, CheckCircle2, ShieldAlert, ArrowLeft, ArrowRight, Loader2 } from 'lucide-react';
+import { Upload, CheckCircle2, AlertCircle, ArrowLeft, ArrowRight, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const REASONS = [
@@ -24,6 +24,9 @@ function ReportFormContent() {
     additionalInfo: '',
   });
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [ticketId, setTicketId] = useState<string>('');
   const [fileName, setFileName] = useState<string | null>(null);
 
   useEffect(() => {
@@ -42,9 +45,30 @@ function ReportFormContent() {
     setForm((prev) => ({ ...prev, [field]: value }));
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setSubmitted(true);
+    setSubmitting(true);
+    setSubmitError(null);
+    try {
+      const res = await fetch('/api/reports', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          brand: form.brand,
+          claim: form.claim,
+          reason: form.reason,
+          additionalInfo: form.additionalInfo,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Submission failed');
+      setTicketId(data.ticketId || `GL-REP-${Math.floor(100000 + Math.random() * 900000)}`);
+      setSubmitted(true);
+    } catch (err) {
+      setSubmitError(err instanceof Error ? err.message : 'Submission failed. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   if (submitted) {
@@ -61,7 +85,7 @@ function ReportFormContent() {
             Thank you for strengthening environmental transparency. Your report has been added to our public audit queue.
           </p>
           <div className="p-3.5 rounded-xl bg-[#E9E6DC] text-xs font-mono text-[#102019] mb-8 text-left">
-            <p><strong>Tracking Ticket:</strong> GL-REP-{Math.floor(100000 + Math.random() * 900000)}</p>
+            <p><strong>Tracking Ticket:</strong> {ticketId}</p>
             <p className="mt-1 text-[#718078]">Audit review timeline: 3–5 business days</p>
           </div>
           <div className="flex flex-col gap-2.5">
@@ -197,18 +221,30 @@ function ReportFormContent() {
             />
           </div>
 
+          {/* Inline submission error */}
+          {submitError && (
+            <div className="flex items-center gap-2 p-3 rounded-xl bg-[#C95C5C]/10 border border-[#C95C5C]/40 text-xs text-[#962A2A] font-mono">
+              <AlertCircle size={14} className="flex-shrink-0" />
+              {submitError}
+            </div>
+          )}
+
           {/* Submit button */}
           <button
             type="submit"
-            disabled={!form.brand || !form.claim || !form.reason}
+            disabled={!form.brand || !form.claim || !form.reason || submitting}
             className={cn(
-              'w-full py-4 rounded-xl font-semibold text-base transition-all shadow-md',
-              form.brand && form.claim && form.reason
+              'w-full py-4 rounded-xl font-semibold text-base transition-all shadow-md flex items-center justify-center gap-2',
+              form.brand && form.claim && form.reason && !submitting
                 ? 'btn-mint py-4'
                 : 'bg-[#C8CEC5] text-[#718078] cursor-not-allowed border-none shadow-none'
             )}
           >
-            SUBMIT CLAIM FOR VERIFICATION REVIEW
+            {submitting ? (
+              <><Loader2 size={16} className="animate-spin" /> Submitting…</>
+            ) : (
+              'SUBMIT CLAIM FOR VERIFICATION REVIEW'
+            )}
           </button>
 
           <p className="text-[11px] font-mono text-[#718078] text-center leading-relaxed">

@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft, ArrowRight, BookOpen, Download, Flag, ExternalLink, ShieldCheck, CheckCircle2, AlertCircle, Share2, Check } from 'lucide-react';
 import { MOCK_RESULTS } from '@/lib/mock-data';
-import { runVerification } from '@/lib/verification-engine';
 import type { VerificationResult } from '@/lib/types';
 import { StatusHero, EvidenceStrengthBar, StatusBadge } from '@/components/shared/StatusBadge';
 import { getAssessmentIcon, formatDate, cn } from '@/lib/utils';
@@ -109,27 +108,58 @@ export default function ResultPage() {
   }
 
   useEffect(() => {
-    if (id && MOCK_RESULTS[id]) {
+    if (!id) return;
+
+    // ── 1. Demo IDs: use mock data immediately ────────────────
+    if (MOCK_RESULTS[id]) {
       setResult(MOCK_RESULTS[id]);
-    } else {
-      const claim = typeof window !== 'undefined' ? sessionStorage.getItem('gl_claim') : null;
-      if (claim) {
-        runVerification(claim)
-          .then((res) => {
-            setResult({
-              ...res,
-              product_name: res.product_name || 'Custom Product Submission',
-              brand: res.brand || 'Self-Submitted Claim',
-              category: res.category || 'General Consumer Good',
-              sources: res.sources.length > 0 ? res.sources : MOCK_RESULTS['demo-1'].sources,
-            });
-          })
-          .catch(() => {
-            // Non-environmental input or invalid claim: return to verify terminal
-            router.replace('/verify');
+      return;
+    }
+
+    // ── 2. Custom claim: check sessionStorage first ───────────
+    if (typeof window !== 'undefined') {
+      const storedResultJson = sessionStorage.getItem('gl_result');
+      const storedResultId = sessionStorage.getItem('gl_result_id');
+
+      if (storedResultJson && (storedResultId === id || id === 'custom')) {
+        try {
+          const parsed = JSON.parse(storedResultJson);
+          setResult({
+            ...parsed,
+            product_name: parsed.product_name || 'Custom Product Submission',
+            brand: parsed.brand || 'Self-Submitted Claim',
+            category: parsed.category || 'General Consumer Good',
+            sources: parsed.sources?.length > 0 ? parsed.sources : MOCK_RESULTS['demo-1'].sources,
           });
+          return;
+        } catch {
+          // Invalid JSON — fall through to API fetch
+        }
       }
     }
+
+    // ── 3. Fetch from API by ID ───────────────────────────────
+    fetch(`/api/result/${id}`)
+      .then((res) => {
+        if (!res.ok) throw new Error('Not found');
+        return res.json();
+      })
+      .then((data) => {
+        if (data.result) {
+          setResult({
+            ...data.result,
+            product_name: data.result.product_name || 'Verified Product',
+            brand: data.result.brand || 'Unknown Brand',
+            category: data.result.category || 'General Consumer Good',
+            sources: data.result.sources?.length > 0 ? data.result.sources : MOCK_RESULTS['demo-1'].sources,
+          });
+        } else {
+          router.replace('/verify');
+        }
+      })
+      .catch(() => {
+        router.replace('/verify');
+      });
   }, [id, router]);
 
   function handleSave() {

@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Search, ShieldCheck, Database, FileCheck } from 'lucide-react';
+import { ArrowRight, Search, ShieldCheck, Database, FileCheck, Loader2 } from 'lucide-react';
 import { COMMUNITY_LEDGER, getResultIdForStatus } from '@/lib/mock-data';
 import { StatusBadge } from '@/components/shared/StatusBadge';
-import type { VerificationStatus } from '@/lib/types';
+import type { LedgerEntry, VerificationStatus } from '@/lib/types';
 import { formatRelativeDate, formatDate, cn } from '@/lib/utils';
 
 const STATUS_FILTERS: { label: string; value: VerificationStatus | 'ALL' }[] = [
@@ -18,8 +18,26 @@ const STATUS_FILTERS: { label: string; value: VerificationStatus | 'ALL' }[] = [
 export default function LedgerPage() {
   const [filter, setFilter] = useState<VerificationStatus | 'ALL'>('ALL');
   const [search, setSearch] = useState('');
+  const [entries, setEntries] = useState<LedgerEntry[]>(COMMUNITY_LEDGER);
+  const [loading, setLoading] = useState(true);
 
-  const filtered = COMMUNITY_LEDGER.filter((entry) => {
+  // ── Fetch ledger from API ──────────────────────────────────
+  useEffect(() => {
+    setLoading(true);
+    fetch('/api/ledger')
+      .then((r) => r.json())
+      .then((data) => {
+        if (Array.isArray(data.entries) && data.entries.length > 0) {
+          setEntries(data.entries);
+        }
+      })
+      .catch(() => {
+        // Silently fall back to mock data already in state
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  const filtered = entries.filter((entry) => {
     const matchFilter = filter === 'ALL' || entry.status === filter;
     const matchSearch =
       !search ||
@@ -92,8 +110,16 @@ export default function LedgerPage() {
             <span className="text-right">Action</span>
           </div>
 
+          {/* Loading skeleton */}
+          {loading && (
+            <div className="flex items-center justify-center py-16 gap-3">
+              <Loader2 size={22} className="text-[#12382A] animate-spin" />
+              <p className="text-xs font-mono text-[#718078]">Loading audit records…</p>
+            </div>
+          )}
+
           {/* Table Rows */}
-          {filtered.length === 0 ? (
+          {!loading && filtered.length === 0 ? (
             <div className="text-center py-16">
               <Database size={32} className="text-[#718078] mx-auto mb-2 opacity-50" />
               <p className="font-serif text-lg text-[#102019] mb-1">No matching audit records</p>
@@ -108,7 +134,7 @@ export default function LedgerPage() {
                 Reset all filters
               </button>
             </div>
-          ) : (
+          ) : !loading ? (
             <div className="divide-y divide-[#C8CEC5]">
               {filtered.map((entry, idx) => (
                 <div
@@ -160,11 +186,11 @@ export default function LedgerPage() {
                 </div>
               ))}
             </div>
-          )}
+          ) : null}
         </div>
 
         <p className="text-center text-xs font-mono text-[#718078] mt-6">
-          Displaying {filtered.length} of {COMMUNITY_LEDGER.length} verified public entries · Ledger updated continuously
+          Displaying {filtered.length} of {entries.length} verified public entries · Ledger updated continuously
         </p>
       </div>
     </div>

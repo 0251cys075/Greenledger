@@ -1,3 +1,6 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   ArrowRight,
@@ -434,11 +437,29 @@ export function SampleVerificationCard() {
 // Section 5: Built for Transparency Metrics (DEEP FOREST BACKGROUND)
 // =====================================================================
 export function MetricsSection() {
+  const [metricValues, setMetricValues] = useState({
+    claims_checked: PLATFORM_METRICS.claims_checked,
+    verified_claims: PLATFORM_METRICS.verified_claims,
+    insufficient_evidence: PLATFORM_METRICS.insufficient_evidence,
+    potential_issues: PLATFORM_METRICS.potential_issues,
+  });
+
+  useEffect(() => {
+    fetch('/api/metrics')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.metrics) setMetricValues(data.metrics);
+      })
+      .catch(() => {
+        // Silently keep static values
+      });
+  }, []);
+
   const metrics = [
-    { label: 'Claims Checked', value: PLATFORM_METRICS.claims_checked, prefix: '' },
-    { label: 'Verified Claims', value: PLATFORM_METRICS.verified_claims, prefix: '' },
-    { label: 'Insufficient Evidence', value: PLATFORM_METRICS.insufficient_evidence, prefix: '' },
-    { label: 'Potential Issues Found', value: PLATFORM_METRICS.potential_issues, prefix: '' },
+    { label: 'Claims Checked', value: metricValues.claims_checked },
+    { label: 'Verified Claims', value: metricValues.verified_claims },
+    { label: 'Insufficient Evidence', value: metricValues.insufficient_evidence },
+    { label: 'Potential Issues Found', value: metricValues.potential_issues },
   ];
 
   return (

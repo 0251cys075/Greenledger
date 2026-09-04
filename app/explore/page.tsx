@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { Search, ArrowRight, Filter, ShieldCheck, X, Loader2 } from 'lucide-react';
+import { Search, ArrowRight, X, Loader2 } from 'lucide-react';
 import { EXPLORE_PRODUCTS } from '@/lib/mock-data';
 import { StatusBadge } from '@/components/shared/StatusBadge';
 import type { VerificationStatus } from '@/lib/types';
@@ -17,12 +17,27 @@ const STATUSES: { label: string; value: VerificationStatus | 'ALL' }[] = [
   { label: 'Potential Greenwashing', value: 'POTENTIAL_GREENWASHING' },
 ];
 
+interface ExploreProduct {
+  id: string;
+  product_name: string;
+  brand: string;
+  category: string;
+  claim_text: string;
+  status: VerificationStatus;
+  evidence_strength: string;
+  verified_at: string;
+  result_id: string;
+}
+
 function ExploreContent() {
   const searchParams = useSearchParams();
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
   const [status, setStatus] = useState<VerificationStatus | 'ALL'>('ALL');
+  const [products, setProducts] = useState<ExploreProduct[]>(EXPLORE_PRODUCTS as ExploreProduct[]);
+  const [loading, setLoading] = useState(true);
 
+  // ── Read URL params on mount ───────────────────────────────
   useEffect(() => {
     const q = searchParams.get('q') || searchParams.get('search');
     const cat = searchParams.get('category');
@@ -34,13 +49,35 @@ function ExploreContent() {
     }
   }, [searchParams]);
 
+  // ── Fetch from API ─────────────────────────────────────────
+  useEffect(() => {
+    setLoading(true);
+    const params = new URLSearchParams();
+    if (search) params.set('q', search);
+    if (category && category !== 'All') params.set('category', category);
+    if (status && status !== 'ALL') params.set('status', status);
+
+    fetch(`/api/explore?${params.toString()}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (Array.isArray(data.products) && data.products.length > 0) {
+          setProducts(data.products);
+        }
+      })
+      .catch(() => {
+        // Silently stay with current mock data
+      })
+      .finally(() => setLoading(false));
+  }, [search, category, status]);
+
   function handleResetFilters() {
     setSearch('');
     setCategory('All');
     setStatus('ALL');
   }
 
-  const filtered = EXPLORE_PRODUCTS.filter((p) => {
+  // Client-side filter on current products (instant feedback while API loads)
+  const filtered = products.filter((p) => {
     const matchSearch =
       !search ||
       p.product_name.toLowerCase().includes(search.toLowerCase()) ||
@@ -139,12 +176,13 @@ function ExploreContent() {
         <div className="flex items-center justify-between mb-6 text-xs font-mono text-[#718078]">
           <span>
             Showing <strong>{filtered.length}</strong> record{filtered.length !== 1 ? 's' : ''}
+            {loading && <Loader2 size={12} className="inline ml-2 animate-spin" />}
           </span>
           <span>Verified against public registries</span>
         </div>
 
         {/* Product Cards Grid */}
-        {filtered.length === 0 ? (
+        {filtered.length === 0 && !loading ? (
           <div className="text-center py-20 card-cream border border-[#C8CEC5] rounded-2xl">
             <Search size={36} className="text-[#718078] mx-auto mb-3 opacity-60" />
             <h3 className="font-serif text-xl text-[#102019] mb-1">No matching claims found</h3>
